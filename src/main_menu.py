@@ -1,6 +1,6 @@
-<<<<<<< HEAD
+
 print('hello world')
-=======
+
 print('=' * 31)
 print('=== HACKER NETWORK SYSTEM ===')
 print('=' * 31)
@@ -28,4 +28,4 @@ Pilih Menu: ''')
     elif pilih == '0':
         print('Program Selesai!')
         exit()
->>>>>>> 2dd99e4a92b19dda08dafadcd7368c1feaeadc4c
+
