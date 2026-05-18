@@ -11,5 +11,6 @@ class Sorting:
             for j in range(i+1, n):
                 if arr[j] > arr[min_index]:
                     min_index = j
+                    
             # tukar urutan yang salah
             arr[i], arr[min_index] = arr[min_index], arr[i]
