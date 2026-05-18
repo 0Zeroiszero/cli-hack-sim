@@ -4,4 +4,4 @@ from .double import DoubleLinkedList
 from .circular import CircularLinkedList
 
 
-all = [Node, SingleLinkedList, DoubleLinkedList, CircularLinkedList]
+__all__ = [Node, SingleLinkedList, DoubleLinkedList, CircularLinkedList]
