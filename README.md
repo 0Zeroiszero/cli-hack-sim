@@ -1,5 +1,5 @@
 <h2 align="center">
-  ✦ Members Team ✦
+  ✦ Anggota Kelompok 8 ✦
 </h2>
 
 <table align="center" border="0" cellpadding="12" cellspacing="0" width="90%">
@@ -67,7 +67,7 @@
 
 <!-- Efek Liquid Glass sederhana tanpa warna custom -->
 <p align="center">
-  <b>🔮 Dibuat dengan kesabaran oleh Kelompok 8 🔮</b>
+  <b>🔮 Dibuat dengan kesabaran oleh Kelompok_8 🔮</b>
 </p>
 
 <p align="center">
