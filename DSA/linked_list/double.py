@@ -66,50 +66,81 @@ class ServerCarousel:
         rows = []
 
         if self.current.prev:
-            rows.append([
-                self.side_text("PREVIOUS"),
-                self.side_text(self.current.prev.server_id),
-                self.side_text(self.current.prev.server_name),
-                self.side_text(self.current.prev.ip),
-                self.side_text(self.current.prev.status)
-            ])
+            rows.append(
+                [
+                    self.side_text("PREVIOUS"),
+                    self.side_text(self.current.prev.server_id),
+                    self.side_text(self.current.prev.server_name),
+                    self.side_text(self.current.prev.ip),
+                    self.side_text(self.current.prev.status),
+                ]
+            )
 
-        rows.append([
-            self.selected_text("SELECTED"),
-            self.selected_text(self.current.server_id),
-            self.selected_text(self.current.server_name),
-            self.selected_text(self.current.ip),
-            self.selected_text(self.current.status)
-        ])
+        rows.append(
+            [
+                self.selected_text("SELECTED"),
+                self.selected_text(self.current.server_id),
+                self.selected_text(self.current.server_name),
+                self.selected_text(self.current.ip),
+                self.selected_text(self.current.status),
+            ]
+        )
 
         if self.current.next:
-            rows.append([
-                self.side_text("NEXT"),
-                self.side_text(self.current.next.server_id),
-                self.side_text(self.current.next.server_name),
-                self.side_text(self.current.next.ip),
-                self.side_text(self.current.next.status)
-            ])
+            rows.append(
+                [
+                    self.side_text("NEXT"),
+                    self.side_text(self.current.next.server_id),
+                    self.side_text(self.current.next.server_name),
+                    self.side_text(self.current.next.ip),
+                    self.side_text(self.current.next.status),
+                ]
+            )
 
-        print(tabulate(
-            rows,
-            headers=["Position", "Server ID", "Server Name", "IP Address", "Status"],
-            tablefmt="grid"
-        ))
+        print(
+            tabulate(
+                rows,
+                headers=[
+                    "Position",
+                    "Server ID",
+                    "Server Name",
+                    "IP Address",
+                    "Status",
+                ],
+                tablefmt="grid",
+            )
+        )
 
     def show_current_detail(self):
         if self.current is None:
             print("Tidak ada server yang dipilih.")
             return
 
-        print("\n" + Fore.GREEN + Style.BRIGHT + "+=======================================================+")
-        print(Fore.GREEN + Style.BRIGHT + "|                DETAIL SERVER YANG DIPILIH             |")
-        print(Fore.GREEN + Style.BRIGHT + "+=======================================================+")
+        print(
+            "\n"
+            + Fore.GREEN
+            + Style.BRIGHT
+            + "+=======================================================+"
+        )
+        print(
+            Fore.GREEN
+            + Style.BRIGHT
+            + "|                DETAIL SERVER YANG DIPILIH             |"
+        )
+        print(
+            Fore.GREEN
+            + Style.BRIGHT
+            + "+=======================================================+"
+        )
         print(Fore.GREEN + Style.BRIGHT + f" Server ID   : {self.current.server_id}")
         print(Fore.GREEN + Style.BRIGHT + f" Server Name : {self.current.server_name}")
         print(Fore.GREEN + Style.BRIGHT + f" IP Address  : {self.current.ip}")
         print(Fore.GREEN + Style.BRIGHT + f" Status      : {self.current.status}")
-        print(Fore.GREEN + Style.BRIGHT + "+=======================================================+")
+        print(
+            Fore.GREEN
+            + Style.BRIGHT
+            + "+=======================================================+"
+        )
 
     def run(self):
         while True:

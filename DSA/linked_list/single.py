@@ -3,6 +3,7 @@
 Implementasi Single Linked List untuk Queue Traffic
 """
 
+
 class TrafficNode:
     # TODO: Sesuaikan atribut lain yang diperlukan untuk menyimpan informasi traffic
     def __init__(self, traffic_id, monitor_id, server_id, metadata):
@@ -27,7 +28,7 @@ class TrafficQueueLinkedList:
             traffic_id=traffic_id,
             monitor_id=monitor_id,
             server_id=server_id,
-            metadata=metadata
+            metadata=metadata,
         )
 
         if self.is_empty():

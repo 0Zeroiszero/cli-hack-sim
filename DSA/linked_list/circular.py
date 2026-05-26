@@ -33,7 +33,7 @@ class CircularServerMonitor:
             server_name=server_name,
             ip=ip,
             status=status,
-            vulnerable=vulnerable
+            vulnerable=vulnerable,
         )
 
         if self.is_empty():
@@ -89,7 +89,11 @@ class CircularServerMonitor:
         print("+=======================================================+")
 
         if changed:
-            print(self.red_text(" CHANGE DETECTED : Status berubah dari histori sebelumnya"))
+            print(
+                self.red_text(
+                    " CHANGE DETECTED : Status berubah dari histori sebelumnya"
+                )
+            )
             print(self.red_text(" ACTION          : vulnerable otomatis menjadi True"))
         else:
             print(self.yellow_text(" CHANGE DETECTED : Tidak ada perubahan"))
