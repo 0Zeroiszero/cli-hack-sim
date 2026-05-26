@@ -1,114 +1,74 @@
-from .node import Node
+"""
+@author: Abdullah Affandi
+Implementasi Single Linked List untuk Queue Traffic
+"""
 
 
-class SingleLinkedList:
-    """
-    Single Linked List murni:
-    - hanya fokus ke node dan pointer next
-    - traversal menggunakan rekursif
-    - tidak mengambil fitur search, sorting, file handler, dll
-    """
+class TrafficNode:
+    # TODO: Sesuaikan atribut lain yang diperlukan untuk menyimpan informasi traffic
+    def __init__(self, traffic_id, monitor_id, server_id, metadata):
+        self.traffic_id = traffic_id
+        self.monitor_id = monitor_id
+        self.server_id = server_id
+        self.metadata = metadata
+        self.next = None
 
+
+class TrafficQueueLinkedList:
     def __init__(self):
-        self.head = None
-        self.tail = None
+        self.front = None
+        self.rear = None
         self.size = 0
 
     def is_empty(self):
-        return self.head is None
+        return self.front is None
 
-    def add_front(self, data):
-        new_node = Node(data)
+    def enqueue(self, traffic_id, monitor_id, server_id, metadata):
+        new_node = TrafficNode(
+            traffic_id=traffic_id,
+            monitor_id=monitor_id,
+            server_id=server_id,
+            metadata=metadata,
+        )
 
         if self.is_empty():
-            self.head = new_node
-            self.tail = new_node
+            self.front = new_node
+            self.rear = new_node
         else:
-            new_node.next = self.head
-            self.head = new_node
+            self.rear.next = new_node
+            self.rear = new_node
 
         self.size += 1
 
-    def add_back(self, data):
-        new_node = Node(data)
-
-        if self.is_empty():
-            self.head = new_node
-            self.tail = new_node
-        else:
-            self.tail.next = new_node
-            self.tail = new_node
-
-        self.size += 1
-
-    def remove_front(self):
+    def dequeue(self):
         if self.is_empty():
             return None
 
-        removed_data = self.head.data
-        self.head = self.head.next
+        removed_node = self.front
+        self.front = self.front.next
+
+        if self.front is None:
+            self.rear = None
+
         self.size -= 1
+        return removed_node
 
-        if self.head is None:
-            self.tail = None
-
-        return removed_data
-
-    def remove_back(self):
+    def display(self):
         if self.is_empty():
-            return None
+            print("Queue traffic kosong.")
+            return
 
-        if self.head == self.tail:
-            removed_data = self.head.data
-            self.head = None
-            self.tail = None
-            self.size -= 1
-            return removed_data
+        current = self.front
+        nodes = []
 
-        current = self.head
-
-        while current.next != self.tail:
+        while current is not None:
+            text = (
+                f"[{current.traffic_id}]\n"
+                f" monitor_id : {current.monitor_id}\n"
+                f" server_id  : {current.server_id}\n"
+                f" metadata   : {current.metadata}"
+            )
+            nodes.append(text)
             current = current.next
 
-        removed_data = self.tail.data
-        current.next = None
-        self.tail = current
-        self.size -= 1
-
-        return removed_data
-
-    def traverse_recursive(self):
-        """
-        Traversal rekursif.
-        Fungsi ini mengubah linked list menjadi list biasa
-        agar mudah ditampilkan atau dites.
-        """
-        result = []
-
-        def visit(node):
-            if node is None:
-                return
-
-            result.append(node.data)
-            visit(node.next)
-
-        visit(self.head)
-        return result
-
-    def display_recursive(self):
-        """
-        Menampilkan linked list menggunakan rekursif.
-        """
-
-        def visit(node):
-            if node is None:
-                print("NULL")
-                return
-
-            print(node.data, end=" -> ")
-            visit(node.next)
-
-        visit(self.head)
-
-    def get_size(self):
-        return self.size
+        print("\n -> \n".join(nodes))

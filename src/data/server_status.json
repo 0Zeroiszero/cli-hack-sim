@@ -1,0 +1,16 @@
+{
+  "servers": [
+    {
+      "server_id": "SRV001",
+      "server_name": "Alpha",
+      "ip": "192.168.1.10",
+      "status": "ONLINE",
+      "access": "LOCKED",
+      "vulnerable": false,
+      "credential": {
+        "username": "admin",
+        "password": "123"
+      }
+    }
+  ]
+}
