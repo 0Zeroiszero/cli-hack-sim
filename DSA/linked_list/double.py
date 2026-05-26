@@ -1,164 +1,140 @@
-from .node import DoubleNode
+from tabulate import tabulate
+from colorama import Fore, Style, init
+import os
 
 
-class DoubleLinkedList:
-    """
-    Double Linked List:
-    - setiap node bisa bergerak maju dengan next
-    - setiap node bisa bergerak mundur dengan prev
-    - traversal menggunakan rekursif
-    - tidak berisi search, sorting, file handler, dan fitur rubrik lain
-    """
+init(autoreset=True)
 
+
+class ServerNode:
+    # TODO: Sesuaikan atribut server
+    def __init__(self, server_id, server_name, ip, status):
+        self.server_id = server_id
+        self.server_name = server_name
+        self.ip = ip
+        self.status = status
+        self.prev = None
+        self.next = None
+
+
+class ServerCarousel:
     def __init__(self):
         self.head = None
         self.tail = None
-        self.size = 0
+        self.current = None
 
-    def is_empty(self):
-        return self.head is None
+    def add_server(self, server_id, server_name, ip, status):
+        new_node = ServerNode(server_id, server_name, ip, status)
 
-    def add_front(self, data):
-        """
-        Menambahkan node di bagian depan.
-        """
-
-        new_node = DoubleNode(data)
-
-        if self.is_empty():
+        if self.head is None:
             self.head = new_node
             self.tail = new_node
-        else:
-            new_node.next = self.head
-            self.head.prev = new_node
-            self.head = new_node
-
-        self.size += 1
-
-    def add_back(self, data):
-        """
-        Menambahkan node di bagian belakang.
-        Cocok untuk membuat urutan navigasi server:
-        Server A <-> Server B <-> Server C
-        """
-
-        new_node = DoubleNode(data)
-
-        if self.is_empty():
-            self.head = new_node
-            self.tail = new_node
+            self.current = new_node
         else:
             self.tail.next = new_node
             new_node.prev = self.tail
             self.tail = new_node
 
-        self.size += 1
-
-    def remove_front(self):
-        """
-        Menghapus node paling depan.
-        """
-
-        if self.is_empty():
-            return None
-
-        removed_data = self.head.data
-
-        if self.head == self.tail:
-            self.head = None
-            self.tail = None
+    def move_up(self):
+        if self.current and self.current.prev:
+            self.current = self.current.prev
         else:
-            self.head = self.head.next
-            self.head.prev = None
+            print(Fore.YELLOW + "Sudah berada di server paling atas.")
+            input("Tekan Enter untuk lanjut...")
 
-        self.size -= 1
-        return removed_data
-
-    def remove_back(self):
-        """
-        Menghapus node paling belakang.
-        """
-
-        if self.is_empty():
-            return None
-
-        removed_data = self.tail.data
-
-        if self.head == self.tail:
-            self.head = None
-            self.tail = None
+    def move_down(self):
+        if self.current and self.current.next:
+            self.current = self.current.next
         else:
-            self.tail = self.tail.prev
-            self.tail.next = None
+            print(Fore.YELLOW + "Sudah berada di server paling bawah.")
+            input("Tekan Enter untuk lanjut...")
 
-        self.size -= 1
-        return removed_data
+    def clear_screen(self):
+        os.system("cls" if os.name == "nt" else "clear")
 
-    def traverse_forward_recursive(self):
-        """
-        Traversal rekursif dari depan ke belakang.
-        Arah: head -> tail
-        """
+    def selected_text(self, text):
+        return Fore.GREEN + Style.BRIGHT + str(text) + Style.RESET_ALL
 
-        result = []
+    def side_text(self, text):
+        return Fore.GREEN + Style.DIM + str(text) + Style.RESET_ALL
 
-        def visit(node):
-            if node is None:
-                return
+    def display_carousel(self):
+        if self.current is None:
+            print("Data server kosong.")
+            return
 
-            result.append(node.data)
-            visit(node.next)
+        rows = []
 
-        visit(self.head)
-        return result
+        if self.current.prev:
+            rows.append([
+                self.side_text("PREVIOUS"),
+                self.side_text(self.current.prev.server_id),
+                self.side_text(self.current.prev.server_name),
+                self.side_text(self.current.prev.ip),
+                self.side_text(self.current.prev.status)
+            ])
 
-    def traverse_backward_recursive(self):
-        """
-        Traversal rekursif dari belakang ke depan.
-        Arah: tail -> head
-        """
+        rows.append([
+            self.selected_text("SELECTED"),
+            self.selected_text(self.current.server_id),
+            self.selected_text(self.current.server_name),
+            self.selected_text(self.current.ip),
+            self.selected_text(self.current.status)
+        ])
 
-        result = []
+        if self.current.next:
+            rows.append([
+                self.side_text("NEXT"),
+                self.side_text(self.current.next.server_id),
+                self.side_text(self.current.next.server_name),
+                self.side_text(self.current.next.ip),
+                self.side_text(self.current.next.status)
+            ])
 
-        def visit(node):
-            if node is None:
-                return
+        print(tabulate(
+            rows,
+            headers=["Position", "Server ID", "Server Name", "IP Address", "Status"],
+            tablefmt="grid"
+        ))
 
-            result.append(node.data)
-            visit(node.prev)
+    def show_current_detail(self):
+        if self.current is None:
+            print("Tidak ada server yang dipilih.")
+            return
 
-        visit(self.tail)
-        return result
+        print("\n" + Fore.GREEN + Style.BRIGHT + "+=======================================================+")
+        print(Fore.GREEN + Style.BRIGHT + "|                DETAIL SERVER YANG DIPILIH             |")
+        print(Fore.GREEN + Style.BRIGHT + "+=======================================================+")
+        print(Fore.GREEN + Style.BRIGHT + f" Server ID   : {self.current.server_id}")
+        print(Fore.GREEN + Style.BRIGHT + f" Server Name : {self.current.server_name}")
+        print(Fore.GREEN + Style.BRIGHT + f" IP Address  : {self.current.ip}")
+        print(Fore.GREEN + Style.BRIGHT + f" Status      : {self.current.status}")
+        print(Fore.GREEN + Style.BRIGHT + "+=======================================================+")
 
-    def display_forward_recursive(self):
-        """
-        Menampilkan isi Double Linked List dari depan ke belakang.
-        """
+    def run(self):
+        while True:
+            self.clear_screen()
 
-        def visit(node):
-            if node is None:
-                print("NULL")
-                return
+            print("+=======================================================+")
+            print("|                    DAFTAR SERVER                      |")
+            print("+=======================================================+")
+            print()
 
-            print(node.data, end=" <-> ")
-            visit(node.next)
+            self.display_carousel()
+            self.show_current_detail()
 
-        visit(self.head)
+            print("\n[W] Naik ke server sebelumnya")
+            print("[S] Turun ke server berikutnya")
+            print("[Q] Keluar")
 
-    def display_backward_recursive(self):
-        """
-        Menampilkan isi Double Linked List dari belakang ke depan.
-        """
+            choice = input("\nPilih: ").lower()
 
-        def visit(node):
-            if node is None:
-                print("NULL")
-                return
-
-            print(node.data, end=" <-> ")
-            visit(node.prev)
-
-        visit(self.tail)
-
-    def get_size(self):
-        return self.size
+            if choice == "w":
+                self.move_up()
+            elif choice == "s":
+                self.move_down()
+            elif choice == "q":
+                break
+            else:
+                print(Fore.RED + "Pilihan tidak valid.")
+                input("Tekan Enter untuk lanjut...")

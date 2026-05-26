@@ -1,149 +1,150 @@
-from .node import Node as CircularNode
+import os
+import subprocess
+import time
+from colorama import Fore, Style, init
 
 
-class CircularLinkedList:
-    """
-    Circular Linked List:
-    - node terakhir menunjuk kembali ke head
-    - tidak memiliki NULL di akhir list
-    - cocok untuk monitoring jaringan berulang
-    - traversal menggunakan rekursif
-    - tidak berisi search, sorting, file handler, dan fitur rubrik lain
-    """
+init(autoreset=True)
 
+
+class CircularServerNode:
+    # TODO: Menyesuaikan atribut pada 'src\data\server_status.json'
+    def __init__(self, server_id, server_name, ip, status, vulnerable=False):
+        self.server_id = server_id
+        self.server_name = server_name
+        self.ip = ip
+        self.status = status
+        self.previous_status = status
+        self.vulnerable = vulnerable
+        self.next = None
+
+
+class CircularServerMonitor:
     def __init__(self):
-        self.head = None
         self.tail = None
-        self.size = 0
+        self.current = None
 
     def is_empty(self):
-        return self.head is None
+        return self.tail is None
 
-    def add_front(self, data):
-        """
-        Menambahkan node di bagian depan.
-        """
-
-        new_node = CircularNode(data)
-
-        if self.is_empty():
-            self.head = new_node
-            self.tail = new_node
-            self.tail.next = self.head
-        else:
-            new_node.next = self.head
-            self.head = new_node
-            self.tail.next = self.head
-
-        self.size += 1
-
-    def add_back(self, data):
-        """
-        Menambahkan node di bagian belakang.
-        Cocok untuk membuat urutan monitoring:
-        Monitor 1 -> Monitor 2 -> Monitor 3 -> kembali ke Monitor 1
-        """
-
-        new_node = CircularNode(data)
+    def add_server(self, server_id, server_name, ip, status, vulnerable=False):
+        new_node = CircularServerNode(
+            server_id=server_id,
+            server_name=server_name,
+            ip=ip,
+            status=status,
+            vulnerable=vulnerable
+        )
 
         if self.is_empty():
-            self.head = new_node
             self.tail = new_node
-            self.tail.next = self.head
+            self.tail.next = new_node
+            self.current = new_node
         else:
+            new_node.next = self.tail.next
             self.tail.next = new_node
             self.tail = new_node
-            self.tail.next = self.head
 
-        self.size += 1
+    def move_next(self):
+        if self.current is not None:
+            self.current = self.current.next
 
-    def remove_front(self):
-        """
-        Menghapus node paling depan.
-        """
+    def red_text(self, text):
+        return Fore.RED + Style.BRIGHT + str(text) + Style.RESET_ALL
 
-        if self.is_empty():
-            return None
+    def green_text(self, text):
+        return Fore.GREEN + Style.BRIGHT + str(text) + Style.RESET_ALL
 
-        removed_data = self.head.data
+    def yellow_text(self, text):
+        return Fore.YELLOW + Style.BRIGHT + str(text) + Style.RESET_ALL
 
-        if self.head == self.tail:
-            self.head = None
-            self.tail = None
+    def clear_screen(self):
+        subprocess.run("cls" if os.name == "nt" else "clear", shell=True)
+
+    def check_current_server(self):
+        if self.current is None:
+            print("Belum ada server untuk dimonitor.")
+            return
+
+        changed = self.current.previous_status != self.current.status
+
+        if changed:
+            self.current.vulnerable = True
+            self.current.previous_status = self.current.status
+
+        self.clear_screen()
+
+        color = self.red_text if self.current.vulnerable else self.green_text
+
+        # TODO: Sesuaikan tampilan informasi server yang ingin ditampilkan
+        print("+=======================================================+")
+        print("|             CIRCULAR LINKED LIST MONITOR              |")
+        print("+=======================================================+")
+        print(color(f" Server ID       : {self.current.server_id}"))
+        print(color(f" Server Name     : {self.current.server_name}"))
+        print(color(f" IP Address      : {self.current.ip}"))
+        print(color(f" Current Status  : {self.current.status}"))
+        print(color(f" Previous Status : {self.current.previous_status}"))
+        print(color(f" Vulnerable      : {self.current.vulnerable}"))
+        print("+=======================================================+")
+
+        if changed:
+            print(self.red_text(" CHANGE DETECTED : Status berubah dari histori sebelumnya"))
+            print(self.red_text(" ACTION          : vulnerable otomatis menjadi True"))
         else:
-            self.head = self.head.next
-            self.tail.next = self.head
+            print(self.yellow_text(" CHANGE DETECTED : Tidak ada perubahan"))
 
-        self.size -= 1
-        return removed_data
+        if self.current.vulnerable:
+            print(self.red_text(" ALERT           : SERVER VULNERABLE"))
+        else:
+            print(self.green_text(" ALERT           : SERVER AMAN"))
 
-    def remove_back(self):
-        """
-        Menghapus node paling belakang.
-        """
+        print("+=======================================================+")
+        print("Circular Route: server sekarang akan berpindah ke node berikutnya.")
 
+    def update_status_demo(self, server_id, new_status):
         if self.is_empty():
-            return None
+            return False
 
-        removed_data = self.tail.data
+        start = self.tail.next
+        current = start
 
-        if self.head == self.tail:
-            self.head = None
-            self.tail = None
-            self.size -= 1
-            return removed_data
+        while True:
+            if current.server_id == server_id:
+                current.status = new_status
+                return True
 
-        current = self.head
-
-        while current.next != self.tail:
             current = current.next
 
-        self.tail = current
-        self.tail.next = self.head
-        self.size -= 1
+            if current == start:
+                break
 
-        return removed_data
+        return False
 
-    def traverse_recursive(self):
-        """
-        Traversal rekursif untuk Circular Linked List.
-
-        Karena Circular Linked List tidak punya NULL,
-        traversal harus berhenti ketika jumlah node yang dikunjungi
-        sudah sama dengan size.
-        """
-
-        result = []
-
-        def visit(node, count):
-            if count == self.size:
-                return
-
-            result.append(node.data)
-            visit(node.next, count + 1)
-
-        if not self.is_empty():
-            visit(self.head, 0)
-
-        return result
-
-    def display_recursive(self):
-        """
-        Menampilkan Circular Linked List menggunakan rekursif.
-        """
-
-        def visit(node, count):
-            if count == self.size:
-                print("kembali ke HEAD")
-                return
-
-            print(node.data, end=" -> ")
-            visit(node.next, count + 1)
-
+    def show_route(self):
         if self.is_empty():
-            print("Kosong")
-        else:
-            visit(self.head, 0)
+            print("Circular linked list kosong.")
+            return
 
-    def get_size(self):
-        return self.size
+        start = self.tail.next
+        current = start
+        route = []
+
+        while True:
+            route.append(current.server_id)
+            current = current.next
+
+            if current == start:
+                break
+
+        route.append(start.server_id)
+        print(" -> ".join(route))
+
+    def run_auto_monitor(self, delay=2):
+        try:
+            while True:
+                self.check_current_server()
+                self.move_next()
+                time.sleep(delay)
+        except KeyboardInterrupt:
+            print("\nMonitoring dihentikan.")
