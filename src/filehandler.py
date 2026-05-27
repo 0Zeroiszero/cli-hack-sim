@@ -32,20 +32,16 @@ class FileHandler:
 
     # fungsi untuk menyimpan data akun ke dalam file txt
     def save_akun(self):
-        with open('data/akun.txt', 'w') as f:
-            for username in akun:
-                password = akun[username]
-                f.write(f'{username},{password}\n')
+        with open('data/dalam-json/akun.json', 'w') as f:
+            json.dump(servers, f, indent=4)
 
     # fungsi untuk mengambil data dari file txt
     def load_akun(self):
         try:
-            with open('data/akun.txt', 'r') as f:
-                for baris in f:
-                    data = baris.strip().split(',')
-                    username = data[0]
-                    password = data[1]
-                    akun[username] = password
+            servers.clear()
+            with open('data/dalam-json/akun.json', 'r') as f:
+                data = json.load(f)
+                servers.update(data)
         except:
             print('File Tidak Ditemukan')
 

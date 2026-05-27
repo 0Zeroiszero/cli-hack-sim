@@ -1,0 +1,192 @@
+{
+    "Server Alpha": {
+        "Monitor 1": [
+            {
+                "request_id": 1,
+                "timestamp": "14:22:31",
+                "method": "GET",
+                "url": "/login",
+                "source": "Client-7",
+                "destination": "Server Alpha",
+                "protocol": "HTTPS",
+                "status": "200 OK",
+                "payload": "512 KB",
+                "latency": "120 ms"
+            }
+        ],
+        "Monitor 2": [],
+        "Monitor 3": []
+    },
+
+    "Server Beta": {
+        "Monitor 1": [],
+        "Monitor 2": [
+            {
+                "request_id": 2,
+                "timestamp": "14:22:35",
+                "method": "POST",
+                "url": "/upload",
+                "source": "Client-12",
+                "destination": "Server Beta",
+                "protocol": "HTTPS",
+                "status": "403 Forbidden",
+                "payload": "220 KB",
+                "latency": "340 ms"
+            }
+        ],
+        "Monitor 3": []
+    },
+
+    "Server Gamma": {
+        "Monitor 1": [],
+        "Monitor 2": [],
+        "Monitor 3": [
+            {
+                "request_id": 3,
+                "timestamp": "14:22:40",
+                "method": "GET",
+                "url": "/dashboard",
+                "source": "Client-4",
+                "destination": "Server Gamma",
+                "protocol": "HTTP",
+                "status": "200 OK",
+                "payload": "150 KB",
+                "latency": "80 ms"
+            }
+        ]
+    },
+
+    "Server Delta": {
+        "Monitor 1": [
+            {
+                "request_id": 4,
+                "timestamp": "14:22:42",
+                "method": "DELETE",
+                "url": "/config",
+                "source": "Client-9",
+                "destination": "Server Delta",
+                "protocol": "HTTPS",
+                "status": "500 Internal Error",
+                "payload": "80 KB",
+                "latency": "520 ms"
+            }
+        ],
+        "Monitor 2": [],
+        "Monitor 3": []
+    },
+
+    "Server Echo": {
+        "Monitor 1": [],
+        "Monitor 2": [
+            {
+                "request_id": 5,
+                "timestamp": "14:22:47",
+                "method": "GET",
+                "url": "/api/data",
+                "source": "Client-2",
+                "destination": "Server Echo",
+                "protocol": "TCP",
+                "status": "200 OK",
+                "payload": "920 KB",
+                "latency": "210 ms"
+            }
+        ],
+        "Monitor 3": []
+    },
+
+    "Server Falcon": {
+        "Monitor 1": [],
+        "Monitor 2": [],
+        "Monitor 3": [
+            {
+                "request_id": 6,
+                "timestamp": "14:22:50",
+                "method": "POST",
+                "url": "/auth",
+                "source": "Client-15",
+                "destination": "Server Falcon",
+                "protocol": "HTTPS",
+                "status": "200 OK",
+                "payload": "300 KB",
+                "latency": "95 ms"
+            }
+        ]
+    },
+
+    "Server Hydra": {
+        "Monitor 1": [
+            {
+                "request_id": 7,
+                "timestamp": "14:22:53",
+                "method": "GET",
+                "url": "/download/file.zip",
+                "source": "Client-18",
+                "destination": "Server Hydra",
+                "protocol": "HTTP",
+                "status": "200 OK",
+                "payload": "1.2 MB",
+                "latency": "430 ms"
+            }
+        ],
+        "Monitor 2": [],
+        "Monitor 3": []
+    },
+
+    "Server Orion": {
+        "Monitor 1": [],
+        "Monitor 2": [
+            {
+                "request_id": 8,
+                "timestamp": "14:22:58",
+                "method": "PUT",
+                "url": "/admin",
+                "source": "Client-11",
+                "destination": "Server Orion",
+                "protocol": "HTTPS",
+                "status": "403 Forbidden",
+                "payload": "110 KB",
+                "latency": "260 ms"
+            }
+        ],
+        "Monitor 3": []
+    },
+
+    "Server Phoenix": {
+        "Monitor 1": [],
+        "Monitor 2": [],
+        "Monitor 3": [
+            {
+                "request_id": 9,
+                "timestamp": "14:23:02",
+                "method": "POST",
+                "url": "/sql-injection",
+                "source": "Client-20",
+                "destination": "Server Phoenix",
+                "protocol": "HTTPS",
+                "status": "BLOCKED",
+                "payload": "50 KB",
+                "latency": "600 ms",
+                "threat_level": "HIGH"
+            }
+        ]
+    },
+
+    "Server Titan": {
+        "Monitor 1": [
+            {
+                "request_id": 10,
+                "timestamp": "14:23:07",
+                "method": "GET",
+                "url": "/user/profile",
+                "source": "Client-5",
+                "destination": "Server Titan",
+                "protocol": "HTTPS",
+                "status": "200 OK",
+                "payload": "410 KB",
+                "latency": "130 ms"
+            }
+        ],
+        "Monitor 2": [],
+        "Monitor 3": []
+    }
+}
