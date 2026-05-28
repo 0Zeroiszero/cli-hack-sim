@@ -48,7 +48,7 @@ def tambah_server():
 
 def tampilkan_server():
     print("+========================================+")
-    print("|             SEVER MONITOR              |")
+    print("|             SERVER MONITOR              |")
     print("+========================================+")
     for i in server_list:
         print(f" Server ID         : {i.nama}")
@@ -56,3 +56,7 @@ def tampilkan_server():
         print(f" IP Address        : {i.ip}")
         print(f" Status            : {i.status}\n")
     print("+========================================+")
+
+if __name__ == '__main__':
+    tambah_server()
+    tampilkan_server()
