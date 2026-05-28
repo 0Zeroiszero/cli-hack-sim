@@ -6,7 +6,7 @@ koordinat_server = {}
 network = {}
 
 class Server:
-    def __init__(self, id, nama, ip, status):
+    def __init__(self, nama, id, ip, status):
         self.id = id
         self.nama = nama
         self.ip = ip
