@@ -3,9 +3,6 @@ servers = {}
 
 # fungsi login sederhana menggunakan dictionary
 def login_user():
-    with open('data/dalam-json/akun.json', 'r') as f:
-        servers = json.load(f)
-    
     akun = [item['credential'] for item in servers['servers']]
     
     username = input('Username: ')
@@ -17,3 +14,6 @@ def login_user():
             break
     else:
         print('\nUsername Tidak Ditemukan!')
+
+if __name__ == '__main__':
+    login_user()
