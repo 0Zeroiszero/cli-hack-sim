@@ -1,3 +1,5 @@
+# TODO: Kita coba gunakan RICH
+
 from colorama import Fore, Style, Back, init
 
 init(autoreset=True)
