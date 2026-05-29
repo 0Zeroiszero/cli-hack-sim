@@ -1,25 +1,36 @@
+"""
+@author: Abdullah Affandi
+"""
+
 import os
 import subprocess
 import time
-from colorama import Fore, Style, init
+
+from src.server import Server
+from utils.text_color_changer import red_text, green_text, yellow_text
 
 
-init(autoreset=True)
+class CircularServerNode(Server):
+    def __init__(
+        self,
+        *,
+        server_id: str,
+        server_name: str,
+        ip: str,
+        status: str,
+        vulnerable: bool = False,
+        access: str = "LOCKED",
+    ):
+        super().__init__(nama=server_name, id=server_id, ip=ip, status=status)
 
-
-class CircularServerNode:
-    # TODO: Menyesuaikan atribut pada 'src\data\server_status.json'
-    def __init__(self, server_id, server_name, ip, status, vulnerable=False):
-        self.server_id = server_id
-        self.server_name = server_name
-        self.ip = ip
-        self.status = status
-        self.previous_status = status
+        # Atribut tambahan khusus circular linked list
         self.vulnerable = vulnerable
+        self.access = access
+        self.previous_status = status
         self.next = None
 
 
-class CircularServerMonitor:
+class CircularServerMonitoring:
     def __init__(self):
         self.tail = None
         self.current = None
@@ -27,13 +38,16 @@ class CircularServerMonitor:
     def is_empty(self):
         return self.tail is None
 
-    def add_server(self, server_id, server_name, ip, status, vulnerable=False):
+    def add_server(
+        self, *, server_id, server_name, ip, status, vulnerable=False, access="LOCKED"
+    ):
         new_node = CircularServerNode(
             server_id=server_id,
             server_name=server_name,
             ip=ip,
             status=status,
             vulnerable=vulnerable,
+            access=access,
         )
 
         if self.is_empty():
@@ -48,15 +62,6 @@ class CircularServerMonitor:
     def move_next(self):
         if self.current is not None:
             self.current = self.current.next
-
-    def red_text(self, text):
-        return Fore.RED + Style.BRIGHT + str(text) + Style.RESET_ALL
-
-    def green_text(self, text):
-        return Fore.GREEN + Style.BRIGHT + str(text) + Style.RESET_ALL
-
-    def yellow_text(self, text):
-        return Fore.YELLOW + Style.BRIGHT + str(text) + Style.RESET_ALL
 
     def clear_screen(self):
         subprocess.run("cls" if os.name == "nt" else "clear", shell=True)
@@ -74,38 +79,32 @@ class CircularServerMonitor:
 
         self.clear_screen()
 
-        color = self.red_text if self.current.vulnerable else self.green_text
+        color = red_text if self.current.vulnerable else green_text
 
-        # TODO: Sesuaikan tampilan informasi server yang ingin ditampilkan
         print("+=======================================================+")
         print("|             CIRCULAR LINKED LIST MONITOR              |")
         print("+=======================================================+")
-        print(color(f" Server ID       : {self.current.server_id}"))
-        print(color(f" Server Name     : {self.current.server_name}"))
+        print(color(f" Server ID       : {self.current.id}"))
+        print(color(f" Server Name     : {self.current.nama}"))
         print(color(f" IP Address      : {self.current.ip}"))
         print(color(f" Current Status  : {self.current.status}"))
         print(color(f" Previous Status : {self.current.previous_status}"))
+        print(color(f" Access          : {self.current.access}"))
         print(color(f" Vulnerable      : {self.current.vulnerable}"))
         print("+=======================================================+")
 
         if changed:
-            print(
-                self.red_text(
-                    " CHANGE DETECTED : Status berubah dari histori sebelumnya"
-                )
-            )
-            print(self.red_text(" ACTION          : vulnerable otomatis menjadi True"))
+            print(red_text(" CHANGE DETECTED : Status berubah dari histori sebelumnya"))
+            print(red_text(" ACTION          : vulnerable otomatis menjadi True"))
         else:
-            print(self.yellow_text(" CHANGE DETECTED : Tidak ada perubahan"))
+            print(yellow_text(" CHANGE DETECTED : Tidak ada perubahan"))
 
         if self.current.vulnerable:
-            print(self.red_text(" ALERT           : SERVER VULNERABLE"))
+            print(red_text(" ALERT           : SERVER VULNERABLE"))
         else:
-            print(self.green_text(" ALERT           : SERVER AMAN"))
+            print(green_text(" ALERT           : SERVER AMAN"))
 
-        print("+=======================================================+")
-        print("Circular Route: server sekarang akan berpindah ke node berikutnya.")
-
+        
     def update_status_demo(self, server_id, new_status):
         if self.is_empty():
             return False
@@ -114,7 +113,7 @@ class CircularServerMonitor:
         current = start
 
         while True:
-            if current.server_id == server_id:
+            if current.id == server_id:
                 current.status = new_status
                 return True
 
@@ -135,13 +134,13 @@ class CircularServerMonitor:
         route = []
 
         while True:
-            route.append(current.server_id)
+            route.append(current.id)
             current = current.next
 
             if current == start:
                 break
 
-        route.append(start.server_id)
+        route.append(start.id)
         print(" -> ".join(route))
 
     def run_auto_monitor(self, delay=2):
