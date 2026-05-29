@@ -1,3 +1,6 @@
+# TODO: Harus dihapus
+
+
 class Node:
     """
     Node dasar untuk Linked List.

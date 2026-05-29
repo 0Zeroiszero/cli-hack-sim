@@ -1,13 +1,19 @@
-akun = {
-    'admin' : '12345'
-}
+import json
+servers = {}
 
 # fungsi login sederhana menggunakan dictionary
 def login_user():
+    akun = [item['credential'] for item in servers['servers']]
+    
     username = input('Username: ')
     password = input('Password: ')
     
-    if username in akun:
-        print ('Login Berhasil!') if password == akun[username] else print('Password Salah!')
+    for i in akun:
+        if username == i['username']:
+            print ('\nLogin Berhasil!') if password == i['password'] else print('\nPassword Salah!')
+            break
     else:
-        print('Usernamae Tidak Ditemukan!')
+        print('\nUsername Tidak Ditemukan!')
+
+if __name__ == '__main__':
+    login_user()
