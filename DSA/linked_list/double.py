@@ -1,18 +1,26 @@
+"""
+@author: Abdullah Affandi
+"""
+
 from tabulate import tabulate
-from colorama import Fore, Style, init
+
+import subprocess
 import os
 
+from src.server import Server
+from utils.text_color_changer import (
+    selected_text,
+    side_text,
+    green_text,
+    red_text,
+    yellow_text,
+)
 
-init(autoreset=True)
 
+class ServerNode(Server):
+    def __init__(self, *, server_id: str, server_name: str, ip: str, status: str):
+        super().__init__(nama=server_name, id=server_id, ip=ip, status=status)
 
-class ServerNode:
-    # TODO: Sesuaikan atribut server
-    def __init__(self, server_id, server_name, ip, status):
-        self.server_id = server_id
-        self.server_name = server_name
-        self.ip = ip
-        self.status = status
         self.prev = None
         self.next = None
 
@@ -23,8 +31,10 @@ class ServerCarousel:
         self.tail = None
         self.current = None
 
-    def add_server(self, server_id, server_name, ip, status):
-        new_node = ServerNode(server_id, server_name, ip, status)
+    def add_server(self, *, server_id: str, server_name: str, ip: str, status: str):
+        new_node = ServerNode(
+            server_id=server_id, server_name=server_name, ip=ip, status=status
+        )
 
         if self.head is None:
             self.head = new_node
@@ -39,26 +49,21 @@ class ServerCarousel:
         if self.current and self.current.prev:
             self.current = self.current.prev
         else:
-            print(Fore.YELLOW + "Sudah berada di server paling atas.")
+            print(yellow_text("Sudah berada di server paling atas."))
             input("Tekan Enter untuk lanjut...")
 
     def move_down(self):
         if self.current and self.current.next:
             self.current = self.current.next
         else:
-            print(Fore.YELLOW + "Sudah berada di server paling bawah.")
+            print(yellow_text("Sudah berada di server paling bawah."))
             input("Tekan Enter untuk lanjut...")
 
     def clear_screen(self):
-        os.system("cls" if os.name == "nt" else "clear")
+        command = "cls" if os.name == "nt" else "clear"
+        subprocess.run(command, shell=True)
 
-    def selected_text(self, text):
-        return Fore.GREEN + Style.BRIGHT + str(text) + Style.RESET_ALL
-
-    def side_text(self, text):
-        return Fore.GREEN + Style.DIM + str(text) + Style.RESET_ALL
-
-    def display_carousel(self):
+    def display_carousel(self) -> None:
         if self.current is None:
             print("Data server kosong.")
             return
@@ -68,32 +73,32 @@ class ServerCarousel:
         if self.current.prev:
             rows.append(
                 [
-                    self.side_text("PREVIOUS"),
-                    self.side_text(self.current.prev.server_id),
-                    self.side_text(self.current.prev.server_name),
-                    self.side_text(self.current.prev.ip),
-                    self.side_text(self.current.prev.status),
+                    side_text("PREVIOUS"),
+                    side_text(self.current.prev.id),
+                    side_text(self.current.prev.nama),
+                    side_text(self.current.prev.ip),
+                    side_text(self.current.prev.status),
                 ]
             )
 
         rows.append(
             [
-                self.selected_text("SELECTED"),
-                self.selected_text(self.current.server_id),
-                self.selected_text(self.current.server_name),
-                self.selected_text(self.current.ip),
-                self.selected_text(self.current.status),
+                selected_text("SELECTED"),
+                selected_text(self.current.id),
+                selected_text(self.current.nama),
+                selected_text(self.current.ip),
+                selected_text(self.current.status),
             ]
         )
 
         if self.current.next:
             rows.append(
                 [
-                    self.side_text("NEXT"),
-                    self.side_text(self.current.next.server_id),
-                    self.side_text(self.current.next.server_name),
-                    self.side_text(self.current.next.ip),
-                    self.side_text(self.current.next.status),
+                    side_text("NEXT"),
+                    side_text(self.current.next.id),
+                    side_text(self.current.next.nama),
+                    side_text(self.current.next.ip),
+                    side_text(self.current.next.status),
                 ]
             )
 
@@ -107,40 +112,31 @@ class ServerCarousel:
                     "IP Address",
                     "Status",
                 ],
-                tablefmt="grid",
+                tablefmt="plain",
             )
         )
 
-    def show_current_detail(self):
+    def show_current_detail(self) -> None:
         if self.current is None:
             print("Tidak ada server yang dipilih.")
             return
 
-        print(
-            "\n"
-            + Fore.GREEN
-            + Style.BRIGHT
-            + "+=======================================================+"
-        )
-        print(
-            Fore.GREEN
-            + Style.BRIGHT
-            + "|                DETAIL SERVER YANG DIPILIH             |"
-        )
-        print(
-            Fore.GREEN
-            + Style.BRIGHT
-            + "+=======================================================+"
-        )
-        print(Fore.GREEN + Style.BRIGHT + f" Server ID   : {self.current.server_id}")
-        print(Fore.GREEN + Style.BRIGHT + f" Server Name : {self.current.server_name}")
-        print(Fore.GREEN + Style.BRIGHT + f" IP Address  : {self.current.ip}")
-        print(Fore.GREEN + Style.BRIGHT + f" Status      : {self.current.status}")
-        print(
-            Fore.GREEN
-            + Style.BRIGHT
-            + "+=======================================================+"
-        )
+        title = "DETAIL SERVER YANG DIPILIH"
+        width = 55
+
+        print()
+        print(green_text("+" + "=" * width + "+"))
+        print(green_text("|" + title.center(width) + "|"))
+        print(green_text("+" + "=" * width + "+"))
+
+        rows = [
+            ["Server ID", ":", self.current.id],
+            ["Server Name", ":", self.current.nama],
+            ["IP Address", ":", self.current.ip],
+            ["Status", ":", self.current.status],
+        ]
+
+        print(green_text(tabulate(rows, tablefmt="plain")))
 
     def run(self):
         while True:
@@ -167,5 +163,5 @@ class ServerCarousel:
             elif choice == "q":
                 break
             else:
-                print(Fore.RED + "Pilihan tidak valid.")
+                print(red_text("Pilihan tidak valid."))
                 input("Tekan Enter untuk lanjut...")
