@@ -15,4 +15,5 @@ dependencies = [
 dev = [
     "numpy>=2.4.6",
     "pandas>=3.0.3",
+    "pyinstaller>=6.20.0",
 ]
