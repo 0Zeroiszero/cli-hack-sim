@@ -9,7 +9,7 @@ class FileHandler:
     def save_server(self):
         with open('data/server.txt', 'w') as f:
             for i in server_list:
-                data = f'{i.nama},{i.ip},{i.status},{str(i.traffic)}\n'
+                data = f'{i.nama}|{i.id}|{i.ip}|{i.status}\n'
                 f.write(data)
 
     # fungsi untuk mengambil data dari file txt
@@ -19,33 +19,29 @@ class FileHandler:
             
             with open('data/server.txt', 'r') as f:
                 for baris in f:
-                    data = baris.strip().split(',') # ini untuk mengubah text menjadi sebuah data dalam list
+                    data = baris.strip().split('|') # ini untuk mengubah text menjadi sebuah data dalam list
                     nama = data[0]
-                    ip = data[1]
-                    status = data[2]
-                    traffic = int(data[3])
+                    id = data[1]
+                    ip = data[2]
+                    status = data[3]
                     
-                    obj = Server(nama, ip, status, traffic) # data kembali menjadi objek 
+                    obj = Server(nama, id, ip, status) # data kembali menjadi objek 
                     server_list.append(obj)
         except:
             print('File Tidak Ditemukan')
 
-    # fungsi untuk menyimpan data akun ke dalam file txt
+    # fungsi untuk menyimpan data akun ke dalam file json
     def save_akun(self):
-        with open('data/akun.txt', 'w') as f:
-            for username in akun:
-                password = akun[username]
-                f.write(f'{username},{password}\n')
+        with open('data/dalam-json/akun.json', 'w') as f:
+            json.dump(servers, f, indent=4)
 
-    # fungsi untuk mengambil data dari file txt
+    # fungsi untuk mengambil data dari file json
     def load_akun(self):
         try:
-            with open('data/akun.txt', 'r') as f:
-                for baris in f:
-                    data = baris.strip().split(',')
-                    username = data[0]
-                    password = data[1]
-                    akun[username] = password
+            servers.clear()
+            with open('data/dalam-json/akun.json', 'r') as f:
+                data = json.load(f)
+                servers.update(data)
         except:
             print('File Tidak Ditemukan')
 
@@ -86,15 +82,20 @@ class FileHandler:
     def save_all(self):
         self.save_server()
         self.save_akun()
-        self.save_log()
-        self.save_packet()
+        # self.save_log()
+        # self.save_packet()
         
         print('[ALL DATA SAVED]')
 
     def load_all(self):
         self.load_server()
         self.load_akun()
-        self.load_log()
-        self.load_packet()
+        # self.load_log()
+        # self.load_packet()
         
         print('[ALL DATA LOADED]')
+
+if __name__ == '__main__':
+    fh = FileHandler()
+    fh.save_all()
+    fh.load_all()
