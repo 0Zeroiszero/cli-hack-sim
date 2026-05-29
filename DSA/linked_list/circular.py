@@ -104,7 +104,6 @@ class CircularServerMonitoring:
         else:
             print(green_text(" ALERT           : SERVER AMAN"))
 
-        
     def update_status_demo(self, server_id, new_status):
         if self.is_empty():
             return False
