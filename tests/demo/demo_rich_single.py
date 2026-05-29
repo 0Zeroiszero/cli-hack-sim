@@ -11,39 +11,9 @@ from rich.table import Table
 from rich.pretty import Pretty
 from rich import box
 
+from DSA.queue.queue import Queue
 
 console = Console()
-
-
-class Queue:
-    """
-    Queue digunakan untuk menyimpan antrean paket.
-    Bersifat FIFO (First In First Out).
-    """
-
-    def __init__(self):
-        self.queue = []
-
-    def enqueue(self, item):
-        self.queue.append(item)
-
-    def dequeue(self):
-        if not self.is_empty():
-            return self.queue.pop(0)
-
-        raise IndexError("Queue is empty")
-
-    def front(self):
-        if not self.is_empty():
-            return self.queue[0]
-
-        raise IndexError("Queue is empty")
-
-    def is_empty(self):
-        return len(self.queue) == 0
-
-    def size(self):
-        return len(self.queue)
 
 
 class TrafficQueue(Queue):
@@ -203,8 +173,12 @@ if __name__ == "__main__":
 
     traffic_queue.display()
 
-    console.input("\n[bold cyan]Tekan Enter untuk melihat traffic terdepan...[/bold cyan]")
+    console.input(
+        "\n[bold cyan]Tekan Enter untuk melihat traffic terdepan...[/bold cyan]"
+    )
     traffic_queue.display_front()
 
-    console.input("\n[bold cyan]Tekan Enter untuk memproses traffic terdepan...[/bold cyan]")
+    console.input(
+        "\n[bold cyan]Tekan Enter untuk memproses traffic terdepan...[/bold cyan]"
+    )
     traffic_queue.display_dequeue()

@@ -10,16 +10,17 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
 
+from src.server import Server
 
 console = Console()
 
 
-class Server:
+"""class Server:
     def __init__(self, nama, id, ip, status):
         self.nama = nama
         self.id = id
         self.ip = ip
-        self.status = status
+        self.status = status"""
 
 
 class CircularServerNode(Server):

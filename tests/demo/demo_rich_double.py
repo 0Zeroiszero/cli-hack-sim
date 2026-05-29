@@ -8,16 +8,9 @@ from rich.table import Table
 from rich.panel import Panel
 from rich import box
 
+from src.server import Server
 
 console = Console()
-
-
-class Server:
-    def __init__(self, nama: str, id: str, ip: str, status: str):
-        self.nama = nama
-        self.id = id
-        self.ip = ip
-        self.status = status
 
 
 class ServerNode(Server):
@@ -60,14 +53,18 @@ class ServerCarousel:
         if self.current and self.current.prev:
             self.current = self.current.prev
         else:
-            console.print("[bold yellow]Sudah berada di server paling atas.[/bold yellow]")
+            console.print(
+                "[bold yellow]Sudah berada di server paling atas.[/bold yellow]"
+            )
             console.input("Tekan Enter untuk lanjut...")
 
     def move_down(self):
         if self.current and self.current.next:
             self.current = self.current.next
         else:
-            console.print("[bold yellow]Sudah berada di server paling bawah.[/bold yellow]")
+            console.print(
+                "[bold yellow]Sudah berada di server paling bawah.[/bold yellow]"
+            )
             console.input("Tekan Enter untuk lanjut...")
 
     def display_carousel(self) -> None:
