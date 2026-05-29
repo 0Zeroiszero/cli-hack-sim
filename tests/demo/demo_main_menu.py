@@ -11,6 +11,7 @@ import questionary
 from questionary import Style
 
 from rich.console import Console, Group
+from rich.columns import Columns
 from rich.panel import Panel
 from rich.text import Text
 from rich.rule import Rule
@@ -73,14 +74,30 @@ class MainMenu:
             title_align="center",
         )
 
-        info = Group(
-            f"Menu Saat ini : {lokasi_rapi}\nWaktu         : {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
-            "\n",
-            "Operator      : UNKNOWN\nAccess        : NO ACCESS",
+        col = Columns(
+            [
+                Text(
+                    f"Menu Saat ini : {lokasi_rapi}\n"
+                    f"Waktu         : {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+                    style="bold green",
+                ),
+                Text(
+                    "Operator      : UNKNOWN\n"
+                    "Access        : NO ACCESS",
+                    style="bold green",
+                ),
+            ],
+            equal=True,
+            expand=True,
         )
-        
-        self.layout = Group(header, "\n", info, "\n")
-        self.console.print(self.layout, Rule(style="white", characters="="), style="bold green")
+
+        self.layout = Group(header, "\n", col, "\n")
+
+        self.console.print(
+            self.layout,
+            Rule(style="white", characters="="),
+            style="bold green",
+        )
 
     def main_menu(self):
         self.clear_screen()
