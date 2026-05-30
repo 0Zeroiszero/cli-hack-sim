@@ -2,6 +2,7 @@
 @author: Abdullah Affandi
 """
 
+from importlib.resources import path
 import time
 import datetime
 import subprocess
@@ -403,14 +404,16 @@ class MainMenu:
 
     # [4.1] "Tampilkan Folder Server"
     def tampilkan_folder_server_data(self):
-        FileHandler().load_json("daftar_folder_file_server")
-        folder_data = FileHandler().get_data("daftar_folder_file_server")
+        FileHandler().load_json("daftar_folder_file_server.json")
+        folder_data = FileHandler().get_data("daftar_folder_file_server.json")
+        if not folder_data:
+            self.console.print("Tidak ada data folder server yang tersedia.", style="bold red")
+            time.sleep(1.5)
+            return
         self.console.print("Daftar Folder Server:", style="bold green")
         for idx, folder in enumerate(folder_data, start=1):
-            self.console.print(f"{idx}. {folder['name']}")
-            for content in folder["contents"]:
-                self.console.print(f"   - {content}")
-    
+            self.console.print(f"{idx}. {folder['server_name']}, content: {folder['contents']}")
+
     # [4.2] "Kelola Stack Log Aktivitas"
     def kelola_stack_log_aktivitas_data(self):
         '''[4.2] "Kelola Stack Log Aktivitas"'''
