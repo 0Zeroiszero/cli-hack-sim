@@ -19,6 +19,7 @@ from rich.rule import Rule
 from rich_pyfiglet import RichFiglet
 
 
+# TODO: BUTUH MENAMBAHKAN USERNAME DI SAMPING LOG-NYA
 class MainMenu:
     def __init__(self):
         self.console = Console()
@@ -51,7 +52,9 @@ class MainMenu:
         with self.console.status("[bold green]Initializing..."):
             time.sleep(1.5)
 
-    def header_menu(self, menu: str, sub_menu: str):
+    def header_menu(
+        self, menu: str, sub_menu: str, *, operator="OPERATOR", access="NO ACCESS"
+    ):
         self.clear_screen()
 
         # Memastikan setiap kata diawali huruf kapital dan sisanya lower
@@ -72,7 +75,7 @@ class MainMenu:
         info = Group(
             info_text,
             "\n",
-            "Operator      : UNKNOWN\nAccess        : NO ACCESS",
+            f"Operator      : {operator}\nAccess        : {access}",
         )
 
         self.layout = Group(header, "\n", info, "\n")
@@ -232,7 +235,12 @@ class MainMenu:
         self.log_aktivitas.add_log("Masuk ke Traffic Queue")
         self.clear_screen()
 
-        self.header_menu("SUB MENU", "Traffic Queue")
+        self.header_menu(
+            "SUB MENU",
+            "Traffic Queue",
+            operator="ADMIN SELURUH SERVER",
+            access="ALL RESOURCE",
+        )
 
         # TODO: Ganti dengan ukuran antrian yang sebenarnya
         self.console.print(
@@ -263,7 +271,12 @@ class MainMenu:
         '''[3.1] "Tampilkan Queue Traffic"'''
         self.log_aktivitas.add_log("Masuk ke Tampilkan Queue Traffic")
         self.log_aktivitas.add_log("Menampilkan Queue Traffic", value=2)
-        self.header_menu("SUB MENU", "Proses Traffic Terdepan")
+        self.header_menu(
+            "SUB MENU",
+            "Tampilkan Queue Traffic",
+            operator="ADMIN SELURUH SERVER",
+            access="ALL RESOURCE",
+        )
         self.traffic.display()
 
         choice = make_menu_selection_question(
@@ -281,7 +294,12 @@ class MainMenu:
         self.log_aktivitas.add_log("Masuk ke Kelola Traffic")
         self.clear_screen()
 
-        self.header_menu("SUB MENU", "Kelola Traffic")
+        self.header_menu(
+            "SUB MENU",
+            "Kelola Traffic",
+            operator="ADMIN SELURUH SERVER",
+            access="ALL RESOURCE",
+        )
 
         choice = make_menu_selection_question(
             question=[
@@ -308,7 +326,12 @@ class MainMenu:
         '''[3.2.1] "Lihat Traffic Terdepan"'''
         self.log_aktivitas.add_log("Masuk ke Lihat Traffic Terdepan")
         self.log_aktivitas.add_log("Melihat Traffic Terdepan", value=2)
-        self.header_menu("SUB MENU", "Lihat Traffic Terdepan")
+        self.header_menu(
+            "SUB MENU",
+            "Lihat Traffic Terdepan",
+            operator="ADMIN SELURUH SERVER",
+            access="ALL RESOURCE",
+        )
         self.traffic.display_front()
 
         choice = make_menu_selection_question(
@@ -325,7 +348,12 @@ class MainMenu:
         '''[3.2.2] "Proses Traffic Terdepan"'''
         self.log_aktivitas.add_log("Masuk ke Proses Traffic Terdepan")
         self.log_aktivitas.add_log("Memproses Traffic Terdepan", value=2)
-        self.header_menu("SUB MENU", "Proses Traffic Terdepan")
+        self.header_menu(
+            "SUB MENU",
+            "Proses Traffic Terdepan",
+            operator="ADMIN SELURUH SERVER",
+            access="ALL RESOURCE",
+        )
         self.traffic.display_dequeue()
 
         choice = make_menu_selection_question(
