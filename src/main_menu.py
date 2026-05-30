@@ -53,7 +53,13 @@ class MainMenu:
             time.sleep(1.5)
 
     def header_menu(
-        self, menu: str, sub_menu: str, *, operator="OPERATOR", access="NO ACCESS"
+        self,
+        menu: str,
+        sub_menu: str,
+        *,
+        operator: str = "OPERATOR",
+        access: str = "NO ACCESS",
+        choosen_server: str = None,
     ):
         self.clear_screen()
 
@@ -75,7 +81,7 @@ class MainMenu:
         info = Group(
             info_text,
             "\n",
-            f"Operator      : {operator}\nAccess        : {access}",
+            f"Operator      : {operator}\nAccess        : {access}\nServer        : {choosen_server}",
         )
 
         self.layout = Group(header, "\n", info, "\n")
@@ -240,6 +246,7 @@ class MainMenu:
             "Traffic Queue",
             operator="ADMIN SELURUH SERVER",
             access="ALL RESOURCE",
+            choosen_server="@owner",
         )
 
         # TODO: Ganti dengan ukuran antrian yang sebenarnya
@@ -276,6 +283,7 @@ class MainMenu:
             "Tampilkan Queue Traffic",
             operator="ADMIN SELURUH SERVER",
             access="ALL RESOURCE",
+            choosen_server="@owner",
         )
         self.traffic.display()
 
@@ -299,6 +307,7 @@ class MainMenu:
             "Kelola Traffic",
             operator="ADMIN SELURUH SERVER",
             access="ALL RESOURCE",
+            choosen_server="@owner",
         )
 
         choice = make_menu_selection_question(
@@ -331,6 +340,7 @@ class MainMenu:
             "Lihat Traffic Terdepan",
             operator="ADMIN SELURUH SERVER",
             access="ALL RESOURCE",
+            choosen_server="@owner",
         )
         self.traffic.display_front()
 
@@ -353,6 +363,7 @@ class MainMenu:
             "Proses Traffic Terdepan",
             operator="ADMIN SELURUH SERVER",
             access="ALL RESOURCE",
+            choosen_server="@owner",
         )
         self.traffic.display_dequeue()
 
