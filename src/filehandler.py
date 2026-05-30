@@ -1,5 +1,9 @@
-from server import *
-from login import *
+"""
+@author: Irfan Kurniawan
+"""
+
+from .server import *
+from .login import *
 
 class FileHandler:
     def __init__(self):
