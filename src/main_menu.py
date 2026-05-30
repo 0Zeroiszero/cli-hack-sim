@@ -7,8 +7,8 @@ import datetime
 import subprocess
 import os
 
-import questionary
-from questionary import Style
+# Implementasi dari questionary.select()
+from utils.menu_utils import make_menu_selection_question
 
 from rich.console import Console, Group
 from rich.panel import Panel
@@ -21,20 +21,6 @@ from rich_pyfiglet import RichFiglet
 class MainMenu:
     def __init__(self):
         self.console = Console()
-        self.questionary_style = Style(
-            [
-                ("qmark", "fg:#00ff00 bold"),
-                ("question", "fg:#ffffff bold"),
-                ("answer", "fg:#00ff00 italic"),
-                ("pointer", "fg:#00ff00 bold"),
-                ("highlighted", "fg:#000000 bg:#00ff00 bold"),
-                ("selected", "fg:#ff0033 bold"),
-                ("separator", "fg:#333333"),
-                ("instruction", "fg:#00aa00 italic"),
-                ("text", "fg:#00ff00"),
-                ("disabled", "fg:#444444 italic"),
-            ]
-        )
 
     def clear_screen(self):
         command = "cls" if os.name == "nt" else "clear"
@@ -78,29 +64,26 @@ class MainMenu:
             "\n",
             "Operator      : UNKNOWN\nAccess        : NO ACCESS",
         )
-        
+
         self.layout = Group(header, "\n", info, "\n")
-        self.console.print(self.layout, Rule(style="white", characters="="), style="bold green")
+        self.console.print(
+            self.layout, Rule(style="white", characters="="), style="bold green"
+        )
 
     def main_menu(self):
         self.clear_screen()
 
         self.header_menu("Main Menu", "Beranda")
 
-        choice = questionary.select(
-            "Pilih Menu:",
-            qmark="",
-            choices=[
-                questionary.Choice("Kelola Server", value=1, shortcut_key="1"),
-                questionary.Choice("Network & Route", value=2, shortcut_key="2"),
-                questionary.Choice("Traffic Queue", value=3, shortcut_key="3"),
-                questionary.Choice("Struktur Data", value=4, shortcut_key="4"),
-                questionary.Choice("Keluar", value=0, shortcut_key="0"),
+        choice = make_menu_selection_question(
+            question=[
+                "Kelola Server",
+                "Network & Route",
+                "Traffic Queue",
+                "Struktur Data",
+                "Keluar",
             ],
-            default=0,
-            use_shortcuts=True,
-            style=self.questionary_style,
-            instruction="Gnakan arrow keys atau angka",
+            value=[1, 2, 3, 4, 0],
         ).ask()
 
         if choice == 0:
@@ -139,28 +122,15 @@ class MainMenu:
 
         self.header_menu("SUB MENU", "Kelola Server")
 
-        choice = questionary.select(
-            "Pilih Menu:",
-            qmark="",
-            choices=[
-                questionary.Choice(
-                    "Pilih / Tampilkan Server", value=1, shortcut_key="1"
-                ),
-                questionary.Choice(
-                    "Cari Server Berdasarkan IP", value=2, shortcut_key="2"
-                ),
-                questionary.Choice(
-                    "Urutkan Server Berdasarkan Bandwidth", value=3, shortcut_key="3"
-                ),
-                questionary.Choice(
-                    "Monitoring Server Circular", value=4, shortcut_key="4"
-                ),
-                questionary.Choice("Kembali ke Menu Utama", value=0, shortcut_key="0"),
+        choice = make_menu_selection_question(
+            question=[
+                "Pilih / Tampilkan Server",
+                "Cari Server Berdasarkan IP",
+                "Urutkan Server Berdasarkan Bandwidth",
+                "Monitoring Server Circular",
+                "Kembali ke Beranda",
             ],
-            default=0,
-            use_shortcuts=True,
-            style=self.questionary_style,
-            instruction="Gnakan arrow keys atau angka",
+            value=[1, 2, 3, 4, 0],
         ).ask()
 
         match choice:
@@ -206,20 +176,13 @@ class MainMenu:
 
         self.header_menu("SUB MENU", "Network & Route")
 
-        choice = questionary.select(
-            "Pilih Menu:",
-            qmark="",
-            choices=[
-                questionary.Choice(
-                    "Tampilkan Topologi Jaringan", value=1, shortcut_key="1"
-                ),
-                questionary.Choice("Cari Rute Tercepat", value=2, shortcut_key="2"),
-                questionary.Choice("Kembali ke Menu Utama", value=0, shortcut_key="0"),
+        choice = make_menu_selection_question(
+            question=[
+                "Tampilkan Topologi Jaringan",
+                "Cari Rute Tercepat",
+                "Kembali ke Beranda",
             ],
-            default=0,
-            use_shortcuts=True,
-            style=self.questionary_style,
-            instruction="Gnakan arrow keys atau angka",
+            value=[1, 2, 0],
         ).ask()
 
         match choice:
@@ -252,20 +215,13 @@ class MainMenu:
         # TODO: Ganti dengan ukuran antrian yang sebenarnya
         self.console.print("Queue Size: N", end="\n\n", style="bold yellow")
 
-        choice = questionary.select(
-            "Pilih Menu:",
-            qmark="",
-            choices=[
-                questionary.Choice(
-                    "Tampilkan Queue Traffic", value=1, shortcut_key="1"
-                ),
-                questionary.Choice("Kelola Traffic", value=2, shortcut_key="2"),
-                questionary.Choice("Kembali ke Menu Utama", value=0, shortcut_key="0"),
+        choice = make_menu_selection_question(
+            question=[
+                "Tampilkan Queue Traffic",
+                "Kelola Traffic",
+                "Kembali ke Beranda",
             ],
-            default=0,
-            use_shortcuts=True,
-            style=self.questionary_style,
-            instruction="Gnakan arrow keys atau angka",
+            value=[1, 2, 0],
         ).ask()
 
         match choice:
@@ -289,20 +245,13 @@ class MainMenu:
 
         self.header_menu("SUB MENU", "Kelola Traffic")
 
-        choice = questionary.select(
-            "Pilih Menu:",
-            qmark="",
-            choices=[
-                questionary.Choice("Lihat Traffic Terdepan", value=1, shortcut_key="1"),
-                questionary.Choice(
-                    "Proses Traffic Terdepan", value=2, shortcut_key="2"
-                ),
-                questionary.Choice("Kembali ke Menu Utama", value=0, shortcut_key="0"),
+        choice = make_menu_selection_question(
+            question=[
+                "Lihat Traffic Terdepan",
+                "Proses Traffic Terdepan",
+                "Kembali ke Beranda",
             ],
-            default=0,
-            use_shortcuts=True,
-            style=self.questionary_style,
-            instruction="Gnakan arrow keys atau angka",
+            value=[1, 2, 0],
         ).ask()
 
         match choice:
@@ -315,26 +264,21 @@ class MainMenu:
             case 0:
                 # naik ke [3] Traffic Queue
                 self.traffic_queue_menu()
-    
+
     # [4] Struktur Data
     def struktur_data_menu(self):
-        '''[4] Struktur Data'''
+        """[4] Struktur Data"""
         self.clear_screen()
 
         self.header_menu("SUB MENU", "Struktur Data")
 
-        choice = questionary.select(
-            "Pilih Menu:",
-            qmark="",
-            choices=[
-                questionary.Choice("Tampilkan Folder Server", value=1, shortcut_key="1"),
-                questionary.Choice("Kelola Stack Log Aktivitas", value=2, shortcut_key="2"),
-                questionary.Choice("Kembali ke Menu Utama", value=0, shortcut_key="0"),
+        choice = make_menu_selection_question(
+            question=[
+                "Tampilkan Folder Server",
+                "Kelola Stack Log Aktivitas",
+                "Kembali ke Beranda",
             ],
-            default=0,
-            use_shortcuts=True,
-            style=self.questionary_style,
-            instruction="Gnakan arrow keys atau angka",
+            value=[1, 2, 0],
         ).ask()
 
         match choice:
@@ -351,11 +295,12 @@ class MainMenu:
     def tampilkan_folder_server_data(self):
         '''[4.1] "Tampilkan Folder Server"'''
         pass
-    
+
     # [4.2] "Kelola Stack Log Aktivitas"
     def kelola_stack_log_aktivitas_data(self):
         '''[4.2] "Kelola Stack Log Aktivitas"'''
         pass
+
 
 if __name__ == "__main__":
     main_menu = MainMenu()
