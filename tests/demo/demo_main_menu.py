@@ -18,8 +18,9 @@ from rich.columns import Columns
 from rich.panel import Panel
 from rich.text import Text
 from rich.rule import Rule
-
 from rich_pyfiglet import RichFiglet
+
+from src.filehandler import FileHandler
 
 
 class MainMenu:
@@ -402,25 +403,13 @@ class MainMenu:
 
     # [4.1] "Tampilkan Folder Server"
     def tampilkan_folder_server_data(self):
-        '''[4.1] "Tampilkan Folder Server"'''
-        print("+---------------------------------------------+")
-        print("|           FOLDER SERVER AKUN                |")
-        print("+---------------------------------------------+")
-        time.sleep(1)
-        folder_path = Path("..\..\src\data\server.txt")
-        if not folder_path.exists():
-            self.console.print("Folder server tidak ditemukan.", style="bold red")
-            time.sleep(1.5)
-            return
-        with open(folder_path, "r") as f:
-            servers = [line.strip() for line in f if line.strip()]
-        if not servers:
-            self.console.print("Tidak ada server yang tersedia.", style="bold red")
-            time.sleep(1.5)
-            return
-        self.console.print("Daftar Server:", style="bold green")
-        for server in servers:
-            self.console.print(f"- {server}")
+        FileHandler().load_json("daftar_folder_file_server")
+        folder_data = FileHandler().get_data("daftar_folder_file_server")
+        self.console.print("Daftar Folder Server:", style="bold green")
+        for idx, folder in enumerate(folder_data, start=1):
+            self.console.print(f"{idx}. {folder['name']}")
+            for content in folder["contents"]:
+                self.console.print(f"   - {content}")
     
     # [4.2] "Kelola Stack Log Aktivitas"
     def kelola_stack_log_aktivitas_data(self):
