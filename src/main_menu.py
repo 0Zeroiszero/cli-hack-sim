@@ -149,22 +149,22 @@ class MainMenu:
             case 0:
                 self.main_menu()
 
-    # [1.1] "Pilih / Tampilkan Server"
+    # TODO: [1.1] "Pilih / Tampilkan Server"
     def pilih_tampilkan_server(self):
         '''[1.1] "Pilih / Tampilkan Server"'''
         pass
 
-    # [1.2] "Cari Server Berdasarkan IP"
+    # TODO: [1.2] "Cari Server Berdasarkan IP"
     def cari_server_berdasarkan_ip_server(self):
         '''[1.2] "Cari Server Berdasarkan IP"'''
         pass
 
-    # [1.3] "Urutkan Server Berdasarkan Bandwidth"
+    # TODO: [1.3] "Urutkan Server Berdasarkan Bandwidth"
     def urutkan_server_berdasarkan_bandwidth_server(self):
         '''[1.3] "Urutkan Server Berdasarkan Bandwidth"'''
         pass
 
-    # [1.4] "Monitoring Server Circular"
+    # TODO: [1.4] "Monitoring Server Circular"
     def monitoring_server_circular_server(self):
         '''[1.4] "Monitoring Server Circular"'''
         pass
@@ -195,17 +195,17 @@ class MainMenu:
             case 0:
                 self.main_menu()
 
-    # [2.1] "Tampilkan Topologi Jaringan"
+    # TODO: [2.1] "Tampilkan Topologi Jaringan"
     def tampilkan_topologi_jaringan(self):
         '''[2.1] "Tampilkan Topologi Jaringan"'''
         pass
 
-    # [2.2] "Cari Rute Tercepat"
+    # TODO: [2.2] "Cari Rute Tercepat"
     def cari_rute_tercepat_jaringan(self):
         '''[2.2] "Cari Rute Tercepat"'''
         pass
 
-    # [3] Traffic Queue
+    # TODO: [3] Traffic Queue
     def traffic_queue_menu(self):
         """[3] Traffic Queue"""
         self.clear_screen()
@@ -234,7 +234,7 @@ class MainMenu:
             case 0:
                 self.main_menu()
 
-    # [3.1] "Tampilkan Queue Traffic"
+    # TODO: [3.1] "Tampilkan Queue Traffic"
     def tampilkan_queue_traffic(self):
         '''[3.1] "Tampilkan Queue Traffic"'''
         pass
@@ -265,7 +265,7 @@ class MainMenu:
                 # naik ke [3] Traffic Queue
                 self.traffic_queue_menu()
 
-    # [4] Struktur Data
+    # TODO: [4] Struktur Data
     def struktur_data_menu(self):
         """[4] Struktur Data"""
         self.clear_screen()
@@ -291,12 +291,12 @@ class MainMenu:
             case 0:
                 self.main_menu()
 
-    # [4.1] "Tampilkan Folder Server"
+    # TODO: [4.1] "Tampilkan Folder Server"
     def tampilkan_folder_server_data(self):
         '''[4.1] "Tampilkan Folder Server"'''
         pass
 
-    # [4.2] "Kelola Stack Log Aktivitas"
+    # TODO: [4.2] "Kelola Stack Log Aktivitas"
     def kelola_stack_log_aktivitas_data(self):
         '''[4.2] "Kelola Stack Log Aktivitas"'''
         pass
