@@ -27,3 +27,8 @@ class Queue:
 
     def size(self):
         return len(self.queue)
+    
+    def show_queue(self):
+        print("\n=== ANTRIAN PACKET ===")
+        for item in self.queue:
+            print(item)
