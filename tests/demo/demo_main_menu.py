@@ -407,10 +407,20 @@ class MainMenu:
         print("|           FOLDER SERVER AKUN                |")
         print("+---------------------------------------------+")
         time.sleep(1)
-        folder_path = Path("D:\kuliah\cli-hack-sim\src\data\dalam-json")
-        for file in folder_path.glob("*.json"):
-            print(f"| {file.name:<43} |")
-            time.sleep(0.5)
+        folder_path = Path("..\..\src\data\server.txt")
+        if not folder_path.exists():
+            self.console.print("Folder server tidak ditemukan.", style="bold red")
+            time.sleep(1.5)
+            return
+        with open(folder_path, "r") as f:
+            servers = [line.strip() for line in f if line.strip()]
+        if not servers:
+            self.console.print("Tidak ada server yang tersedia.", style="bold red")
+            time.sleep(1.5)
+            return
+        self.console.print("Daftar Server:", style="bold green")
+        for server in servers:
+            self.console.print(f"- {server}")
     
     # [4.2] "Kelola Stack Log Aktivitas"
     def kelola_stack_log_aktivitas_data(self):
