@@ -2,18 +2,17 @@
 @author: Abdullah Affandi
 """
 
-from typing import Union, List, Optional
 from questionary import Style, Question
 import questionary
 
 
 def make_menu_selection_question(
     *,
-    question: List[Union[str, int]],
-    value: List[Union[str, int]],
-    shortcut_key: Optional[str] = None,
+    question: list[str | int],
+    value: list[str | int],
+    shortcut_key: str | None = None,
     use_shortcuts: bool = True,
-    style: Optional[Style] = None,
+    style: Style | None = None,
 ) -> Question:
     """
     Membuat pertanyaan berdasarkan question dan value sebagai nilai yang digunakan.
@@ -22,13 +21,13 @@ def make_menu_selection_question(
     Return merupakan questionary.Question
 
     Args:
-        question: List[Union[str, int]] -> Pertanyaan yang akan ditampilkan, bisa berupa string atau integer.
-        value: List[Union[str, int]] -> Nilai yang akan digunakan untuk pertanyaan.
-        shortcut_key: Optional[str] -> Key awalan yang akan digunakan untuk shortcut.
+        question: list[str | int] -> Pertanyaan yang akan ditampilkan, bisa berupa string atau integer.
+        value: list[str | int] -> Nilai yang akan digunakan untuk pertanyaan.
+        shortcut_key: str | None -> Key awalan yang akan digunakan untuk shortcut.
             Jika None, shortcut otomatis dibuat berdasarkan nomor urut.
             Contoh: "a" menghasilkan a1, a2, a3, dst.
         use_shortcuts: bool -> Mengaktifkan atau mematikan shortcut pada menu.
-        style: Optional[Style] -> Style yang akan digunakan untuk mengubah tampilan pertanyaan.
+        style: Style | None -> Style yang akan digunakan untuk mengubah tampilan pertanyaan.
 
     Returns:
         Question -> Pertanyaan yang sudah dibuat berdasarkan parameter yang diberikan.
