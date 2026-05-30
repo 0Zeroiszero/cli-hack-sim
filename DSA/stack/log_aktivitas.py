@@ -1,4 +1,4 @@
-from stack import Stack
+from .stack import Stack
 
 from rich.console import Console
 from rich.panel import Panel
@@ -10,23 +10,39 @@ class LogAktivitas(Stack):
         super().__init__()
         self.console = Console()
 
-    def add_log(self, message: str):
+    def add_log(self, message: str, *, value=0):
         import datetime
 
         log_text = Text()
         waktu = datetime.datetime.now().strftime("%H:%M:%S")
 
         log_text.append(f"{waktu} | ", style="white")
-        log_text.append("INFO", style="bold blue")
+
+        if value == 0:
+            log_text.append("INFO", style="bold blue")
+        elif value == 1:
+            log_text.append("LOGIN", style="bold green")
+        elif value == 2:
+            log_text.append("ACTION", style="bold red")
+
         log_text.append(f" | {message}", style="white")
 
         self.push(log_text)
-    
+
     def pop_log(self):
         if self.is_empty():
             self.console.print(Text("Log aktivitas masih kosong.", style="bold red"))
-        
+
         self.pop()
+
+    def clear_log(self):
+        self.stack = []
+
+    def peek_log(self):
+        if self.is_empty():
+            self.console.print(Text("Log aktivitas masih kosong.", style="bold red"))
+
+        return self.peek()
 
     def show_logs(self):
         if self.is_empty():
@@ -79,5 +95,5 @@ if __name__ == "__main__":
     log.show_logs()
 
     log.pop_log()
-    
+
     log.show_logs()

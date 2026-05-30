@@ -219,13 +219,13 @@ class TrafficQueue(Queue):
                     "",
                     info,
                 ),
-                title="MEMPROSES FRONT TRAFFIC",
+                title="MEMPROSES TRAFFIC TERDEPAN",
                 border_style="yellow",
                 width=52,
             )
 
         steps = [
-            "Mengambil data dari FRONT queue",
+            "Mengambil data dari queue",
             "Membaca metadata traffic",
             "Memvalidasi request traffic",
             "Mengirim traffic ke proses berikutnya",
