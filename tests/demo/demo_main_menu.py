@@ -7,6 +7,9 @@ import datetime
 import subprocess
 import os
 
+import json
+from pathlib import Path
+
 import questionary
 from questionary import Style
 
@@ -199,7 +202,26 @@ class MainMenu:
     # [1.1] "Pilih / Tampilkan Server"
     def pilih_tampilkan_server(self):
         '''[1.1] "Pilih / Tampilkan Server"'''
-        pass
+        folder_path = Path("D:\kuliah\cli-hack-sim\src\data\dalam-json")
+        server_files = list(folder_path.glob("*.json"))
+        if not server_files:
+            self.console.print("Tidak ada server yang tersedia.", style="bold red")
+            time.sleep(1.5)
+            return
+        server_choices = [
+            questionary.Choice(file.stem, value=file.stem) for file in server_files
+        ]
+        server_choices.append(questionary.Choice("Kembali", value="back"))
+        choice = questionary.select(
+            "Pilih Server:",
+            qmark="",
+            choices=server_choices,
+        ).ask()
+
+        if choice == "back":
+            self.kelola_server_menu()
+        else:
+            self.tampilkan_isi_server(choice)
 
     # [1.2] "Cari Server Berdasarkan IP"
     def cari_server_berdasarkan_ip_server(self):
@@ -209,7 +231,21 @@ class MainMenu:
     # [1.3] "Urutkan Server Berdasarkan Bandwidth"
     def urutkan_server_berdasarkan_bandwidth_server(self):
         '''[1.3] "Urutkan Server Berdasarkan Bandwidth"'''
-        pass
+        folder_path = Path("D:\kuliah\cli-hack-sim\src\data\dalam-json")
+        server_files = list(folder_path.glob("*.json"))
+        if not server_files:
+            self.console.print("Tidak ada server yang tersedia.", style="bold red")
+            time.sleep(1.5)
+            return
+        servers = []
+        for file in server_files:
+            with open(file, "r") as f:
+                data = json.load(f)
+                servers.append((file.stem, data.get("bandwidth", 0)))
+        servers.sort(key=lambda x: x[1], reverse=True)
+        self.console.print("Server diurutkan berdasarkan bandwidth (terbesar ke terkecil):", style="bold green")
+        for name, bandwidth in servers:
+            self.console.print(f"{name}: {bandwidth}")
 
     # [1.4] "Monitoring Server Circular"
     def monitoring_server_circular_server(self):
@@ -252,7 +288,7 @@ class MainMenu:
     # [2.1] "Tampilkan Topologi Jaringan"
     def tampilkan_topologi_jaringan(self):
         '''[2.1] "Tampilkan Topologi Jaringan"'''
-        pass
+        
 
     # [2.2] "Cari Rute Tercepat"
     def cari_rute_tercepat_jaringan(self):
@@ -367,7 +403,24 @@ class MainMenu:
     # [4.1] "Tampilkan Folder Server"
     def tampilkan_folder_server_data(self):
         '''[4.1] "Tampilkan Folder Server"'''
-        pass
+        print("+---------------------------------------------+")
+        print("|           FOLDER SERVER AKUN                |")
+        print("+---------------------------------------------+")
+        time.sleep(1)
+        folder_path = Path("..\..\src\data\server.txt")
+        if not folder_path.exists():
+            self.console.print("Folder server tidak ditemukan.", style="bold red")
+            time.sleep(1.5)
+            return
+        with open(folder_path, "r") as f:
+            servers = [line.strip() for line in f if line.strip()]
+        if not servers:
+            self.console.print("Tidak ada server yang tersedia.", style="bold red")
+            time.sleep(1.5)
+            return
+        self.console.print("Daftar Server:", style="bold green")
+        for server in servers:
+            self.console.print(f"- {server}")
     
     # [4.2] "Kelola Stack Log Aktivitas"
     def kelola_stack_log_aktivitas_data(self):

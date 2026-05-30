@@ -27,3 +27,8 @@ class Stack:
 
     def size(self):
         return len(self.stack)
+    
+    def show_logs(self):
+        print("\n=== HISTORI LOG (TERBARU -> LAMA) ===")
+        for item in reversed(self.stack):
+            print(item)
