@@ -1,0 +1,124 @@
+{
+  "servers": [
+    {
+      "server_name": "Alpha",
+      "server_id": "SRV001",
+      "folders": {
+        "system": {
+          "boot.ini": "8 KB",
+          "kernel.sys": "512 KB",
+          "alpha_config.json": "14 KB"
+        },
+        "cdn": {}
+      }
+    },
+    {
+      "server_name": "Beta",
+      "server_id": "SRV002",
+      "folders": {
+        "system": {
+          "offline_report.txt": "6 KB",
+          "network_cache.db": "240 KB",
+          "recovery_mode.cfg": "11 KB"
+        },
+        "cdn": {}
+      }
+    },
+    {
+      "server_name": "Gamma",
+      "server_id": "SRV003",
+      "folders": {
+        "system": {
+          "gamma_runtime.dll": "720 KB",
+          "service_map.json": "19 KB",
+          "process.pid": "2 KB"
+        },
+        "cdn": {}
+      }
+    },
+    {
+      "server_name": "Delta",
+      "server_id": "SRV004",
+      "folders": {
+        "system": {
+          "maintenance.flag": "1 KB",
+          "patch_queue.dat": "96 KB",
+          "delta_backup.cfg": "13 KB"
+        },
+        "cdn": {}
+      }
+    },
+    {
+      "server_name": "Echo",
+      "server_id": "SRV005",
+      "folders": {
+        "system": {
+          "echo_service.log": "74 KB",
+          "mirror_index.db": "310 KB",
+          "env.local": "5 KB"
+        },
+        "cdn": {}
+      }
+    },
+    {
+      "server_name": "Falcon",
+      "server_id": "SRV006",
+      "folders": {
+        "system": {
+          "power_state.txt": "2 KB",
+          "last_shutdown.log": "28 KB",
+          "falcon_driver.sys": "640 KB"
+        },
+        "cdn": {}
+      }
+    },
+    {
+      "server_name": "Hydra",
+      "server_id": "SRV007",
+      "folders": {
+        "system": {
+          "overload_trace.log": "420 KB",
+          "cpu_limit.cfg": "9 KB",
+          "hydra_watchdog.exe": "1.2 MB"
+        },
+        "cdn": {}
+      }
+    },
+    {
+      "server_name": "Orion",
+      "server_id": "SRV008",
+      "folders": {
+        "system": {
+          "orion_route.map": "44 KB",
+          "dns_cache.db": "188 KB",
+          "service_token.key": "3 KB"
+        },
+        "cdn": {}
+      }
+    },
+    {
+      "server_name": "Phoenix",
+      "server_id": "SRV009",
+      "folders": {
+        "system": {
+          "blocklist.rules": "21 KB",
+          "quarantine.flag": "1 KB",
+          "phoenix_audit.log": "267 KB"
+        },
+        "cdn": {}
+      }
+    },
+    {
+      "server_name": "Titan",
+      "server_id": "SRV0010",
+      "folders": {
+        "system": {
+          "titan_core.bin": "2.4 MB",
+          "uptime_record.log": "101 KB",
+          "shield_config.yaml": "16 KB"
+        },
+        "cdn": {}
+      }
+    }
+  ]
+}
