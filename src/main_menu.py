@@ -249,7 +249,10 @@ class MainMenu:
             choosen_server="@owner",
         )
 
-        # TODO: Ganti dengan ukuran antrian yang sebenarnya
+        # TODO: Butuh penambahan traffic setiap keluar menu ini buat simulasi
+        # TODO: Kayaknya dimasukkan ke tomporary file dulu dan di save pas exit dari CLI
+        # self.traffic.refresh_traffic()
+
         self.console.print(
             f"Queue Size: {self.traffic.size()}", end="\n\n", style="bold yellow"
         )
