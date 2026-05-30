@@ -404,15 +404,30 @@ class MainMenu:
 
     # [4.1] "Tampilkan Folder Server"
     def tampilkan_folder_server_data(self):
-        FileHandler().load_json("daftar_folder_file_server.json")
-        folder_data = FileHandler().get_data("daftar_folder_file_server.json")
-        if not folder_data:
-            self.console.print("Tidak ada data folder server yang tersedia.", style="bold red")
+        self.clear_screen()
+
+        self.header_menu("SUB MENU", "Folder Server")
+        file_path = Path("..\..\src\data\dalam-json\daftar_folder_file_server.json")
+        if not file_path.exists():
+            self.console.print("File daftar_folder_file_server.json tidak ditemukan.", style="bold red")
             time.sleep(1.5)
             return
+        
+        with open(file_path, "r") as f:
+            data = json.load(f)
+        
         self.console.print("Daftar Folder Server:", style="bold green")
-        for idx, folder in enumerate(folder_data, start=1):
-            self.console.print(f"{idx}. {folder['server_name']}, content: {folder['contents']}")
+        for idx, servers in enumerate(data, start=1):
+            self.console.print(f"{idx}. {servers['server_name']}")
+            for folder in servers["folders"]:
+                if folder["folder_name"] == "system":
+                    self.console.print(f"System Folder:")
+                    for file_name, file_size in folder["system"].items():
+                        self.console.print(f"   - {file_name} : ({file_size})")
+                elif folder["folder_name"] == "cdn":
+                    self.console.print(f"CDN Folder:")
+                    for file_name, file_size in folder["cdn"].items():
+                        self.console.print(f"   - {file_name} : ({file_size})")
 
     # [4.2] "Kelola Stack Log Aktivitas"
     def kelola_stack_log_aktivitas_data(self):
