@@ -19,24 +19,43 @@ from src.filehandler import FileHandler
 from DSA.queue.queue import Queue
 
 
+class TrafficNode:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+    @staticmethod
+    def from_queue(queue_data):
+        head = None
+        rear = None
+
+        for item in queue_data:
+            new_node = TrafficNode(item)
+
+            if head is None:
+                head = new_node
+                rear = new_node
+            else:
+                rear.next = new_node
+                rear = new_node
+
+        return head, rear
+
+
 # NOTE: Ini masuk ke menu [3]
-# TODO: perbaiki Queue Size: N dengan return size [DONE MANIES]
 class TrafficQueue(Queue):
     """
-    TrafficQueue mewarisi Queue.
+    Queue traffic untuk membaca dan menampilkan data traffic dari JSON.
 
-    Method asli dari Queue yang tetap dipakai:
-    - enqueue()
-    - dequeue()
-    - front()
-    - is_empty()
-    - size()
+    Class ini tetap mewarisi Queue, sehingga fitur queue seperti enqueue(),
+    dequeue(), front(), is_empty(), dan size() masih digunakan.
 
-    Method tambahan di class ini hanya untuk kebutuhan traffic:
-    - load_from_json()
-    - display()
-    - display_front()
-    - display_dequeue()
+    Selain itu, class ini juga memakai TrafficNode sebagai representasi
+    Single Linked List untuk menampilkan hubungan antar data traffic
+    dengan pola node -> node -> node.
+
+    Queue dipakai untuk operasi antrian utama.
+    TrafficNode dipakai untuk visualisasi dan traversal linked list.
     """
 
     def __init__(self, file_path: str):
@@ -44,9 +63,20 @@ class TrafficQueue(Queue):
         self.fh = FileHandler()
 
         self.ph = Path(file_path)
+        self.console = Console()
+
+        self.head_node = None
+        self.rear_node = None
+        self.current_node = None
+
+        self.refresh_traffic()
+
+    def refresh_traffic(self) -> None:
+        self.queue.clear()
         self.load_traffic()
 
-        self.console = Console()
+        self.head_node, self.rear_node = TrafficNode.from_queue(self.queue)
+        self.current_node = self.head_node
 
     def load_traffic(self) -> None:
         """
@@ -89,9 +119,14 @@ class TrafficQueue(Queue):
         rich_standard_color_list = self.fh.load_json(
             "utils/rich_standard_color_list.json"
         )
+
         nodes = []
 
-        for index, item in enumerate(self.queue):
+        current = self.head_node
+        index = 0
+
+        while current is not None:
+            item = current.data
             metadata = item["metadata"]
             panel_color = random.choice(rich_standard_color_list)
 
@@ -103,24 +138,29 @@ class TrafficQueue(Queue):
                 style="bright_black",
             )
             text.append(
-                f"method      : {metadata.get('method') or '-'}\n", style="cyan"
+                f"method      : {metadata.get('method') or '-'}\n",
+                style="cyan",
             )
             text.append(f"url         : {metadata.get('url') or '-'}\n", style="white")
             text.append(
-                f"source      : {metadata.get('source') or '-'}\n", style="blue"
+                f"source      : {metadata.get('source') or '-'}\n",
+                style="blue",
             )
             text.append(
-                f"destination : {metadata.get('destination') or '-'}\n", style="blue"
+                f"destination : {metadata.get('destination') or '-'}\n",
+                style="blue",
             )
             text.append(
                 f"protocol    : {metadata.get('protocol') or '-'}\n",
                 style="bright_cyan",
             )
             text.append(
-                f"status      : {metadata.get('status') or '-'}\n", style="yellow"
+                f"status      : {metadata.get('status') or '-'}\n",
+                style="yellow",
             )
             text.append(
-                f"payload     : {metadata.get('payload') or '-'}\n", style="magenta"
+                f"payload     : {metadata.get('payload') or '-'}\n",
+                style="magenta",
             )
             text.append(
                 f"latency     : {metadata.get('latency') or '-'}\n",
@@ -136,13 +176,16 @@ class TrafficQueue(Queue):
                 )
             )
 
-            if index != len(self.queue) - 1:
+            if current.next is not None:
                 nodes.append(
                     Align.center(
                         Text("──>", style="bold white"),
                         vertical="middle",
                     )
                 )
+
+            current = current.next
+            index += 1
 
         self.console.print(
             Columns(
@@ -158,46 +201,105 @@ class TrafficQueue(Queue):
             self.console.print(Text("   Queue traffic kosong.\n\n", style="bold red"))
             return
 
-        item = self.front()
-        metadata = item["metadata"]
+        front_node = self.head_node
+        next_node = self.head_node.next if self.head_node is not None else None
 
-        text = Text()
-        text.append(f"traffic_id  : {item['traffic_id']}\n", style="white")
-        text.append(f"monitor_id  : {item['monitor_id']}\n", style="white")
-        text.append(f"server_id   : {item['server_id']}\n", style="white")
-        text.append(
-            f"timestamp   : {metadata.get('timestamp') or '-'}\n", style="white"
+        def build_traffic_panel(node, title: str, border_style: str) -> Panel:
+            if node is None:
+                empty_text = Text("Tidak ada node berikutnya.", style="bold red")
+
+                return Panel(
+                    empty_text,
+                    title=title,
+                    border_style=border_style,
+                    width=42,
+                )
+
+            item = node.data
+            metadata = item["metadata"]
+
+            text = Text()
+            text.append(f"traffic_id  : {item['traffic_id']}\n", style="white")
+            text.append(f"monitor_id  : {item['monitor_id']}\n", style="white")
+            text.append(f"server_id   : {item['server_id']}\n", style="white")
+            text.append(
+                f"timestamp   : {metadata.get('timestamp') or '-'}\n",
+                style="white",
+            )
+            text.append(
+                f"method      : {metadata.get('method') or '-'}\n", style="white"
+            )
+            text.append(f"url         : {metadata.get('url') or '-'}\n", style="white")
+            text.append(
+                f"source      : {metadata.get('source') or '-'}\n", style="white"
+            )
+            text.append(
+                f"destination : {metadata.get('destination') or '-'}\n",
+                style="white",
+            )
+            text.append(
+                f"protocol    : {metadata.get('protocol') or '-'}\n", style="white"
+            )
+            text.append(
+                f"status      : {metadata.get('status') or '-'}\n", style="white"
+            )
+            text.append(
+                f"payload     : {metadata.get('payload') or '-'}\n", style="white"
+            )
+            text.append(
+                f"latency     : {metadata.get('latency') or '-'}\n", style="white"
+            )
+            text.append(
+                f"threat_level: {metadata.get('threat_level') or '-'}",
+                style="white",
+            )
+
+            return Panel(
+                text,
+                title=title,
+                border_style=border_style,
+                width=42,
+            )
+
+        front_panel = build_traffic_panel(
+            front_node,
+            title="TRAFFIC TERDEPAN",
+            border_style="bold red",
         )
-        text.append(f"method      : {metadata.get('method') or '-'}\n", style="white")
-        text.append(f"url         : {metadata.get('url') or '-'}\n", style="white")
-        text.append(f"source      : {metadata.get('source') or '-'}\n", style="white")
-        text.append(
-            f"destination : {metadata.get('destination') or '-'}\n", style="white"
+
+        arrow = Align.center(
+            Text("──>", style="bold white"),
+            vertical="middle",
         )
-        text.append(f"protocol    : {metadata.get('protocol') or '-'}\n", style="white")
-        text.append(f"status      : {metadata.get('status') or '-'}\n", style="white")
-        text.append(f"payload     : {metadata.get('payload') or '-'}\n", style="white")
-        text.append(f"latency     : {metadata.get('latency') or '-'}\n", style="white")
-        text.append(
-            f"threat_level: {metadata.get('threat_level') or '-'}", style="white"
+
+        next_panel = build_traffic_panel(
+            next_node,
+            title="NEXT",
+            border_style="bold cyan",
         )
 
         self.console.print(
-            Panel(
-                text,
-                title="TRAFFIC TERDEPAN",
-                border_style="bold red",
-                width=42,
+            Columns(
+                [
+                    front_panel,
+                    arrow,
+                    next_panel,
+                ],
+                expand=False,
+                equal=False,
             )
         )
 
     # NOTE: Ini masuk ke menu [3.2] "Proses Traffic Terdepan"
     def display_dequeue(self) -> None:
-        if self.is_empty():
+        if self.is_empty() or self.head_node is None:
             self.console.print(Text("   Queue traffic kosong.\n\n", style="bold red"))
             return
 
-        item = self.front()
+        front_node = self.head_node
+        next_node = front_node.next
+
+        item = front_node.data
         metadata = item["metadata"]
 
         def build_processing_panel(step_text: str, progress: float) -> Panel:
@@ -205,11 +307,23 @@ class TrafficQueue(Queue):
             info.append(f"traffic_id   : {item['traffic_id']}\n")
             info.append(f"monitor_id   : {item['monitor_id']}\n")
             info.append(f"server_id    : {item['server_id']}\n")
-            info.append(f"destination  : {metadata.get('destination')}\n")
+            info.append(f"destination  : {metadata.get('destination') or '-'}\n")
             info.append(f"method       : {metadata.get('method') or '-'}\n")
             info.append(f"url          : {metadata.get('url') or '-'}\n")
             info.append(f"status       : {metadata.get('status') or '-'}\n")
-            info.append(f"latency      : {metadata.get('latency') or '-'}\n\n")
+            info.append(f"latency      : {metadata.get('latency') or '-'}\n")
+            info.append(f"threat_level : {metadata.get('threat_level') or '-'}\n\n")
+
+            if next_node is not None:
+                info.append("next_node    : ", style="bold cyan")
+                info.append(
+                    f"Traffic {next_node.data['traffic_id']}\n\n",
+                    style="white",
+                )
+            else:
+                info.append("next_node    : ", style="bold cyan")
+                info.append("None\n\n", style="bold red")
+
             info.append(f"Step         : {step_text}\n", style="bold yellow")
             info.append(f"Progress     : {int(progress * 100)}%", style="bold green")
 
@@ -221,15 +335,15 @@ class TrafficQueue(Queue):
                 ),
                 title="MEMPROSES TRAFFIC TERDEPAN",
                 border_style="yellow",
-                width=52,
+                width=54,
             )
 
         steps = [
-            "Mengambil data dari queue",
+            "Mengambil data dari head_node",
             "Membaca metadata traffic",
             "Memvalidasi request traffic",
             "Mengirim traffic ke proses berikutnya",
-            "Menghapus item dari queue",
+            "Menggeser head_node ke node berikutnya",
         ]
 
         with Live(
@@ -244,6 +358,13 @@ class TrafficQueue(Queue):
 
         removed_item = self.dequeue()
         removed_metadata = removed_item["metadata"]
+
+        # Sinkronkan linked node setelah dequeue dari Queue
+        self.head_node = next_node
+        self.current_node = self.head_node
+
+        if self.head_node is None:
+            self.rear_node = None
 
         is_failed = (removed_metadata.get("threat_level") or "").upper() == "HIGH"
 
@@ -294,14 +415,32 @@ class TrafficQueue(Queue):
             )
             result_text.append("hasil       : BERHASIL\n\n", style="bold green")
 
-        result_text.append(f"Sisa Queue  : {self.size()}", style="bold yellow")
+        if self.head_node is not None:
+            result_text.append("head_node   : ", style="bold cyan")
+            result_text.append(
+                f"Traffic {self.head_node.data['traffic_id']}\n",
+                style="white",
+            )
+        else:
+            result_text.append("head_node   : None\n", style="bold red")
+
+        if self.rear_node is not None:
+            result_text.append("rear_node   : ", style="bold cyan")
+            result_text.append(
+                f"Traffic {self.rear_node.data['traffic_id']}\n",
+                style="white",
+            )
+        else:
+            result_text.append("rear_node   : None\n", style="bold red")
+
+        result_text.append(f"\nSisa Queue  : {self.size()}", style="bold yellow")
 
         self.console.print(
             Panel(
                 result_text,
                 title=result_title,
                 border_style=result_border,
-                width=52,
+                width=54,
             )
         )
 
