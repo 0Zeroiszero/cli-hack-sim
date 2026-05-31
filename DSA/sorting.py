@@ -2,35 +2,35 @@ import json
 
 class SortingServer:
     def __init__(self):
-        pass
+        self.urutan = []
+        self.urutan_data = []
     
-    # fungsi untuk mengurutkan server berdasarkan traffic tertinggi menggunakan selection sort
+    # fungsi untuk mengurutkan server berdasarkan bandwidth tertinggi menggunakan bubble sort
     def urutkan_server(self):
-        traffic = []
-        
-        with open('data/dalam-json/traffic.json', 'r') as f:
+        with open('data/dalam-json/akun_dan_status_server.json', 'r') as f:
             data = json.load(f)
         
-        for server in data:
-            for monitor in data[server]:
-                for req in data[server][monitor]:
-                    latency = int(req['latency'].replace(' ms', ''))
-                    traffic.append([req['destination'], latency])
+        idx = 0
+        for req in data['servers']:
+            self.urutan.append([idx, req['server_id'], req['server_name'], req['bandwidth_mbps']])
+            idx += 1
         
-        n = len(traffic)
+        n = len(self.urutan)
         
-        for i in range(n):
-            min_index = i
-            for j in range(i+1, n):
-                if traffic[j][1] > traffic[min_index][1]:
-                    min_index = j
-            
-            # tukar urutan yang salah
-            traffic[i], traffic[min_index] = traffic[min_index], traffic[i]
+        for i in range(n-1):
+            swap = False
+            for j in range(n-i-1):
+                if self.urutan[j][3] < self.urutan[j+1][3]:
+                    self.urutan[j], self.urutan[j+1] = self.urutan[j+1], self.urutan[j]
+                    self.urutan[j][0], self.urutan[j+1][0] = self.urutan[j+1][0], self.urutan[j][0]
+                    swap = True
+            if not swap:
+                break
         
-        print('\n======= SERVER RANKING =======\n')
-        for i in range(n):
-            print(f'{i+1}. {traffic[i][0]} - {traffic[i][1]} MB/s')
+        for i in self.urutan:
+            self.urutan_data.append(tuple(i))
+        
+        return self.urutan_data
 
 if __name__ == '__main__':
     ss = SortingServer()
