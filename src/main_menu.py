@@ -5,16 +5,21 @@
 import time
 import subprocess
 import os
+from pathlib import Path
 
 # Implementasi dari questionary.select()
-from utils.menu_utils import make_menu_selection_question
+from utils.menu_utils import make_menu_selection_question, tampilkan_bandwidth_progress
 from DSA.linked_list.single import TrafficQueue
 from DSA.stack.log_aktivitas import LogAktivitas
+from DSA.sorting import SortingServer
+from .filehandler import FileHandler
 
 from rich.console import Console, Group
 from rich.panel import Panel
 from rich.text import Text
 from rich.rule import Rule
+from rich.prompt import Confirm
+from rich.live import Live
 
 from rich_pyfiglet import RichFiglet
 
@@ -187,8 +192,52 @@ class MainMenu:
     # TODO: [1.3] "Urutkan Server Berdasarkan Bandwidth"
     def urutkan_server_berdasarkan_bandwidth_server(self):
         '''[1.3] "Urutkan Server Berdasarkan Bandwidth"'''
-        self.log_aktivitas.add_log("Masuk ke Urutkan Server Berdasarkan Bandwidth")
-        pass
+        self.log_aktivitas.add_log("Mengurutkan Server Berdasarkan Bandwidth", value=2)
+        self.clear_screen()
+        self.console.clear()
+
+        self.header_menu("SUB MENU", "Pilih / Tampilkan Server")
+
+        bandwidth_server = []
+        bandwidth_file_data = FileHandler().load_json(
+            Path("src/data/dalam-json/akun_dan_status_server.json")
+        )
+
+        idx = 0
+        for req in bandwidth_file_data["servers"]:
+            bandwidth_server.append(
+                [idx, req["server_id"], req["server_name"], req["bandwidth_mbps"]]
+            )
+            idx += 1
+
+        with Live(
+            tampilkan_bandwidth_progress(data=bandwidth_server),
+            auto_refresh=False,
+            console=self.console,
+        ) as live:
+            live.stop()
+
+        choice = Confirm.ask("Jalankan pengurutan?", console=self.console, default=True)
+
+        if choice:
+            sorted_server = SortingServer().urutkan_server()
+
+            with self.console.status("[bold yellow]Mengurutkan server...") as status:
+                time.sleep(1)
+                status.update("[bold green]Server terurut...")
+                time.sleep(1)
+
+            with Live(
+                tampilkan_bandwidth_progress(rank=True, data=sorted_server),
+                auto_refresh=False,
+                console=self.console,
+            ) as live:
+                live.stop()
+                self.console.input("\nTekan Enter untuk kembali ke menu...")
+
+            self.kelola_server_menu()
+        else:
+            self.kelola_server_menu()
 
     # TODO: [1.4] "Monitoring Server Circular"
     def monitoring_server_circular_server(self):
