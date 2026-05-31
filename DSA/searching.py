@@ -1,3 +1,8 @@
+"""
+@author: Irfan Kurniawan
+"""
+from pathlib import Path
+
 class SearchingServer:
     def __init__(self):
         self.data = []
@@ -5,7 +10,7 @@ class SearchingServer:
     
     # fungsi mencari server berdasarkan ip menggunakan binary search
     def cari_server(self, target):
-        with open('data/server.txt', 'r') as f:
+        with open(Path('src/data/server.txt'), 'r') as f:
             for line in f:
                 self.data.append(line.strip().split('|'))
         
