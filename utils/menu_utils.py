@@ -5,6 +5,10 @@
 from questionary import Style, Question
 import questionary
 
+from rich.console import Group
+from rich.progress import Progress, BarColumn, TextColumn
+from rich.panel import Panel
+
 
 def make_menu_selection_question(
     *,
@@ -95,3 +99,75 @@ def make_menu_selection_question(
     )
 
     return q
+
+
+def tampilkan_bandwidth_progress(
+    *,
+    rank: bool = False,
+    data: list[tuple[int, str, str, int]],
+) -> Panel:
+    """
+    Membuat panel daftar bandwidth server dalam bentuk progress bar Rich.
+
+    Args:
+        rank (bool): Jika True, tampilkan urutan ranking server.
+        data (list[tuple[int, str, str, int]]): Daftar data bandwidth server.
+            Format tuple:
+            - index (int): Nomor urut/ranking server.
+            - server_id (str): ID server.
+            - server_name (str): Nama server.
+            - bandwidth_mbps (int): Kecepatan bandwidth dalam satuan Mbps.
+
+    Returns:
+        Panel: Renderable Rich yang bisa digunakan untuk console.print() atau Live.
+    """
+    if not data:
+        return Panel(
+            "[bold red]Data bandwidth kosong.[/]",
+            title="DAFTAR BANDWIDTH SERVER",
+            border_style="red",
+        )
+
+    max_bandwidth = max(item[3] for item in data)
+
+    progress_columns = []
+
+    if rank:
+        progress_columns.append(TextColumn("[white]{task.fields[rank]}[/]"))
+
+    progress_columns.extend(
+        [
+            TextColumn("[white]{task.fields[server_id]}[/]"),
+            TextColumn("[white]{task.fields[server_name]:<10}[/]"),
+            BarColumn(
+                bar_width=80,
+                style="bright_black",
+                complete_style="bright_blue",
+                finished_style="bright_blue",
+                pulse_style="bright_blue",
+            ),
+            TextColumn("[white]{task.completed:.0f} Mbps[/]"),
+        ]
+    )
+
+    progress = Progress(
+        *progress_columns,
+        transient=False,
+        expand=False,
+    )
+
+    for index, server_id, server_name, bandwidth in data:
+        progress.add_task(
+            description=server_name,
+            total=max_bandwidth,
+            completed=bandwidth,
+            rank=f"[bold green][{index + 1}][/]",
+            server_id=server_id,
+            server_name=server_name,
+        )
+
+    return Panel(
+        Group(progress),
+        title="DAFTAR BANDWIDTH SERVER",
+        border_style="green" if rank else "red",
+    )
