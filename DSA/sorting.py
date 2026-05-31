@@ -1,4 +1,9 @@
+"""
+@author: Irfan Kurniawan
+"""
+
 import json
+from pathlib import Path
 
 class SortingServer:
     def __init__(self):
@@ -7,7 +12,7 @@ class SortingServer:
     
     # fungsi untuk mengurutkan server berdasarkan bandwidth tertinggi menggunakan bubble sort
     def urutkan_server(self):
-        with open('data/dalam-json/akun_dan_status_server.json', 'r') as f:
+        with open(Path("src/data/dalam-json/akun_dan_status_server.json"), 'r') as f:
             data = json.load(f)
         
         idx = 0
@@ -34,4 +39,6 @@ class SortingServer:
 
 if __name__ == '__main__':
     ss = SortingServer()
-    ss.urutkan_server()
+    from pprint import pprint
+
+    pprint(ss.urutkan_server())
