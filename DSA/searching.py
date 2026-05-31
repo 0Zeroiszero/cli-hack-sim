@@ -1,39 +1,39 @@
-from server import server_list
-
 class SearchingServer:
     def __init__(self):
-        pass
+        self.data = []
+        self.data_cari = []
     
     # fungsi mencari server berdasarkan ip menggunakan binary search
     def cari_server(self, target):
-        data = []
-        for i in server_list:
-            data.append([i.nama, i.id, i.ip, i.status])
+        with open('data/server.txt', 'r') as f:
+            for line in f:
+                self.data.append(line.strip().split('|'))
         
-        data.sort()
+        self.data.sort()
         left = 0
-        right = len(data) - 1
-        
-        print('Searching IP...\n')
+        right = len(self.data) - 1
+        ketemu = False
+        idx = 0
         
         while left <= right:
             mid = (left + right) // 2
             
-            if data[mid][2] == target:
-                print('FOUND:')
-                print(f'Server_Name : {data[mid][0]}')
-                print(f'Server_Id   : {data[mid][1]}')
-                print(f'IP          : {data[mid][2]}')
-                print(f'Status      : {data[mid][3]}')
-                return
+            if self.data[mid][2] == target:
+                ketemu = True
+                self.data_cari.append((idx, self.data[mid][2], self.data[mid][1], self.data[mid][0], self.data[mid][3], ketemu))
+                return self.data_cari
             
-            if data[mid][2] < target:
+            if self.data[mid][2] < target:
                 left = mid + 1
+                self.data_cari.append((idx, self.data[mid][2], self.data[mid][1], self.data[mid][0], self.data[mid][3], ketemu))
+                idx += 1
             else:
                 right = mid - 1
-        else:
-            print('IP Tidak Ditemukan!')
+                self.data_cari.append((idx, self.data[mid][2], self.data[mid][1], self.data[mid][0], self.data[mid][3], ketemu))
+                idx += 1
+                
+        return self.data_cari
+        
 
 if __name__ == '__main__':
     ss = SearchingServer()
-    ss.cari_server()
