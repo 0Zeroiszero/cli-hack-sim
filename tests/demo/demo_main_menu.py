@@ -87,8 +87,7 @@ class MainMenu:
                     style="bold green",
                 ),
                 Text(
-                    "Operator      : UNKNOWN\n"
-                    "Access        : NO ACCESS",
+                    "Operator      : UNKNOWN\nAccess        : NO ACCESS",
                     style="bold green",
                 ),
             ],
@@ -245,7 +244,10 @@ class MainMenu:
                 data = json.load(f)
                 servers.append((file.stem, data.get("bandwidth", 0)))
         servers.sort(key=lambda x: x[1], reverse=True)
-        self.console.print("Server diurutkan berdasarkan bandwidth (terbesar ke terkecil):", style="bold green")
+        self.console.print(
+            "Server diurutkan berdasarkan bandwidth (terbesar ke terkecil):",
+            style="bold green",
+        )
         for name, bandwidth in servers:
             self.console.print(f"{name}: {bandwidth}")
 
@@ -290,7 +292,6 @@ class MainMenu:
     # [2.1] "Tampilkan Topologi Jaringan"
     def tampilkan_topologi_jaringan(self):
         '''[2.1] "Tampilkan Topologi Jaringan"'''
-        
 
     # [2.2] "Cari Rute Tercepat"
     def cari_rute_tercepat_jaringan(self):
@@ -370,10 +371,10 @@ class MainMenu:
             case 0:
                 # naik ke [3] Traffic Queue
                 self.traffic_queue_menu()
-    
+
     # [4] Struktur Data
     def struktur_data_menu(self):
-        '''[4] Struktur Data'''
+        """[4] Struktur Data"""
         self.clear_screen()
 
         self.header_menu("SUB MENU", "Struktur Data")
@@ -382,8 +383,12 @@ class MainMenu:
             "Pilih Menu:",
             qmark="",
             choices=[
-                questionary.Choice("Tampilkan Folder Server", value=1, shortcut_key="1"),
-                questionary.Choice("Kelola Stack Log Aktivitas", value=2, shortcut_key="2"),
+                questionary.Choice(
+                    "Tampilkan Folder Server", value=1, shortcut_key="1"
+                ),
+                questionary.Choice(
+                    "Kelola Stack Log Aktivitas", value=2, shortcut_key="2"
+                ),
                 questionary.Choice("Kembali ke Menu Utama", value=0, shortcut_key="0"),
             ],
             default=0,
@@ -407,17 +412,22 @@ class MainMenu:
         FileHandler().load_json("daftar_folder_file_server.json")
         folder_data = FileHandler().get_data("daftar_folder_file_server.json")
         if not folder_data:
-            self.console.print("Tidak ada data folder server yang tersedia.", style="bold red")
+            self.console.print(
+                "Tidak ada data folder server yang tersedia.", style="bold red"
+            )
             time.sleep(1.5)
             return
         self.console.print("Daftar Folder Server:", style="bold green")
         for idx, folder in enumerate(folder_data, start=1):
-            self.console.print(f"{idx}. {folder['server_name']}, content: {folder['contents']}")
+            self.console.print(
+                f"{idx}. {folder['server_name']}, content: {folder['contents']}"
+            )
 
     # [4.2] "Kelola Stack Log Aktivitas"
     def kelola_stack_log_aktivitas_data(self):
         '''[4.2] "Kelola Stack Log Aktivitas"'''
         pass
+
 
 if __name__ == "__main__":
     main_menu = MainMenu()
