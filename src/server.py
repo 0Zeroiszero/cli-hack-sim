@@ -18,7 +18,7 @@ class FungsiServer:
         self.network = {}
     
     def tambah_server(self):
-        with open("data/dalam-json/akun.json", "r") as f:
+        with open("src/data/dalam-json/akun.json", "r") as f:
             data = json.load(f)
         
         nama_server = [item['server_name'] for item in data['servers']]
@@ -62,7 +62,7 @@ class FungsiServer:
         print("+========================================+")
 
 def cek_access_server():
-    file_path = Path("data/dalam-json/akun_dan_status_server.json")
+    file_path = Path("src/data/dalam-json/akun_dan_status_server.json")
     
     with open(file_path, "r") as file:
         data = json.load(file)
@@ -111,7 +111,7 @@ def cek_access_server():
     return hasil
 
 def get_server_detail(server_id: str) -> dict:
-    file_path = Path("data/dalam-json/akun_dan_status_server.json")
+    file_path = Path("src/data/dalam-json/akun_dan_status_server.json")
     
     with open(file_path, "r") as file:
         data = json.load(file)
