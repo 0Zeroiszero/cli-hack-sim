@@ -2,12 +2,16 @@
 @author: Abdullah Affandi
 """
 
+import time
+
 from questionary import Style, Question
 import questionary
 
-from rich.console import Group
+from rich.console import Console, Group
+from rich.live import Live
 from rich.progress import Progress, BarColumn, TextColumn
 from rich.panel import Panel
+from rich.status import Status
 from rich.text import Text
 
 
@@ -200,6 +204,7 @@ def display_search_ip_result(
     """
     try:
         body = Text()
+        found = False
 
         for index, ip, server_id, server_name, status, found in result:
             status_style = {
@@ -209,7 +214,6 @@ def display_search_ip_result(
                 "BLOCKED": "bold red",
                 "OVERLOAD": "bold magenta",
             }.get(status, "white")
-
             if found:
                 body.append(f"[{index + 1}] ", style="bold bright_white")
                 body.append(f"{ip:<14} ", style="bold bright_cyan")
@@ -219,6 +223,9 @@ def display_search_ip_result(
                 body.append(f"{status:<11}", style=status_style)
                 body.append(" --- FOUND", style="bold bright_yellow")
                 body.append("\n")
+
+                # Kalau ketemu
+                found = True
             else:
                 body.append(f"[{index + 1}] ", style="white")
                 body.append(f"{ip:<14} ", style="cyan")
@@ -228,8 +235,23 @@ def display_search_ip_result(
                 body.append(f"{status:<11}", style=status_style)
                 body.append("\n")
 
+        c = Console()
+        status = Status("[bold green]Mencari alamat IP...", console=c)
+
+        with Live(status, refresh_per_second=10):
+            time.sleep(1.5)
+            if found:
+                status.update("[bold green]Alamat IP ditemukan...")
+                time.sleep(1.5)
+            else:
+                status.update("[bold red]Alamat IP tidak ditemukan...")
+                time.sleep(1.5)
+
         return Panel(
-            body, title="MENCARI ALAMAT IP", title_align="center", border_style="green"
+            body,
+            title="MENCARI ALAMAT IP",
+            title_align="center",
+            border_style="green" if found else "red",
         )
     except TypeError:
         return False
