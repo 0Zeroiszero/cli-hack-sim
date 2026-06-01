@@ -1,3 +1,9 @@
+"""
+@author: Abdullah Affandi
+
+Referensi ke DSA\stack
+"""
+
 from .stack import Stack
 
 from rich.console import Console
