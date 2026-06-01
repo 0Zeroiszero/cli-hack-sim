@@ -8,6 +8,7 @@ import questionary
 from rich.console import Group
 from rich.progress import Progress, BarColumn, TextColumn
 from rich.panel import Panel
+from rich.text import Text
 
 
 def make_menu_selection_question(
@@ -171,3 +172,64 @@ def tampilkan_bandwidth_progress(
         title="DAFTAR BANDWIDTH SERVER",
         border_style="green" if rank else "red",
     )
+
+
+def display_search_ip_result(
+    *, result: list[tuple[int, str, str, str, str, bool]]
+) -> Panel:
+    """
+    Membuat tampilan hasil pencarian alamat IP server dalam bentuk Rich Panel.
+
+    Parameter result berisi daftar tuple hasil pencarian server dengan format:
+    (index, ip, server_id, server_name, status, found)
+
+    Keterangan tuple:
+    - index: urutan data server.
+    - ip: alamat IP server.
+    - server_id: ID server.
+    - server_name: nama server.
+    - status: status server, misalnya ONLINE, OFFLINE, MAINTENANCE, BLOCKED, atau OVERLOAD.
+    - found: penanda apakah server tersebut cocok dengan IP yang dicari.
+
+    Baris yang memiliki found bernilai True akan ditampilkan lebih terang dan
+    diberi label "--- FOUND". Status server juga diberi warna sesuai kondisinya.
+
+    Returns:
+        Panel: Rich Panel berisi daftar hasil pencarian IP yang siap ditampilkan
+        menggunakan console.print().
+    """
+    try:
+        body = Text()
+
+        for index, ip, server_id, server_name, status, found in result:
+            status_style = {
+                "ONLINE": "bold green",
+                "OFFLINE": "bold red",
+                "MAINTENANCE": "bold yellow",
+                "BLOCKED": "bold red",
+                "OVERLOAD": "bold magenta",
+            }.get(status, "white")
+
+            if found:
+                body.append(f"[{index + 1}] ", style="bold bright_white")
+                body.append(f"{ip:<14} ", style="bold bright_cyan")
+                body.append("| ", style="bold bright_white")
+                body.append(f"Server {server_name:<8} ", style="bold bright_white")
+                body.append("| ", style="bold bright_white")
+                body.append(f"{status:<11}", style=status_style)
+                body.append(" --- FOUND", style="bold bright_yellow")
+                body.append("\n")
+            else:
+                body.append(f"[{index + 1}] ", style="white")
+                body.append(f"{ip:<14} ", style="cyan")
+                body.append("| ", style="white")
+                body.append(f"Server {server_name:<8} ", style="white")
+                body.append("| ", style="white")
+                body.append(f"{status:<11}", style=status_style)
+                body.append("\n")
+
+        return Panel(
+            body, title="MENCARI ALAMAT IP", title_align="center", border_style="green"
+        )
+    except TypeError:
+        return False
