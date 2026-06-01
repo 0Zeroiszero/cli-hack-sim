@@ -78,15 +78,15 @@ def cek_access_server():
     }
     
     for indeks, req in enumerate(data['servers']):
-        acces = req["access"]
+        access = req["access"]
         credential = req["credential"]
         
-        if acces == "UNLOCKED":
+        if access == "UNLOCKED":
             username = credential["username"]
             password = credential["password"]
             is_unlocked = True
             
-            hasil["summary"]["unlocked_acces"] += 1
+            hasil["summary"]["unlocked_access"] += 1
             hasil["summary"]["visible_credential"] += 1
         else:
             username = "********"
@@ -99,7 +99,7 @@ def cek_access_server():
             "indeks": indeks,
             "server_id": req["server_id"],
             "server_name": req["server_name"],
-            "access": acces,
+            "access": access,
             "username": username,
             "password": password,
             "is_unlocked": is_unlocked,
@@ -108,7 +108,7 @@ def cek_access_server():
         hasil["rows"].append(row)
         hasil["summary"]["total_server"] = len(data["servers"])
         
-        return hasil
+    return hasil
 
 def get_server_detail(server_id: str) -> dict:
     file_path = Path("data/dalam-json/akun_dan_status_server.json")
