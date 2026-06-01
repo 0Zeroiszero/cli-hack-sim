@@ -28,9 +28,11 @@ from prompt_toolkit.formatted_text import ANSI
 #  DOUBLY LINKED LIST
 # ─────────────────────────────────────────────
 
+
 @dataclass
 class TableNode:
     """Satu node = satu halaman tabel."""
+
     title: str
     columns: List[str]
     rows: List[List[Any]]
@@ -121,8 +123,14 @@ def render_table(
     c.print(Align.center(nav_hint), style="")
 
     title_text = Text(f"  ✦  {node.title}  ✦  ", style="bold #f0e68c on #1a1a2e")
-    c.print(Panel(Align.center(title_text), box=box.DOUBLE_EDGE,
-                  style="#4a90d9", padding=(0, 2)))
+    c.print(
+        Panel(
+            Align.center(title_text),
+            box=box.DOUBLE_EDGE,
+            style="#4a90d9",
+            padding=(0, 2),
+        )
+    )
 
     # ── Tabel Data ───────────────────────────────────────────────────
     table = Table(
@@ -164,6 +172,7 @@ def render_table(
 #  DATA CONTOH
 # ─────────────────────────────────────────────
 
+
 def build_carousel() -> TableCarousel:
     carousel = TableCarousel()
 
@@ -174,7 +183,7 @@ def build_carousel() -> TableCarousel:
             ["P001", "Laptop Asus A14", "12", "8.500.000", "Elektronik"],
             ["P002", "Mouse Logitech M185", "45", "120.000", "Aksesoris"],
             ["P003", "Keyboard Mechanical", "8", "650.000", "Aksesoris"],
-            ["P004", "Monitor LG 24\"", "5", "2.100.000", "Elektronik"],
+            ["P004", 'Monitor LG 24"', "5", "2.100.000", "Elektronik"],
             ["P005", "Headset Sony WH-1000", "20", "3.200.000", "Audio"],
             ["P006", "Webcam Logitech C920", "15", "950.000", "Aksesoris"],
         ],
@@ -198,8 +207,8 @@ def build_carousel() -> TableCarousel:
         rows=[
             ["Januari", "50.000.000", "47.300.000", "-2.700.000", "94.6%"],
             ["Februari", "55.000.000", "58.100.000", "+3.100.000", "105.6%"],
-            ["Maret",   "60.000.000", "61.500.000", "+1.500.000", "102.5%"],
-            ["Total",   "165.000.000","166.900.000","+1.900.000", "101.2%"],
+            ["Maret", "60.000.000", "61.500.000", "+1.500.000", "102.5%"],
+            ["Total", "165.000.000", "166.900.000", "+1.900.000", "101.2%"],
         ],
     )
 
@@ -208,10 +217,10 @@ def build_carousel() -> TableCarousel:
         columns=["Hostname", "IP", "OS", "CPU", "Uptime"],
         rows=[
             ["prod-web-01", "10.0.1.10", "Ubuntu 22.04", "8 core", "99.9%"],
-            ["prod-db-01",  "10.0.1.20", "Debian 12",    "16 core","99.7%"],
-            ["staging-01",  "10.0.2.10", "Ubuntu 22.04", "4 core", "98.1%"],
-            ["dev-01",      "10.0.3.10", "Rocky Linux 9","4 core", "95.3%"],
-            ["backup-01",   "10.0.4.10", "CentOS 7",     "2 core", "99.5%"],
+            ["prod-db-01", "10.0.1.20", "Debian 12", "16 core", "99.7%"],
+            ["staging-01", "10.0.2.10", "Ubuntu 22.04", "4 core", "98.1%"],
+            ["dev-01", "10.0.3.10", "Rocky Linux 9", "4 core", "95.3%"],
+            ["backup-01", "10.0.4.10", "CentOS 7", "2 core", "99.5%"],
         ],
     )
 
@@ -221,6 +230,7 @@ def build_carousel() -> TableCarousel:
 # ─────────────────────────────────────────────
 #  APLIKASI UTAMA
 # ─────────────────────────────────────────────
+
 
 def main():
     carousel = build_carousel()
@@ -232,7 +242,7 @@ def main():
     @kb.add("right")
     def _(event):
         carousel.go_next()
-        state["selected_row"] = 0          # reset pilihan baris
+        state["selected_row"] = 0  # reset pilihan baris
         event.app.invalidate()
 
     @kb.add("left")
@@ -270,9 +280,7 @@ def main():
         )
         return ANSI(ansi_str)
 
-    layout = Layout(
-        Window(content=FormattedTextControl(get_content), wrap_lines=False)
-    )
+    layout = Layout(Window(content=FormattedTextControl(get_content), wrap_lines=False))
 
     # ── Application ──────────────────────────────────────────────────
     app = Application(
@@ -280,7 +288,7 @@ def main():
         key_bindings=kb,
         full_screen=True,
         mouse_support=False,
-        color_depth=None,   # auto-detect terminal color support
+        color_depth=None,  # auto-detect terminal color support
     )
 
     app.run()

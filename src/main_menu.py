@@ -5,16 +5,28 @@
 import time
 import subprocess
 import os
+from pathlib import Path
+from ipaddress import IPv4Address, AddressValueError
 
 # Implementasi dari questionary.select()
-from utils.menu_utils import make_menu_selection_question
+from utils.menu_utils import (
+    make_menu_selection_question,
+    tampilkan_bandwidth_progress,
+    display_search_ip_result,
+)
 from DSA.linked_list.single import TrafficQueue
 from DSA.stack.log_aktivitas import LogAktivitas
+
+# TODO: Ini class SortingServer harus dihilangkan
+from DSA.sorting import SortingServer
+from DSA.searching import cari_server_binary, cari_server_linear
+from .filehandler import FileHandler
 
 from rich.console import Console, Group
 from rich.panel import Panel
 from rich.text import Text
 from rich.rule import Rule
+from rich.prompt import Confirm
 
 from rich_pyfiglet import RichFiglet
 
@@ -31,26 +43,29 @@ class MainMenu:
         subprocess.run(command, shell=True)
 
     def intro(self):
-        self.log_aktivitas.add_log("Inisialisasi aplikasi", value=1)
+        try:
+            self.log_aktivitas.add_log("Inisialisasi aplikasi", value=1)
 
-        self.clear_screen()
-        self.intro_text = RichFiglet(
-            text="CLI Hack Sim",
-            font="ansi_shadow",
-            justify="center",
-            colors=["#006400", "#90EE90", "#FFFFFF"],
-            fps=4,
-            timer=2,
-            remove_blank_lines=True,
-            dev_console=self.console,
-            animation="gradient_down",
-        )
-        self.console.print(self.intro_text)
-        self.console.print()
+            self.clear_screen()
+            self.intro_text = RichFiglet(
+                text="CLI Hack Sim",
+                font="ansi_shadow",
+                justify="center",
+                colors=["#006400", "#90EE90", "#FFFFFF"],
+                fps=4,
+                timer=2,
+                remove_blank_lines=True,
+                dev_console=self.console,
+                animation="gradient_down",
+            )
+            self.console.print(self.intro_text)
+            self.console.print()
 
-        # TODO: Tambahkan yang perlu diinisialisasi di sini
-        with self.console.status("[bold green]Initializing..."):
-            time.sleep(1.5)
+            # TODO: Tambahkan yang perlu diinisialisasi di sini
+            with self.console.status("[bold green]Initializing..."):
+                time.sleep(1.5)
+        except KeyboardInterrupt:
+            pass
 
     def header_menu(
         self,
@@ -143,7 +158,7 @@ class MainMenu:
         self.log_aktivitas.add_log("Masuk ke Kelola Server")
         self.clear_screen()
 
-        self.header_menu("SUB MENU", "Kelola Server")
+        self.header_menu("MENU", "Kelola Server")
 
         choice = make_menu_selection_question(
             question=[
@@ -182,13 +197,113 @@ class MainMenu:
     def cari_server_berdasarkan_ip_server(self):
         '''[1.2] "Cari Server Berdasarkan IP"'''
         self.log_aktivitas.add_log("Masuk ke Cari Server Berdasarkan IP")
-        pass
+        self.clear_screen()
+
+        self.header_menu("SUB MENU", "Cari Server Berdasarkan IP")
+
+        choice = make_menu_selection_question(
+            question=[
+                "Cari Menggunakan Binary Search",
+                "Cari Menggunakan Linear Search",
+                "Batalkan",
+            ],
+            value=[1, 2, 0],
+        ).ask()
+
+        match choice:
+            case 1:
+                self.log_aktivitas.add_log("Mencari IP Secara Binary", value=2)
+                self.clear_screen()
+
+                self.header_menu("SUB MENU", "Cari Server Berdasarkan IP")
+
+                input_ip = self.console.input("Masukkan IP Server: ")
+
+                try:
+                    hasil_binary = cari_server_binary(IPv4Address(input_ip))
+                except AddressValueError:
+                    hasil_binary = False
+
+                if not hasil_binary:
+                    self.console.input("Tidak valid, masukkan ulang...")
+                    self.cari_server_berdasarkan_ip_server()
+                elif hasil_binary:
+                    panel_binary = display_search_ip_result(result=hasil_binary)
+                    self.console.print(panel_binary)
+
+                    self.console.input(
+                        "\nTekan Enter untuk kembali ke menu pencarian..."
+                    )
+                    self.cari_server_berdasarkan_ip_server()
+            case 2:
+                self.log_aktivitas.add_log("Mencari IP Secara Linear", value=2)
+                self.clear_screen()
+
+                self.header_menu("SUB MENU", "Cari Server Berdasarkan IP")
+
+                input_ip = self.console.input("Masukkan IP Server: ")
+
+                try:
+                    hasil_linear = cari_server_linear(IPv4Address(input_ip))
+                except AddressValueError:
+                    hasil_linear = False
+
+                if not hasil_linear:
+                    self.console.input("Tidak valid, masukkan ulang...")
+                    self.cari_server_berdasarkan_ip_server()
+                elif hasil_linear:
+                    panel_linier = display_search_ip_result(result=hasil_linear)
+                    self.console.print(panel_linier)
+
+                    self.console.input(
+                        "\nTekan Enter untuk kembali ke menu pencarian..."
+                    )
+                    self.cari_server_berdasarkan_ip_server()
+            case 0:
+                # [1] Kelola Server
+                self.kelola_server_menu()
 
     # TODO: [1.3] "Urutkan Server Berdasarkan Bandwidth"
     def urutkan_server_berdasarkan_bandwidth_server(self):
         '''[1.3] "Urutkan Server Berdasarkan Bandwidth"'''
-        self.log_aktivitas.add_log("Masuk ke Urutkan Server Berdasarkan Bandwidth")
-        pass
+        self.log_aktivitas.add_log("Mengurutkan Server Berdasarkan Bandwidth", value=2)
+        self.clear_screen()
+        self.console.clear()
+
+        self.header_menu("SUB MENU", "Pilih / Tampilkan Server")
+
+        bandwidth_server = []
+        bandwidth_file_data = FileHandler().load_json(
+            Path("src/data/dalam-json/akun_dan_status_server.json")
+        )
+
+        idx = 0
+        for req in bandwidth_file_data["servers"]:
+            bandwidth_server.append(
+                [idx, req["server_id"], req["server_name"], req["bandwidth_mbps"]]
+            )
+            idx += 1
+
+        self.console.print(tampilkan_bandwidth_progress(data=bandwidth_server))
+
+        choice = Confirm.ask("Jalankan pengurutan?", console=self.console, default=True)
+
+        if choice:
+            sorted_server = SortingServer().urutkan_server()
+
+            with self.console.status("[bold yellow]Mengurutkan server...") as status:
+                time.sleep(1)
+                status.update("[bold green]Server terurut...")
+                time.sleep(1)
+
+            self.console.print(
+                tampilkan_bandwidth_progress(data=sorted_server, rank=True)
+            )
+            self.console.input("\nTekan Enter untuk kembali ke menu...")
+
+            self.kelola_server_menu()
+        else:
+            self.kelola_server_menu()
 
     # TODO: [1.4] "Monitoring Server Circular"
     def monitoring_server_circular_server(self):
@@ -202,7 +317,7 @@ class MainMenu:
         self.log_aktivitas.add_log("Masuk ke Network & Route")
         self.clear_screen()
 
-        self.header_menu("SUB MENU", "Network & Route")
+        self.header_menu("MENU", "Network & Route")
 
         choice = make_menu_selection_question(
             question=[
@@ -242,7 +357,7 @@ class MainMenu:
         self.clear_screen()
 
         self.header_menu(
-            "SUB MENU",
+            "MENU",
             "Traffic Queue",
             operator="ADMIN SELURUH SERVER",
             access="ALL RESOURCE",
@@ -385,7 +500,7 @@ class MainMenu:
         self.log_aktivitas.add_log("Masuk ke Struktur Data")
         self.clear_screen()
 
-        self.header_menu("SUB MENU", "Struktur Data")
+        self.header_menu("MENU", "Struktur Data")
 
         choice = make_menu_selection_question(
             question=[
