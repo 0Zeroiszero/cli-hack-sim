@@ -16,6 +16,8 @@ class SearchingServer:
     
     # fungsi mencari server berdasarkan ip menggunakan binary search
     def cari_server_binary(self, target):
+        target = int(IPv4Address(target))
+        
         for item in self.data:
             bentuk_angka = int(IPv4Address(item[2]))
             item[2] = bentuk_angka
@@ -81,6 +83,5 @@ class SearchingServer:
 
 if __name__ == '__main__':
     ss = SearchingServer()
-    bentuk_angka = int(IPv4Address("192.168.1.30"))
-    b = ss.cari_server_binary(bentuk_angka)
+    b = ss.cari_server_binary("192.168.1.100")
     # l = ss.cari_server_linear("192.168.1.60")
