@@ -190,6 +190,11 @@ class MainMenu:
     def pilih_tampilkan_server(self):
         '''[1.1] "Pilih / Tampilkan Server"'''
         self.log_aktivitas.add_log("Masuk ke Tampilkan Server")
+        self.clear_screen()
+
+        self.header_menu("SUB MENU", "Pilih / Tampilkan Server")
+
+        
         pass
 
     # TODO: [1.2] "Cari Server Berdasarkan IP"
