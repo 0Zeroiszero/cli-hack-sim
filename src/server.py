@@ -1,8 +1,16 @@
+"""
+@author: Irfan Kurniawan
+@modified: 02/06/2026 21.40 WIB oleh Abdullah Affandi
+- Mengganti path lokasi akun_dan_status_server.json pada fungsi tambah_server
+- Menghilangkan print pada fungsi tambah_server karena sudah tidak diperlukan
+"""
+
 from pathlib import Path
 import random
 import json
 
 class ServerNode:
+    # Di-return oleh FungsiServer.tambah_server() untuk setiap server yang dibuat
     def __init__(self, nama, id, ip, status):
         self.id = id
         self.nama = nama
@@ -18,7 +26,7 @@ class FungsiServer:
         self.network = {}
     
     def tambah_server(self):
-        with open("src/data/dalam-json/akun.json", "r") as f:
+        with open("src/data/dalam-json/akun_dan_status_server.json", "r") as f:
             data = json.load(f)
         
         nama_server = [item['server_name'] for item in data['servers']]
@@ -47,8 +55,6 @@ class FungsiServer:
             
             server = ServerNode(nama, id, ip, status)
             self.server_list.append(server)
-        
-        print('Server Berhasil Dibuat!')
     
     def tampilkan_server(self, data):
         print("\n+========================================+")
