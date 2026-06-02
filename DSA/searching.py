@@ -3,6 +3,8 @@
 @modified: 01/06/2026 13.26 WIB oleh Abdullah Affandi
 - Menambahkan try...except pada binary search AddressValueError
 - Konversi IPv4Address as str
+@modified: 02/06/2026 10.48 WIB oleh Abdullah Affandi
+- Menambahkan komentar pada fungsi cari_server_linear untuk menjelaskan rentang pencarian linier
 """
 
 from pathlib import Path
@@ -84,6 +86,16 @@ def cari_server_linear(target: IPv4Address):
             data.append(line.strip().split("|"))
 
     for indeks, item in enumerate(data):
+        # Untuk mendapatkan rentang pencarian linier, 
+        # kita bisa membandingkan nilai IP yang sedang diperiksa dengan target.
+        # item[2] >= str(target)
+        # Misal IP yang dicari 192.168.1.12
+        # Namun rentang IP yang dikembalikan 192.168.1.10 - 192.168.1.20
+
+        if item[2] >= str(target):
+            data_cari.append((indeks, item[2], item[1], item[0], item[3], ketemu))
+            break
+
         if item[2] == str(target):
             ketemu = True
             data_cari.append((indeks, item[2], item[1], item[0], item[3], ketemu))
