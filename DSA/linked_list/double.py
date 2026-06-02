@@ -11,12 +11,11 @@ from prompt_toolkit import print_formatted_text
 
 from rich.rule import Rule
 from rich.text import Text
-from rich.console import Console, Group
+from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
 from src import FungsiServer, ServerNode
-from DSA import LogAktivitas
 
 
 class ServerCarouselNode:
@@ -58,6 +57,7 @@ class ServerCarousel(FungsiServer):
         self.console = Console()
         self.bindings = KeyBindings()
         self._register_bind_keys()
+        self.current_copy = None
 
     def run(self) -> Application:
         """
@@ -105,29 +105,30 @@ class ServerCarousel(FungsiServer):
         """
         Inisialisasi seluruh Node
         """
-        head = None  # Simpan referensi ke node pertama
+        self.head = None  # Simpan referensi ke node pertama
 
         for server in self.server_list:
             new_node = ServerCarouselNode(server)
 
             if self.current is None:
                 self.current = new_node
-                head = new_node  # catat head
+                self.head = new_node  # catat head
             else:
                 self.current.next = new_node
                 new_node.prev = self.current
 
             self.current = new_node
 
-        self.current = head
+        self.current = self.head
 
     def _restore_state(self, selected_id: str) -> None:
         """
         Jika udah milih server, state-nya akan dimuat ulang (mirip save game)
         """
-        node = self.current  # mulai dari head
+
+        node = self.head  # mulai dari head
         while node is not None:
-            if node.data.id == selected_id:
+            if str(node.data.id) == str(selected_id):
                 self.current = node  # pindahkan current ke node yang cocok
                 return
             node = node.next
@@ -276,7 +277,7 @@ class ServerCarousel(FungsiServer):
             width=self.console.width - 2,
         )
 
-    def _get_current_table(self) -> None:
+    def _get_current_table(self) -> ANSI:
         """
         Fungsi pembantu untuk menangkap tabel terbaru
         """
