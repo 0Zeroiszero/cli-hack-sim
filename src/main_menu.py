@@ -35,7 +35,12 @@ class MainMenu:
     def __init__(self):
         self.console = Console()
         self.traffic = TrafficQueue("src/data/dalam-json/traffic.json")
+        
         self.log_aktivitas = LogAktivitas()
+
+        self.operator = "Operator" 
+        self.access = "No Access"
+        self.choosen_server = "No Server Selected"
 
     def clear_screen(self):
         command = "cls" if os.name == "nt" else "clear"
@@ -71,11 +76,14 @@ class MainMenu:
         menu: str,
         sub_menu: str,
         *,
-        operator: str = "OPERATOR",
-        access: str = "NO ACCESS",
+        operator: str = None,
+        access: str = None,
         choosen_server: str = None,
     ):
         self.clear_screen()
+        operator = self.operator
+        access = self.access
+        choosen_server = self.choosen_server
 
         # Memastikan setiap kata diawali huruf kapital dan sisanya lower
         lokasi_rapi = " ".join(word.capitalize() for word in sub_menu.split())
@@ -362,10 +370,7 @@ class MainMenu:
 
         self.header_menu(
             "MENU",
-            "Traffic Queue",
-            operator="ADMIN SELURUH SERVER",
-            access="ALL RESOURCE",
-            choosen_server="@owner",
+            "Traffic Queue"
         )
 
         # TODO: Butuh penambahan traffic setiap keluar menu ini buat simulasi
@@ -402,10 +407,7 @@ class MainMenu:
         self.log_aktivitas.add_log("Menampilkan Queue Traffic", value=2)
         self.header_menu(
             "SUB MENU",
-            "Tampilkan Queue Traffic",
-            operator="ADMIN SELURUH SERVER",
-            access="ALL RESOURCE",
-            choosen_server="@owner",
+            "Tampilkan Queue Traffic"
         )
         self.traffic.display()
 
@@ -426,10 +428,7 @@ class MainMenu:
 
         self.header_menu(
             "SUB MENU",
-            "Kelola Traffic",
-            operator="ADMIN SELURUH SERVER",
-            access="ALL RESOURCE",
-            choosen_server="@owner",
+            "Kelola Traffic"
         )
 
         choice = make_menu_selection_question(
@@ -459,10 +458,7 @@ class MainMenu:
         self.log_aktivitas.add_log("Melihat Traffic Terdepan", value=2)
         self.header_menu(
             "SUB MENU",
-            "Lihat Traffic Terdepan",
-            operator="ADMIN SELURUH SERVER",
-            access="ALL RESOURCE",
-            choosen_server="@owner",
+            "Lihat Traffic Terdepan"
         )
         self.traffic.display_front()
 
@@ -482,10 +478,7 @@ class MainMenu:
         self.log_aktivitas.add_log("Memproses Traffic Terdepan", value=2)
         self.header_menu(
             "SUB MENU",
-            "Proses Traffic Terdepan",
-            operator="ADMIN SELURUH SERVER",
-            access="ALL RESOURCE",
-            choosen_server="@owner",
+            "Proses Traffic Terdepan"
         )
         self.traffic.display_dequeue()
 
