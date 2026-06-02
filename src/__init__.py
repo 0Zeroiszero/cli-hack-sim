@@ -1,1 +1,3 @@
-# TODO: Butuh pembaruan
+from .filehandler import FileHandler
+
+__all__ = ["FileHandler"]
