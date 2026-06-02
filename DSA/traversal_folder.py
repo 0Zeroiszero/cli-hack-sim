@@ -4,9 +4,10 @@
 - kontrak abstraksi untuk traversal pada binary search tree
 - preorder, inorder, postorder
 - kalau mau buat traversal lain, buat method baru dengan abstraksi yang sama
+@modified: 02/06/2026 oleh Abdullah Affandi
+- Menghilangkan kontrak abstraksi
 """
 
-from abc import abstractmethod, ABC
 from pathlib import Path
 import json
 
@@ -22,34 +23,6 @@ class TreeNode():
     
     def is_file(self):
         return self.node_type == "file"
-
-class BST(ABC):
-    def __init__(self):
-        pass
-
-    @abstractmethod
-    # root - left - right
-    def preorder(self, node):
-        """
-        Gunakan rekursi untuk menampilkan node.left dan node.right
-        """
-        pass
-
-    @abstractmethod
-    # left - root - right
-    def inorder(self, node):
-        """
-        Gunakan rekursi untuk menampilkan node.left dan node.right
-        """
-        pass
-
-    @abstractmethod
-    # left - right - root
-    def postorder(self, node):
-        """
-        Gunakan rekursi untuk menampilkan node.left dan node.right
-        """
-        pass
 
 class ServerTreeBuilder:
 
