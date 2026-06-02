@@ -1,3 +1,4 @@
+from pathlib import Path
 import random
 import json
 
@@ -17,7 +18,7 @@ class FungsiServer:
         self.network = {}
     
     def tambah_server(self):
-        with open('data/dalam-json/akun.json', 'r') as f:
+        with open("src/data/dalam-json/akun.json", "r") as f:
             data = json.load(f)
         
         nama_server = [item['server_name'] for item in data['servers']]
@@ -60,7 +61,110 @@ class FungsiServer:
             print(f" Status            : {i.status}\n")
         print("+========================================+")
 
+def cek_access_server():
+    file_path = Path("src/data/dalam-json/akun_dan_status_server.json")
+    
+    with open(file_path, "r") as file:
+        data = json.load(file)
+    
+    hasil = {
+        "rows": [],
+        "summary": {
+            "total_server": 0,
+            "unlocked_access": 0,
+            "locked_access": 0,
+            "visible_credential": 0,
+        }
+    }
+    
+    for indeks, req in enumerate(data['servers']):
+        access = req["access"]
+        credential = req["credential"]
+        
+        if access == "UNLOCKED":
+            username = credential["username"]
+            password = credential["password"]
+            is_unlocked = True
+            
+            hasil["summary"]["unlocked_access"] += 1
+            hasil["summary"]["visible_credential"] += 1
+        else:
+            username = "********"
+            password = "********"
+            is_unlocked = False
+            
+            hasil["summary"]["locked_access"] += 1
+            
+        row = {
+            "indeks": indeks,
+            "server_id": req["server_id"],
+            "server_name": req["server_name"],
+            "access": access,
+            "username": username,
+            "password": password,
+            "is_unlocked": is_unlocked,
+        }
+        
+        hasil["rows"].append(row)
+        hasil["summary"]["total_server"] = len(data["servers"])
+        
+    return hasil
+
+def get_server_detail(server_id: str) -> dict:
+    file_path = Path("src/data/dalam-json/akun_dan_status_server.json")
+    
+    with open(file_path, "r") as file:
+        data = json.load(file)
+    
+    for req in data["servers"]:
+        if server_id == req["server_id"]:
+            if req["access"] == "UNLOCKED":
+                hasil = {
+                    "server_id": req["server_id"],
+                    "server_name": req["server_name"],
+                    "ip": req["ip"],
+                    "bandwidth_mbps": req["bandwidth_mbps"],
+                    "status": req["status"],
+                    "access": req['access'],
+                    "vulnerable": req["vulnerable"],
+                    "credential": {
+                        "username": req["credential"]['username'],
+                        "password": req["credential"]['password'],
+                        "is_visible": True
+                    },
+                    "security_note": (
+                        "Credential dapat ditampilkan karena access server sudah UNLOCKED. "
+                    )
+                }
+                return hasil
+            else:
+                hasil = {
+                    "server_id": req["server_id"],
+                    "server_name": req["server_name"],
+                    "ip": req["ip"],
+                    "bandwidth_mbps": req["bandwidth_mbps"],
+                    "status": req["status"],
+                    "access": req['access'],
+                    "vulnerable": req["vulnerable"],
+                    "credential": {
+                        "username": "*******",
+                        "password": "*******",
+                        "is_visible": False
+                    },
+                    "security_note": (
+                        "Credential disembunyikan karena access LOCKED. "
+                        "Gunakan fitur login/unlock untuk membuka akses. "
+                    )
+                }
+                return hasil
+    return {
+        "error": True,
+        "message": f"Server dengan ID '{server_id}' tidak ditemukan. "
+    }
+
 if __name__ == '__main__':
     fs = FungsiServer()
-    fs.tambah_server()
-    fs.tampilkan_server(data=fs.server_list)
+    # fs.tambah_server()
+    # fs.tampilkan_server(data=fs.server_list)
+    from pprint import pprint
+    pprint(get_server_detail("SRV002"))

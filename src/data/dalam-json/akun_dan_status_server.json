@@ -18,7 +18,7 @@
       "server_name": "Beta",
       "ip": "192.168.1.20",
       "bandwidth_mbps":230,
-      "status": "ONLINE",
+      "status": "OFFLINE",
       "access": "LOCKED",
       "vulnerable": true,
       "credential": {
@@ -44,7 +44,7 @@
       "server_name": "Delta",
       "ip": "192.168.1.40",
       "bandwidth_mbps":4000,
-      "status": "OFFLINE",
+      "status": "MAINTENANCE",
       "access": "LOCKED",
       "vulnerable": false,
       "credential": {
@@ -70,7 +70,7 @@
       "server_name": "Falcon",
       "ip": "192.168.1.60",
       "bandwidth_mbps":120,
-      "status": "ONLINE",
+      "status": "OFFLINE",
       "access": "LOCKED",
       "vulnerable": false,
       "credential": {
@@ -83,7 +83,7 @@
       "server_name": "Hydra",
       "ip": "192.168.1.70",
       "bandwidth_mbps":220,
-      "status": "ONLINE",
+      "status": "OVERLOAD",
       "access": "LOCKED",
       "vulnerable": true,
       "credential": {
@@ -96,7 +96,7 @@
       "server_name": "Orion",
       "ip": "192.168.1.80",
       "bandwidth_mbps":573,
-      "status": "OFFLINE",
+      "status": "ONLINE",
       "access": "LOCKED",
       "vulnerable": false,
       "credential": {
@@ -109,7 +109,7 @@
       "server_name": "Phoenix",
       "ip": "192.168.1.90",
       "bandwidth_mbps":90,
-      "status": "ONLINE",
+      "status": "BLOCKED",
       "access": "LOCKED",
       "vulnerable": false,
       "credential": {
