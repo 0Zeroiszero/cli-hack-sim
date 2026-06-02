@@ -9,17 +9,16 @@ from pathlib import Path
 from ipaddress import IPv4Address, AddressValueError
 
 # Implementasi dari questionary.select()
-from utils.menu_utils import (
+from utils import (
     make_menu_selection_question,
     tampilkan_bandwidth_progress,
     display_search_ip_result,
 )
-from DSA.linked_list.single import TrafficQueue
-from DSA.stack.log_aktivitas import LogAktivitas
 
-# TODO: Ini class SortingServer harus dihilangkan
-from DSA.sorting import SortingServer
-from DSA.searching import cari_server_binary, cari_server_linear
+from DSA import TrafficQueue
+from DSA import LogAktivitas
+from DSA import SortingServer
+from DSA import cari_server_binary, cari_server_linear
 from .filehandler import FileHandler
 
 from rich.console import Console, Group
