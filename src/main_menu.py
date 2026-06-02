@@ -19,6 +19,7 @@ from DSA import TrafficQueue
 from DSA import LogAktivitas
 from DSA import SortingServer
 from DSA import cari_server_binary, cari_server_linear
+from DSA import ServerCarousel
 from .filehandler import FileHandler
 
 from rich.console import Console, Group
@@ -35,12 +36,24 @@ class MainMenu:
     def __init__(self):
         self.console = Console()
         self.traffic = TrafficQueue("src/data/dalam-json/traffic.json")
-        
+
         self.log_aktivitas = LogAktivitas()
 
-        self.operator = "Operator" 
-        self.access = "No Access"
-        self.choosen_server = "No Server Selected"
+        self.node_from_server = None
+
+        self.operator = "Operator"
+
+    @property
+    def choosen_server(self) -> str:
+        if self.node_from_server:
+            return self.node_from_server.nama
+        return "No Server Selected"
+    
+    @property
+    def access_server(self) -> str:
+        if self.node_from_server:
+            return "Have Access"
+        return "No Access"
 
     def clear_screen(self):
         command = "cls" if os.name == "nt" else "clear"
@@ -71,18 +84,10 @@ class MainMenu:
         except KeyboardInterrupt:
             pass
 
-    def header_menu(
-        self,
-        menu: str,
-        sub_menu: str,
-        *,
-        operator: str = None,
-        access: str = None,
-        choosen_server: str = None,
-    ):
+    def header_menu(self, menu: str, sub_menu: str) -> None:
         self.clear_screen()
         operator = self.operator
-        access = self.access
+        access = self.access_server
         choosen_server = self.choosen_server
 
         # Memastikan setiap kata diawali huruf kapital dan sisanya lower
@@ -111,7 +116,7 @@ class MainMenu:
             self.layout, Rule(style="white", characters="="), style="bold green"
         )
 
-    def main_menu(self):
+    def main_menu(self) -> None:
         self.log_aktivitas.add_log("Masuk ke Beranda")
         self.clear_screen()
 
@@ -136,7 +141,7 @@ class MainMenu:
 
         self.sub_menu(choice)
 
-    def sub_menu(self, menu_id: int):
+    def sub_menu(self, menu_id: int) -> None:
         """
         [1] Kelola Server
         [2] Network & Route
@@ -160,7 +165,7 @@ class MainMenu:
                 self.struktur_data_menu()
 
     # [1] Kelola Server
-    def kelola_server_menu(self):
+    def kelola_server_menu(self) -> None:
         "[1] Kelola Server"
         self.log_aktivitas.add_log("Masuk ke Kelola Server")
         self.clear_screen()
@@ -195,15 +200,39 @@ class MainMenu:
                 self.main_menu()
 
     # TODO: [1.1] "Pilih / Tampilkan Server"
-    def pilih_tampilkan_server(self):
+    def pilih_tampilkan_server(self) -> None:
         '''[1.1] "Pilih / Tampilkan Server"'''
-        self.log_aktivitas.add_log("Masuk ke Tampilkan Server")
+        self.log_aktivitas.add_log("Masuk ke Tampilkan dan Pilih Server", value=2)
         self.clear_screen()
 
         self.header_menu("SUB MENU", "Pilih / Tampilkan Server")
 
-        
-        pass
+        server_id = None
+        if self.node_from_server is not None:
+            server_id = self.node_from_server.id
+
+        server = ServerCarousel(server_id)
+        server.run()
+        server.make_footer()
+        self.node_from_server = server.get_selected_server_node()
+
+        choice = make_menu_selection_question(
+            question=[
+                "Scan Credential Status",
+                "Bruteforce Server Login",
+                "Kembali",
+            ],
+            value=[1, 2, 0],
+        ).ask()
+
+        match choice:
+            case 1:
+                pass
+            case 2:
+                pass
+            case 0:
+                # [1] Kelola Server
+                self.kelola_server_menu()
 
     # TODO: [1.2] "Cari Server Berdasarkan IP"
     def cari_server_berdasarkan_ip_server(self):
@@ -368,10 +397,7 @@ class MainMenu:
         self.log_aktivitas.add_log("Masuk ke Traffic Queue")
         self.clear_screen()
 
-        self.header_menu(
-            "MENU",
-            "Traffic Queue"
-        )
+        self.header_menu("MENU", "Traffic Queue")
 
         # TODO: Butuh penambahan traffic setiap keluar menu ini buat simulasi
         # TODO: Kayaknya dimasukkan ke tomporary file dulu dan di save pas exit dari CLI
@@ -405,10 +431,7 @@ class MainMenu:
         '''[3.1] "Tampilkan Queue Traffic"'''
         self.log_aktivitas.add_log("Masuk ke Tampilkan Queue Traffic")
         self.log_aktivitas.add_log("Menampilkan Queue Traffic", value=2)
-        self.header_menu(
-            "SUB MENU",
-            "Tampilkan Queue Traffic"
-        )
+        self.header_menu("SUB MENU", "Tampilkan Queue Traffic")
         self.traffic.display()
 
         choice = make_menu_selection_question(
@@ -426,10 +449,7 @@ class MainMenu:
         self.log_aktivitas.add_log("Masuk ke Kelola Traffic")
         self.clear_screen()
 
-        self.header_menu(
-            "SUB MENU",
-            "Kelola Traffic"
-        )
+        self.header_menu("SUB MENU", "Kelola Traffic")
 
         choice = make_menu_selection_question(
             question=[
@@ -456,10 +476,7 @@ class MainMenu:
         '''[3.2.1] "Lihat Traffic Terdepan"'''
         self.log_aktivitas.add_log("Masuk ke Lihat Traffic Terdepan")
         self.log_aktivitas.add_log("Melihat Traffic Terdepan", value=2)
-        self.header_menu(
-            "SUB MENU",
-            "Lihat Traffic Terdepan"
-        )
+        self.header_menu("SUB MENU", "Lihat Traffic Terdepan")
         self.traffic.display_front()
 
         choice = make_menu_selection_question(
@@ -476,10 +493,7 @@ class MainMenu:
         '''[3.2.2] "Proses Traffic Terdepan"'''
         self.log_aktivitas.add_log("Masuk ke Proses Traffic Terdepan")
         self.log_aktivitas.add_log("Memproses Traffic Terdepan", value=2)
-        self.header_menu(
-            "SUB MENU",
-            "Proses Traffic Terdepan"
-        )
+        self.header_menu("SUB MENU", "Proses Traffic Terdepan")
         self.traffic.display_dequeue()
 
         choice = make_menu_selection_question(

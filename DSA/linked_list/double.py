@@ -9,21 +9,28 @@ from prompt_toolkit.layout import FormattedTextControl, Layout, Window
 from prompt_toolkit.formatted_text import ANSI
 from prompt_toolkit import print_formatted_text
 
+from rich.rule import Rule
 from rich.text import Text
-from rich.console import Console
+from rich.console import Console, Group
 from rich.panel import Panel
 from rich.table import Table
 
 from src import FungsiServer, ServerNode
+from DSA import LogAktivitas
 
 
 class ServerCarouselNode:
+    # Ini jangan diimport ya
     def __init__(self, data):
         self.data = data
         self.prev = None
         self.next = None
 
 
+# Global function
+# run - menjalankan aplikasi
+# get_selected_server_node - mendapatkan node server terpilih
+# make_footer - langsung nampilkan footer
 class ServerCarousel(FungsiServer):
     def __init__(self, selected_id: str = None):
         # return self.server_list
@@ -62,6 +69,38 @@ class ServerCarousel(FungsiServer):
 
         return self.app
 
+    def get_selected_server_node(self) -> ServerNode:
+        """
+        Pemakaian luar atau dalam class
+        """
+        return self.selected
+
+    def make_footer(self) -> None:
+        """
+        Langsung nampilkan footer dengan memanfaatkan prompt toolkit
+        print_formatted_text
+        """
+        self.console.begin_capture()
+        self.console.print(
+            Rule(style="white", characters="="), width=self.console.width - 2
+        )
+
+        footer = Panel(
+            Text("AKSI SERVER TERPILIH", justify="center", style="white"),
+            border_style="white",
+            title_align="center",
+            width=self.console.width - 2,
+        )
+
+        self.layout = footer
+        self.console.print(
+            self.layout,
+            Rule(style="white", characters="="),
+            width=self.console.width - 2,
+        )
+
+        print_formatted_text(ANSI(self.console.end_capture()))
+
     def _initialize_node(self) -> None:
         """
         Inisialisasi seluruh Node
@@ -93,17 +132,12 @@ class ServerCarousel(FungsiServer):
                 return
             node = node.next
 
-    def _selected_server(self) -> None:
+    def _selected_server(self) -> ServerNode:
         """
         Hanya untuk pemakaian dalam class
+        Melakukan inisialiasi node current dengan server terpilih
         """
         self.selected = self.current.data
-
-    def get_selected_server_node(self) -> ServerNode:
-        """
-        Pemakaian luar atau dalam class
-        """
-        return self.selected
 
     def _add_server_row(self, position: str, server, selected: bool = False) -> None:
         """
@@ -178,7 +212,7 @@ class ServerCarousel(FungsiServer):
         return Panel(
             self.table,
             title="DAFTAR SERVER",
-            border_style="green",
+            border_style="bold green",
             padding=(1, 4),
             width=self.console.width - 2,
         )
@@ -305,3 +339,4 @@ class ServerCarousel(FungsiServer):
 if __name__ == "__main__":
     carousel = ServerCarousel()
     carousel.run()
+    carousel.make_footer()
