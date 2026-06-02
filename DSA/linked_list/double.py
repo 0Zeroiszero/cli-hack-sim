@@ -324,16 +324,21 @@ class ServerCarousel(FungsiServer):
         def _(event):
             self._go_prev()
 
-        @self.bindings.add("q")
-        @self.bindings.add("escape")
-        @self.bindings.add("c-c")
-        def _(event):
-            self.app.exit()
+            @self.bindings.add("q")
+            @self.bindings.add("escape")
+            @self.bindings.add("c-c")
+            def _(event):
+                if self.selected is not None:
+                    self._restore_state(self.selected.id)
+                    self.app.invalidate()
+                    self.app.loop.call_later(0.1, self.app.exit)  # exit setelah render
+                else:
+                    self.app.exit()
 
         @self.bindings.add("enter")
         def _(event):
-            self.app.exit()
             self._selected_server()
+            self.app.exit()
 
 
 if __name__ == "__main__":

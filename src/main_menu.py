@@ -39,8 +39,14 @@ class MainMenu:
 
         self.log_aktivitas = LogAktivitas()
 
+
         self.node_from_server = None
 
+        server_id = None
+        if self.node_from_server is not None:
+            server_id = self.node_from_server.id
+
+        self.server_carousel = ServerCarousel(server_id)
         self.operator = "Operator"
 
     @property
@@ -207,14 +213,9 @@ class MainMenu:
 
         self.header_menu("SUB MENU", "Pilih / Tampilkan Server")
 
-        server_id = None
-        if self.node_from_server is not None:
-            server_id = self.node_from_server.id
-
-        server = ServerCarousel(server_id)
-        server.run()
-        server.make_footer()
-        self.node_from_server = server.get_selected_server_node()
+        self.server_carousel.run()
+        self.server_carousel.make_footer()
+        self.node_from_server = self.server_carousel.get_selected_server_node()
 
         choice = make_menu_selection_question(
             question=[
