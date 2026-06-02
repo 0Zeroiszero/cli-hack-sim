@@ -7,7 +7,6 @@ akun_dan_status_server_path = Path("src/data/dalam-json/akun_dan_status_server.j
 brute_force = Path("src/data/dalam-json/bruteforce.json")
 
 return_dict = []
-# format_tuple = ("index", "server_profile", "username", "password", "status", "found")
 
 def brute_force_attack():
     with open(akun_dan_status_server_path, "r") as file:
@@ -19,28 +18,18 @@ def brute_force_attack():
         username = item.get("username")
         password = item.get("password")
         status = item.get("status")
-    
+        info = (idx, server_id, server_name, username, password, status, False)
+        return_dict.append(info)
 
-    server_profile =  (server_id, server_name)
 
-    with open(brute_force, "r") as file:
-        brute_force_data = json.load(file)
-    
-    for entry in brute_force_data.get("brute_force_attempts", []):
-        index = entry.get("index")
-        username = entry.get("username")
-        password = entry.get("password")
+    for username, password in brute_force.read_text_file():
+        username = username.strip()
+        password = password.strip()
+
+    for item in return_dict:
+        if item[3] == username and item[4] == password:
+            return_dict[return_dict.index(item)] = (*item[:-1], True)
+            break
         
-    # Cek apakah kombinasi username dan password cocok dengan data akun_dan_status_server
-        found = False
-        for item in akun_dan_status_server.get("servers", []):
-            if (server_profile == (item.get("server_id"), item.get("server_name")) and
-                item.get("username") == username and
-                item.get("password") == password):
-                found = True
-                break
 
-        
-        return_dict.append((index, server_profile, username, password, status, found))
-    
     return return_dict
