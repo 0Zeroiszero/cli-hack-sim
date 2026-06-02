@@ -9,7 +9,11 @@
           "kernel.sys": "512 KB",
           "alpha_config.json": "14 KB"
         },
-        "cdn": {}
+        "cdn": {
+          "skripsi_cover.jpg": "2 MB",
+          "thesis_outline.pdf": "1.5 MB",
+          "cdn_manifest.json": "12 KB"
+        }
       }
     },
     {
@@ -21,7 +25,11 @@
           "network_cache.db": "240 KB",
           "recovery_mode.cfg": "11 KB"
         },
-        "cdn": {}
+        "cdn": {
+          "beta_assets.zip": "8.4 MB",
+          "landing_banner.png": "3.2 MB",
+          "cache_rules.yaml": "18 KB"
+        }
       }
     },
     {
@@ -33,7 +41,11 @@
           "service_map.json": "19 KB",
           "process.pid": "2 KB"
         },
-        "cdn": {}
+        "cdn": {
+          "runtime_patch.pkg": "11 MB",
+          "client_bundle.js": "640 KB",
+          "texture_pack_01.dds": "24 MB"
+        }
       }
     },
     {
@@ -45,7 +57,11 @@
           "patch_queue.dat": "96 KB",
           "delta_backup.cfg": "13 KB"
         },
-        "cdn": {}
+        "cdn": {
+          "maintenance_page.html": "32 KB",
+          "patch_notes.txt": "9 KB",
+          "delta_update.bin": "18 MB"
+        }
       }
     },
     {
@@ -57,7 +73,11 @@
           "mirror_index.db": "310 KB",
           "env.local": "5 KB"
         },
-        "cdn": {}
+        "cdn": {
+          "mirror_snapshot.iso": "1.2 GB",
+          "echo_wallpaper.png": "5 MB",
+          "cdn_routes.map": "44 KB"
+        }
       }
     },
     {
@@ -69,7 +89,11 @@
           "last_shutdown.log": "28 KB",
           "falcon_driver.sys": "640 KB"
         },
-        "cdn": {}
+        "cdn": {
+          "falcon_stream.mp4": "480 MB",
+          "driver_patch.exe": "22 MB",
+          "stream_manifest.m3u8": "14 KB"
+        }
       }
     },
     {
@@ -81,7 +105,11 @@
           "cpu_limit.cfg": "9 KB",
           "hydra_watchdog.exe": "1.2 MB"
         },
-        "cdn": {}
+        "cdn": {
+          "hydra_backup.tar": "3.4 GB",
+          "watchdog_update.pkg": "71 MB",
+          "cdn_cluster.json": "27 KB"
+        }
       }
     },
     {
@@ -93,7 +121,11 @@
           "dns_cache.db": "188 KB",
           "service_token.key": "3 KB"
         },
-        "cdn": {}
+        "cdn": {
+          "starfield_render.mov": "920 MB",
+          "route_visualizer.exe": "16 MB",
+          "dns_snapshot.cache": "120 KB"
+        }
       }
     },
     {
@@ -105,7 +137,11 @@
           "quarantine.flag": "1 KB",
           "phoenix_audit.log": "267 KB"
         },
-        "cdn": {}
+        "cdn": {
+          "firewall_bundle.zip": "188 MB",
+          "audit_archive.tar": "760 MB",
+          "security_feed.xml": "48 KB"
+        }
       }
     },
     {
@@ -117,7 +153,11 @@
           "uptime_record.log": "101 KB",
           "shield_config.yaml": "16 KB"
         },
-        "cdn": {}
+        "cdn": {
+          "titan_engine.iso": "6.8 GB",
+          "shield_texturepack.dds": "420 MB",
+          "global_nodes.json": "63 KB"
+        }
       }
     }
   ]
