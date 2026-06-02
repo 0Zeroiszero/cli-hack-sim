@@ -8,10 +8,11 @@
 
 from abc import abstractmethod
 
+
 class BST:
     def __init__(self):
         pass
-    
+
     @abstractmethod
     # root - left - right
     def preorder(self, node):
@@ -19,24 +20,24 @@ class BST:
         Gunakan rekursi untuk menampilkan node.left dan node.right
         """
         # if node is not None:
-            # print(node.data, end=' ')
+        # print(node.data, end=' ')
 
-            # self.preorder(node.left)
-            # self.preorder(node.right)
+        # self.preorder(node.left)
+        # self.preorder(node.right)
         pass
 
     @abstractmethod
-    # left - root - right 
+    # left - root - right
     def inorder(self, node):
         """
         Gunakan rekursi untuk menampilkan node.left dan node.right
         """
         # if node is not None:
-            # self.in_order(node.left)
-            
-            # print(node.data, end=' ')
+        # self.in_order(node.left)
 
-            # self.in_order(node.right)
+        # print(node.data, end=' ')
+
+        # self.in_order(node.right)
         pass
 
     @abstractmethod
@@ -46,8 +47,8 @@ class BST:
         Gunakan rekursi untuk menampilkan node.left dan node.right
         """
         # if node is not None:
-            # self.postorder(node.left)
-            # self.postorder(node.right)
-            
-            # print(node.data, end=' ')
+        # self.postorder(node.left)
+        # self.postorder(node.right)
+
+        # print(node.data, end=' ')
         pass
