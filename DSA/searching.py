@@ -5,6 +5,8 @@
 - Konversi IPv4Address as str
 @modified: 02/06/2026 10.48 WIB oleh Abdullah Affandi
 - Menambahkan komentar pada fungsi cari_server_linear untuk menjelaskan rentang pencarian linier
+@modified: 02/06/2026 17.00 WIB oleh Abdullah Affandi
+- perbaiki logika perbandingan IP pada fungsi cari_server_linear
 """
 
 from pathlib import Path
@@ -86,17 +88,18 @@ def cari_server_linear(target: IPv4Address):
             data.append(line.strip().split("|"))
 
     for indeks, item in enumerate(data):
-        # Untuk mendapatkan rentang pencarian linier, 
+        ip = IPv4Address(item[2])
+        # Untuk mendapatkan rentang pencarian linier,
         # kita bisa membandingkan nilai IP yang sedang diperiksa dengan target.
-        # item[2] >= str(target)
+        # item[2] >= target
         # Misal IP yang dicari 192.168.1.12
         # Namun rentang IP yang dikembalikan 192.168.1.10 - 192.168.1.20
 
-        if item[2] >= str(target):
+        if ip > target:
             data_cari.append((indeks, item[2], item[1], item[0], item[3], ketemu))
             break
 
-        if item[2] == str(target):
+        if ip == target:
             ketemu = True
             data_cari.append((indeks, item[2], item[1], item[0], item[3], ketemu))
             break
