@@ -567,6 +567,8 @@ class MainMenu:
             value=[1, 2, 3, 0],
         ).ask()
 
+        pilihan_traversal = None
+
         if choice == 1:
             pilihan_traversal = "preorder"
         elif choice == 2:
@@ -575,6 +577,7 @@ class MainMenu:
             pilihan_traversal = "postorder"
         else:
             self.struktur_data_menu()
+            return
 
         server_tree = ServerTreeBuilder.build_server_tree()
         target_id = self.server_id
@@ -588,14 +591,15 @@ class MainMenu:
                 if server_id == target_id:
                     pr, inor, post = preorder(item), inorder(item), postorder(item)
 
-                    p, t = make_traversal_folder(
-                        pilihan_traversal=pilihan_traversal,
-                        preorder=pr,
-                        inorder=inor,
-                        postorder=post,
-                    )
+                    if pilihan_traversal is not None:
+                        p, t = make_traversal_folder(
+                            pilihan_traversal=pilihan_traversal,
+                            preorder=pr,
+                            inorder=inor,
+                            postorder=post,
+                        )
+                        self.console.print(p, t)
 
-                    self.console.print(p, t)
                     break
         else:
             self.console.print("[bold red]Tidak ditemukan")
