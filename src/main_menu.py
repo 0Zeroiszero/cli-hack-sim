@@ -213,6 +213,8 @@ class MainMenu:
             case 0:
                 self.main_menu()
 
+    # ── [1.1] Pilih / Tampilkan Server ───────────────────────────────────────
+
     def _pilih_tampilkan_server(self) -> None:
         """Menampilkan dan memilih server dari daftar yang tersedia."""
         self._log_aktivitas.add_log("Masuk ke Tampilkan dan Pilih Server", value=2)
@@ -242,6 +244,8 @@ class MainMenu:
             case 0:
                 self._kelola_server_menu()
 
+    # ── [1.2] Cari Server Berdasarkan IP ─────────────────────────────────────
+
     def _cari_server_berdasarkan_ip_server(self) -> None:
         """Menampilkan menu pencarian server berdasarkan alamat IP."""
         self._log_aktivitas.add_log("Masuk ke Cari Server Berdasarkan IP")
@@ -263,6 +267,8 @@ class MainMenu:
             case 0:
                 self._kelola_server_menu()
 
+    # ── [1.2.1] Binary Search ────────────────────────────────────────────────
+
     def _cari_server_binary(self) -> None:
         """Mencari server menggunakan binary search berdasarkan alamat IP."""
         self._log_aktivitas.add_log("Mencari IP Secara Binary", value=2)
@@ -281,6 +287,8 @@ class MainMenu:
             self._console.print(panel_binary)
             self._console.input("\nTekan Enter untuk kembali ke menu pencarian...")
             self._cari_server_berdasarkan_ip_server()
+
+    # ── [1.2.2] Linear Search ────────────────────────────────────────────────
 
     def _cari_server_linear(self) -> None:
         """Mencari server menggunakan linear search berdasarkan alamat IP."""
@@ -301,11 +309,13 @@ class MainMenu:
             self._console.input("\nTekan Enter untuk kembali ke menu pencarian...")
             self._cari_server_berdasarkan_ip_server()
 
+    # ── [1.3] Urutkan Server Berdasarkan Bandwidth ───────────────────────────
+
     def _urutkan_server_berdasarkan_bandwidth_server(self) -> None:
         """Mengurutkan server berdasarkan bandwidth."""
         self._log_aktivitas.add_log("Mengurutkan Server Berdasarkan Bandwidth", value=2)
         self._clear_screen()
-        self._header_menu("SUB MENU", "Pilih / Tampilkan Server")
+        self._header_menu("SUB MENU", "Urutkan Server Berdasarkan Bandwidth")
         bandwidth_server = []
         bandwidth_file_data = FileHandler().load_json(
             Path("src/data/dalam-json/akun_dan_status_server.json")
@@ -336,6 +346,8 @@ class MainMenu:
         """Menampilkan monitoring server secara circular."""
         self._log_aktivitas.add_log("Masuk ke Monitoring Server Circular")
 
+    # ── [1.4] Monitoring Server Circular ─────────────────────────────────────
+
     # ── [2] Network & Route ──────────────────────────────────────────────────
 
     def _network_route_menu(self) -> None:
@@ -359,9 +371,13 @@ class MainMenu:
             case 0:
                 self.main_menu()
 
+    # ── [2.1] Tampilkan Topologi Jaringan ────────────────────────────────────
+
     def _tampilkan_topologi_jaringan(self) -> None:
         """Menampilkan topologi jaringan."""
         self._log_aktivitas.add_log("Masuk ke Tampilkan Topologi Jaringan")
+
+    # ── [2.2] Cari Rute Tercepat ─────────────────────────────────────────────
 
     def _cari_rute_tercepat_jaringan(self) -> None:
         """Mencari rute tercepat dalam jaringan."""
@@ -393,6 +409,8 @@ class MainMenu:
             case 0:
                 self.main_menu()
 
+    # ── [3.1] Tampilkan Queue Traffic ────────────────────────────────────────
+
     def _tampilkan_queue_traffic(self) -> None:
         """Menampilkan seluruh antrian traffic."""
         self._log_aktivitas.add_log("Masuk ke Tampilkan Queue Traffic")
@@ -406,6 +424,8 @@ class MainMenu:
         match choice:
             case 0:
                 self._traffic_queue_menu()
+
+    # ── [3.2] Kelola Traffic ─────────────────────────────────────────────────
 
     def _kelola_traffic(self) -> None:
         """Menampilkan menu pengelolaan traffic."""
@@ -428,6 +448,8 @@ class MainMenu:
             case 0:
                 self._traffic_queue_menu()
 
+    # ── [3.2.1] Lihat Traffic Terdepan ───────────────────────────────────────
+
     def _lihat_traffic_terdepan_traffic(self) -> None:
         """Menampilkan traffic terdepan dalam antrian."""
         self._log_aktivitas.add_log("Masuk ke Lihat Traffic Terdepan")
@@ -441,6 +463,8 @@ class MainMenu:
         match choice:
             case 0:
                 self._kelola_traffic()
+
+    # ── [3.2.2] Proses Traffic Terdepan ──────────────────────────────────────
 
     def _proses_traffic_terdepan_traffic(self) -> None:
         """Memproses traffic terdepan dalam antrian."""
@@ -479,11 +503,13 @@ class MainMenu:
             case 0:
                 self.main_menu()
 
+    # ── [4.1] Tampilkan Folder Server ────────────────────────────────────────
+
     def _tampilkan_folder_server_data(self) -> None:
         """Menampilkan folder server dengan traversal tree."""
         self._log_aktivitas.add_log("Masuk ke Tampilkan Folder Server", value=2)
         self._clear_screen()
-        self._header_menu("SUB MENU", "Kelola Traffic")
+        self._header_menu("SUB MENU", "Tampilkan Folder Server")
         server_tree = ServerTreeBuilder.build_server_tree()
         choice = make_menu_selection_question(
             question=["Preorder", "Inorder", "Postorder", "Batalkan"],
@@ -521,11 +547,13 @@ class MainMenu:
         self._console.input("Tekan enter untuk kembali...")
         self._struktur_data_menu()
 
+    # ── [4.2] Kelola Stack Log Aktivitas ─────────────────────────────────────
+
     def _kelola_stack_log_aktivitas_data(self) -> None:
         """Mengelola stack log aktivitas."""
         self._log_aktivitas.add_log("Masuk ke Kelola Stack Log Aktivitas")
         self._clear_screen()
-        self._header_menu("SUB MENU", "Struktur Data")
+        self._header_menu("SUB MENU", "Kelola Stack Log Aktivitas")
         self._log_aktivitas.show_logs()
         choice = make_menu_selection_question(
             question=[
@@ -538,7 +566,7 @@ class MainMenu:
         self._clear_screen()
         match choice:
             case 1:
-                self._header_menu("SUB MENU", "Struktur Data")
+                self._header_menu("SUB MENU", "Kelola Stack Log Aktivitas")
                 self._log_aktivitas.pop()
                 self._log_aktivitas.show_logs()
                 self._console.print(
@@ -548,7 +576,7 @@ class MainMenu:
                 time.sleep(2)
                 self._struktur_data_menu()
             case 2:
-                self._header_menu("SUB MENU", "Struktur Data")
+                self._header_menu("SUB MENU", "Kelola Stack Log Aktivitas")
                 self._log_aktivitas.clear_log()
                 self._log_aktivitas.show_logs()
                 self._console.print(
