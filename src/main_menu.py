@@ -228,12 +228,10 @@ class MainMenu:
 
             choice = make_menu_selection_question(
                 question=[
-                    "Scan Credential Status (semua server)",
                     "Bruteforce Server Login (server terpilih)",
-                    "Identitas Server (server terpilih)",
                     "Kembali",
                 ],
-                value=[1, 2, 3, 0],
+                value=[1, 0],
             ).ask()
 
         else:
@@ -246,10 +244,6 @@ class MainMenu:
 
         match choice:
             case 1:
-                pass
-            case 2:
-                pass
-            case 3:
                 pass
             case 0:
                 # [1] Kelola Server
