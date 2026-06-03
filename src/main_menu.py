@@ -228,7 +228,7 @@ class MainMenu:
 
             choice = make_menu_selection_question(
                 question=[
-                    "Bruteforce Server Login (server terpilih)"
+                    "Bruteforce Server Login (server terpilih)",
                     "Kembali",
                 ],
                 value=[1, 0],
