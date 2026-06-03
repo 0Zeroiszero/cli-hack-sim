@@ -11,12 +11,8 @@
         },
         "cdn": {
           "skripsi_cover.jpg": "2 MB",
-<<<<<<< HEAD
-          "thesis_outline.pdf": "1.5 MB"
-=======
           "thesis_outline.pdf": "1.5 MB",
           "cdn_manifest.json": "12 KB"
->>>>>>> 98fae603f930f413a7275f484bd5de8e6910655d
         }
       }
     },
@@ -30,14 +26,9 @@
           "recovery_mode.cfg": "11 KB"
         },
         "cdn": {
-<<<<<<< HEAD
-            "beta_presentation.pptx": "3 MB",
-            "data_analysis.xlsx": "1.2 MB"
-=======
           "beta_assets.zip": "8.4 MB",
           "landing_banner.png": "3.2 MB",
           "cache_rules.yaml": "18 KB"
->>>>>>> 98fae603f930f413a7275f484bd5de8e6910655d
         }
       }
     },
@@ -51,14 +42,9 @@
           "process.pid": "2 KB"
         },
         "cdn": {
-<<<<<<< HEAD
-            "gamma_logo.png": "500 KB",
-            "user_manual.pdf": "1 MB"
-=======
           "runtime_patch.pkg": "11 MB",
           "client_bundle.js": "640 KB",
           "texture_pack_01.dds": "24 MB"
->>>>>>> 98fae603f930f413a7275f484bd5de8e6910655d
         }
       }
     },
@@ -72,14 +58,9 @@
           "delta_backup.cfg": "13 KB"
         },
         "cdn": {
-<<<<<<< HEAD
-            "delta_promo.mp4": "15 MB",
-            "customer_data.csv": "2 MB"
-=======
           "maintenance_page.html": "32 KB",
           "patch_notes.txt": "9 KB",
           "delta_update.bin": "18 MB"
->>>>>>> 98fae603f930f413a7275f484bd5de8e6910655d
         }
       }
     },
@@ -93,14 +74,9 @@
           "env.local": "5 KB"
         },
         "cdn": {
-<<<<<<< HEAD
-            "echo_advertisement.gif": "1.8 MB",
-            "sales_report.docx": "900 KB"
-=======
           "mirror_snapshot.iso": "1.2 GB",
           "echo_wallpaper.png": "5 MB",
           "cdn_routes.map": "44 KB"
->>>>>>> 98fae603f930f413a7275f484bd5de8e6910655d
         }
       }
     },
@@ -114,14 +90,9 @@
           "falcon_driver.sys": "640 KB"
         },
         "cdn": {
-<<<<<<< HEAD
-            "falcon_overview.pdf": "1.1 MB",
-            "marketing_materials.zip": "4 MB"
-=======
           "falcon_stream.mp4": "480 MB",
           "driver_patch.exe": "22 MB",
           "stream_manifest.m3u8": "14 KB"
->>>>>>> 98fae603f930f413a7275f484bd5de8e6910655d
         }
       }
     },
@@ -135,14 +106,9 @@
           "hydra_watchdog.exe": "1.2 MB"
         },
         "cdn": {
-<<<<<<< HEAD
-              "hydra_infographic.png": "2.5 MB",
-              "performance_metrics.xlsx": "1.8 MB"
-=======
           "hydra_backup.tar": "3.4 GB",
           "watchdog_update.pkg": "71 MB",
           "cdn_cluster.json": "27 KB"
->>>>>>> 98fae603f930f413a7275f484bd5de8e6910655d
         }
       }
     },
@@ -156,14 +122,9 @@
           "service_token.key": "3 KB"
         },
         "cdn": {
-<<<<<<< HEAD
-            "orion_launch_video.mp4": "20 MB",
-            "user_feedback.csv": "1.5 MB"
-=======
           "starfield_render.mov": "920 MB",
           "route_visualizer.exe": "16 MB",
           "dns_snapshot.cache": "120 KB"
->>>>>>> 98fae603f930f413a7275f484bd5de8e6910655d
         }
       }
     },
@@ -177,20 +138,15 @@
           "phoenix_audit.log": "267 KB"
         },
         "cdn": {
-<<<<<<< HEAD
-            "phoenix_recovery_guide.pdf": "1.3 MB",
-            "incident_report.docx": "800 KB"
-=======
           "firewall_bundle.zip": "188 MB",
           "audit_archive.tar": "760 MB",
           "security_feed.xml": "48 KB"
->>>>>>> 98fae603f930f413a7275f484bd5de8e6910655d
         }
       }
     },
     {
       "server_name": "Titan",
-      "server_id": "SRV0010",
+      "server_id": "SRV010",
       "folders": {
         "system": {
           "titan_core.bin": "2.4 MB",
@@ -198,14 +154,9 @@
           "shield_config.yaml": "16 KB"
         },
         "cdn": {
-<<<<<<< HEAD
-            "titan_security_brief.pdf": "1.7 MB",
-            "vulnerability_scan_results.xlsx": "2.3 MB"
-=======
           "titan_engine.iso": "6.8 GB",
           "shield_texturepack.dds": "420 MB",
           "global_nodes.json": "63 KB"
->>>>>>> 98fae603f930f413a7275f484bd5de8e6910655d
         }
       }
     }
