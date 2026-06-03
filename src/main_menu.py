@@ -571,8 +571,10 @@ class MainMenu:
             pilihan_traversal = "preorder"
         elif choice == 2:
             pilihan_traversal = "inorder"
-        else:
+        elif choice == 3:
             pilihan_traversal = "postorder"
+        else:
+            self.struktur_data_menu()
 
         server_tree = ServerTreeBuilder.build_server_tree()
         target_id = self.server_id
