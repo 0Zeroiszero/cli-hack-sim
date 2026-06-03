@@ -8,11 +8,15 @@ import os
 from pathlib import Path
 from ipaddress import IPv4Address, AddressValueError
 
+# Regex
+import re
+
 # Implementasi dari questionary.select()
 from utils import (
     make_menu_selection_question,
     tampilkan_bandwidth_progress,
     display_search_ip_result,
+    make_traversal_folder,
 )
 
 from DSA import TrafficQueue
@@ -20,6 +24,9 @@ from DSA import LogAktivitas
 from DSA import SortingServer
 from DSA import cari_server_binary, cari_server_linear
 from DSA import ServerCarousel
+from DSA import ServerTreeBuilder
+from DSA import preorder, inorder, postorder
+
 from .filehandler import FileHandler
 
 from rich.console import Console, Group
@@ -39,14 +46,13 @@ class MainMenu:
 
         self.log_aktivitas = LogAktivitas()
 
-
         self.node_from_server = None
 
-        server_id = None
+        self.server_id = None
         if self.node_from_server is not None:
-            server_id = self.node_from_server.id
+            self.server_id = self.node_from_server.id
 
-        self.server_carousel = ServerCarousel(server_id)
+        self.server_carousel = ServerCarousel(self.server_id)
         self.operator = "Operator"
 
     @property
@@ -54,7 +60,7 @@ class MainMenu:
         if self.node_from_server:
             return self.node_from_server.nama
         return "No Server Selected"
-    
+
     @property
     def access_server(self) -> str:
         if self.node_from_server:
@@ -216,6 +222,8 @@ class MainMenu:
         self.server_carousel.run()
         self.server_carousel.make_footer()
         self.node_from_server = self.server_carousel.get_selected_server_node()
+        if self.node_from_server is not None:
+            self.server_id = self.node_from_server.id
 
         choice = make_menu_selection_question(
             question=[
@@ -536,8 +544,62 @@ class MainMenu:
     # TODO: [4.1] "Tampilkan Folder Server"
     def tampilkan_folder_server_data(self):
         '''[4.1] "Tampilkan Folder Server"'''
-        self.log_aktivitas.add_log("Masuk ke Tampilkan Folder Server")
-        pass
+        self.log_aktivitas.add_log("Masuk ke Tampilkan Folder Server", value=2)
+
+        self.clear_screen()
+
+        self.header_menu("SUB MENU", "Kelola Traffic")
+        server_tree = ServerTreeBuilder.build_server_tree()
+
+        # Polanya
+        # ├── Phoenix (SRV009) <- node.name = SRV009 pakai regex
+        # | ├── system
+        # | | ├── blocklist.rules (21 KB)
+        # | | ├── quarantine.flag (1 KB)
+        # | | ├── phoenix_audit.log (267 KB)
+        # | ├── cdn
+        # | | ├── firewall_bundle.zip (188 MB)
+        # | | ├── audit_archive.tar (760 MB)
+        # | | ├── security_feed.xml (48 KB)
+
+        choice = make_menu_selection_question(
+            question=["Preorder", "Inorder", "Postorder", "Batalkan"],
+            value=[1, 2, 3, 0],
+        ).ask()
+
+        if choice == 1:
+            pilihan_traversal = "preorder"
+        elif choice == 2:
+            pilihan_traversal = "inorder"
+        else:
+            pilihan_traversal = "postorder"
+
+        server_tree = ServerTreeBuilder.build_server_tree()
+        target_id = self.server_id
+
+        for item in server_tree:
+            match = re.search(r"\((SRV\d+)\)", item.name)
+
+            if match:
+                server_id = match.group(1)
+
+                if server_id == target_id:
+                    pr, inor, post = preorder(item), inorder(item), postorder(item)
+
+                    p, t = make_traversal_folder(
+                        pilihan_traversal=pilihan_traversal,
+                        preorder=pr,
+                        inorder=inor,
+                        postorder=post,
+                    )
+
+                    self.console.print(p, t)
+                    break
+        else:
+            self.console.print("[bold red]Tidak ditemukan")
+
+        self.console.input("Tekan enter untuk kembali...")
+        self.struktur_data_menu()
 
     # TODO: [4.2] "Kelola Stack Log Aktivitas"
     def kelola_stack_log_aktivitas_data(self):
