@@ -220,24 +220,36 @@ class MainMenu:
         self.header_menu("SUB MENU", "Pilih / Tampilkan Server")
 
         self.server_carousel.run()
-        self.server_carousel.make_footer()
         self.node_from_server = self.server_carousel.get_selected_server_node()
         if self.node_from_server is not None:
             self.server_id = self.node_from_server.id
 
-        choice = make_menu_selection_question(
-            question=[
-                "Scan Credential Status",
-                "Bruteforce Server Login",
-                "Kembali",
-            ],
-            value=[1, 2, 0],
-        ).ask()
+            self.server_carousel.make_footer()
+
+            choice = make_menu_selection_question(
+                question=[
+                    "Scan Credential Status (semua server)",
+                    "Bruteforce Server Login (server terpilih)",
+                    "Identitas Server (server terpilih)",
+                    "Kembali",
+                ],
+                value=[1, 2, 3, 0],
+            ).ask()
+
+        else:
+            self.server_carousel.make_footer()
+
+            choice = make_menu_selection_question(
+                question=["Kembali"],
+                value=[0],
+            ).ask()
 
         match choice:
             case 1:
                 pass
             case 2:
+                pass
+            case 3:
                 pass
             case 0:
                 # [1] Kelola Server
