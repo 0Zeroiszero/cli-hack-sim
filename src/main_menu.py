@@ -68,13 +68,20 @@ class MainMenu:
 
     @property
     def _access_server(self) -> str:
-        """Mengembalikan status akses ke server yang dipilih.
+        """Mengembalikan status akses server yang dipilih.
 
         Returns:
-            str: 'Have Access' jika server dipilih, 'No Access' jika tidak.
+            str: 'UNLOCKED' jika server dapat diakses, 'LOCKED' jika tidak atau 'No Access'
+                 jika server tidak ditemukan.
         """
-        if self._node_from_server:
-            return "Have Access"
+        if self._node_from_server is None:
+            return "No Access"
+        data = FileHandler().load_json(
+            Path("src/data/dalam-json/akun_dan_status_server.json")
+        )
+        for server in data["servers"]:
+            if server["server_id"] == self._node_from_server.id:
+                return "UNLOCKED" if server["access"] == "UNLOCKED" else "LOCKED"
         return "No Access"
 
     # ── Utility ──────────────────────────────────────────────────────────────
@@ -227,7 +234,7 @@ class MainMenu:
             self._server_carousel.make_footer()
             choice = make_menu_selection_question(
                 question=[
-                    "Bruteforce Server Login (server terpilih)",
+                    "Bruteforce Server Terpilih (server terpilih)",
                     "Kembali",
                 ],
                 value=[1, 0],
@@ -240,9 +247,21 @@ class MainMenu:
             ).ask()
         match choice:
             case 1:
-                pass
+                self._bruteforce_selected_server()
             case 0:
                 self._kelola_server_menu()
+
+    def _bruteforce_selected_server(self) -> None:
+        """Melakukan bruteforce login pada server yang dipilih jika akses belum UNLOCKED."""
+        self._log_aktivitas.add_log("Melakukan Bruteforce Server Terpilih", value=2)
+        self._clear_screen()
+        self._header_menu("SUB MENU", "Bruteforce Server Login")
+        if self._access_server == "UNLOCKED":
+            self._console.print(
+                "[bold yellow]Akses UNLOCKED dan tidak diperlakukan bruteforce[/bold yellow]"
+            )
+            time.sleep(1)
+            self._pilih_tampilkan_server()
 
     # ── [1.2] Cari Server Berdasarkan IP ─────────────────────────────────────
 
