@@ -5,188 +5,398 @@
                 "request_id": 1,
                 "timestamp": "14:22:31",
                 "method": "GET",
-                "url": "/login",
                 "source": "Client-7",
                 "destination": "Server Alpha",
-                "protocol": "HTTPS",
-                "status": "200 OK",
-                "payload": "512 KB",
-                "latency": "120 ms"
+                "threat_level": "HIGH"
+            },
+            {
+                "request_id": 11,
+                "timestamp": "14:25:10",
+                "method": "POST",
+                "source": "Client-3",
+                "destination": "Server Alpha",
+                "threat_level": "HIGH"
             }
         ],
-        "Monitor 2": [],
-        "Monitor 3": []
+        "Monitor 2": [
+            {
+                "request_id": 12,
+                "timestamp": "14:25:18",
+                "method": "GET",
+                "source": "Client-8",
+                "destination": "Server Alpha",
+                "threat_level": "LOW"
+            }
+        ],
+        "Monitor 3": [
+            {
+                "request_id": 13,
+                "timestamp": "14:25:26",
+                "method": "PUT",
+                "source": "Client-14",
+                "destination": "Server Alpha",
+                "threat_level": "HIGH"
+            }
+        ]
     },
-
     "Server Beta": {
-        "Monitor 1": [],
+        "Monitor 1": [
+            {
+                "request_id": 14,
+                "timestamp": "14:25:33",
+                "method": "GET",
+                "source": "Client-10",
+                "destination": "Server Beta",
+                "threat_level": "LOW"
+            }
+        ],
         "Monitor 2": [
             {
                 "request_id": 2,
                 "timestamp": "14:22:35",
                 "method": "POST",
-                "url": "/upload",
                 "source": "Client-12",
                 "destination": "Server Beta",
-                "protocol": "HTTPS",
-                "status": "403 Forbidden",
-                "payload": "220 KB",
-                "latency": "340 ms"
+                "threat_level": "HIGH"
+            },
+            {
+                "request_id": 15,
+                "timestamp": "14:25:41",
+                "method": "POST",
+                "source": "Client-16",
+                "destination": "Server Beta",
+                "threat_level": "HIGH"
             }
         ],
-        "Monitor 3": []
+        "Monitor 3": [
+            {
+                "request_id": 16,
+                "timestamp": "14:25:49",
+                "method": "DELETE",
+                "source": "Client-2",
+                "destination": "Server Beta",
+                "threat_level": "LOW"
+            }
+        ]
     },
-
     "Server Gamma": {
-        "Monitor 1": [],
-        "Monitor 2": [],
+        "Monitor 1": [
+            {
+                "request_id": 17,
+                "timestamp": "14:25:56",
+                "method": "GET",
+                "source": "Client-4",
+                "destination": "Server Gamma",
+                "threat_level": "HIGH"
+            }
+        ],
+        "Monitor 2": [
+            {
+                "request_id": 18,
+                "timestamp": "14:26:04",
+                "method": "POST",
+                "source": "Client-6",
+                "destination": "Server Gamma",
+                "threat_level": "LOW"
+            }
+        ],
         "Monitor 3": [
             {
                 "request_id": 3,
                 "timestamp": "14:22:40",
                 "method": "GET",
-                "url": "/dashboard",
                 "source": "Client-4",
                 "destination": "Server Gamma",
-                "protocol": "HTTP",
-                "status": "200 OK",
-                "payload": "150 KB",
-                "latency": "80 ms"
+                "threat_level": "HIGH"
+            },
+            {
+                "request_id": 19,
+                "timestamp": "14:26:11",
+                "method": "PATCH",
+                "source": "Client-9",
+                "destination": "Server Gamma",
+                "threat_level": "HIGH"
             }
         ]
     },
-
     "Server Delta": {
         "Monitor 1": [
             {
                 "request_id": 4,
                 "timestamp": "14:22:42",
                 "method": "DELETE",
-                "url": "/config",
                 "source": "Client-9",
                 "destination": "Server Delta",
-                "protocol": "HTTPS",
-                "status": "500 Internal Error",
-                "payload": "80 KB",
-                "latency": "520 ms"
+                "threat_level": "LOW"
+            },
+            {
+                "request_id": 20,
+                "timestamp": "14:26:19",
+                "method": "GET",
+                "source": "Client-1",
+                "destination": "Server Delta",
+                "threat_level": "LOW"
             }
         ],
-        "Monitor 2": [],
-        "Monitor 3": []
+        "Monitor 2": [
+            {
+                "request_id": 21,
+                "timestamp": "14:26:27",
+                "method": "PUT",
+                "source": "Client-13",
+                "destination": "Server Delta",
+                "threat_level": "HIGH"
+            }
+        ],
+        "Monitor 3": [
+            {
+                "request_id": 22,
+                "timestamp": "14:26:34",
+                "method": "POST",
+                "source": "Client-18",
+                "destination": "Server Delta",
+                "threat_level": "LOW"
+            }
+        ]
     },
-
     "Server Echo": {
-        "Monitor 1": [],
+        "Monitor 1": [
+            {
+                "request_id": 23,
+                "timestamp": "14:26:42",
+                "method": "GET",
+                "source": "Client-5",
+                "destination": "Server Echo",
+                "threat_level": "HIGH"
+            }
+        ],
         "Monitor 2": [
             {
                 "request_id": 5,
                 "timestamp": "14:22:47",
                 "method": "GET",
-                "url": "/api/data",
                 "source": "Client-2",
                 "destination": "Server Echo",
-                "protocol": "TCP",
-                "status": "200 OK",
-                "payload": "920 KB",
-                "latency": "210 ms"
+                "threat_level": "LOW"
+            },
+            {
+                "request_id": 24,
+                "timestamp": "14:26:50",
+                "method": "POST",
+                "source": "Client-7",
+                "destination": "Server Echo",
+                "threat_level": "LOW"
             }
         ],
-        "Monitor 3": []
+        "Monitor 3": [
+            {
+                "request_id": 25,
+                "timestamp": "14:26:58",
+                "method": "PUT",
+                "source": "Client-11",
+                "destination": "Server Echo",
+                "threat_level": "HIGH"
+            }
+        ]
     },
-
     "Server Falcon": {
-        "Monitor 1": [],
-        "Monitor 2": [],
+        "Monitor 1": [
+            {
+                "request_id": 26,
+                "timestamp": "14:27:06",
+                "method": "GET",
+                "source": "Client-15",
+                "destination": "Server Falcon",
+                "threat_level": "LOW"
+            }
+        ],
+        "Monitor 2": [
+            {
+                "request_id": 27,
+                "timestamp": "14:27:14",
+                "method": "PATCH",
+                "source": "Client-17",
+                "destination": "Server Falcon",
+                "threat_level": "HIGH"
+            }
+        ],
         "Monitor 3": [
             {
                 "request_id": 6,
                 "timestamp": "14:22:50",
                 "method": "POST",
-                "url": "/auth",
                 "source": "Client-15",
                 "destination": "Server Falcon",
-                "protocol": "HTTPS",
-                "status": "200 OK",
-                "payload": "300 KB",
-                "latency": "95 ms"
+                "threat_level": "LOW"
+            },
+            {
+                "request_id": 28,
+                "timestamp": "14:27:22",
+                "method": "POST",
+                "source": "Client-19",
+                "destination": "Server Falcon",
+                "threat_level": "LOW"
             }
         ]
     },
-
     "Server Hydra": {
         "Monitor 1": [
             {
                 "request_id": 7,
                 "timestamp": "14:22:53",
                 "method": "GET",
-                "url": "/download/file.zip",
                 "source": "Client-18",
                 "destination": "Server Hydra",
-                "protocol": "HTTP",
-                "status": "200 OK",
-                "payload": "1.2 MB",
-                "latency": "430 ms"
+                "threat_level": "HIGH"
+            },
+            {
+                "request_id": 29,
+                "timestamp": "14:27:31",
+                "method": "GET",
+                "source": "Client-6",
+                "destination": "Server Hydra",
+                "threat_level": "HIGH"
             }
         ],
-        "Monitor 2": [],
-        "Monitor 3": []
+        "Monitor 2": [
+            {
+                "request_id": 30,
+                "timestamp": "14:27:39",
+                "method": "POST",
+                "source": "Client-12",
+                "destination": "Server Hydra",
+                "threat_level": "LOW"
+            }
+        ],
+        "Monitor 3": [
+            {
+                "request_id": 31,
+                "timestamp": "14:27:47",
+                "method": "PUT",
+                "source": "Client-1",
+                "destination": "Server Hydra",
+                "threat_level": "HIGH"
+            }
+        ]
     },
-
     "Server Orion": {
-        "Monitor 1": [],
+        "Monitor 1": [
+            {
+                "request_id": 32,
+                "timestamp": "14:27:55",
+                "method": "GET",
+                "source": "Client-11",
+                "destination": "Server Orion",
+                "threat_level": "LOW"
+            }
+        ],
         "Monitor 2": [
             {
                 "request_id": 8,
                 "timestamp": "14:22:58",
                 "method": "PUT",
-                "url": "/admin",
                 "source": "Client-11",
                 "destination": "Server Orion",
-                "protocol": "HTTPS",
-                "status": "403 Forbidden",
-                "payload": "110 KB",
-                "latency": "260 ms"
+                "threat_level": "HIGH"
+            },
+            {
+                "request_id": 33,
+                "timestamp": "14:28:03",
+                "method": "POST",
+                "source": "Client-14",
+                "destination": "Server Orion",
+                "threat_level": "HIGH"
             }
         ],
-        "Monitor 3": []
+        "Monitor 3": [
+            {
+                "request_id": 34,
+                "timestamp": "14:28:11",
+                "method": "DELETE",
+                "source": "Client-20",
+                "destination": "Server Orion",
+                "threat_level": "LOW"
+            }
+        ]
     },
-
     "Server Phoenix": {
-        "Monitor 1": [],
-        "Monitor 2": [],
+        "Monitor 1": [
+            {
+                "request_id": 35,
+                "timestamp": "14:28:19",
+                "method": "GET",
+                "source": "Client-3",
+                "destination": "Server Phoenix",
+                "threat_level": "HIGH"
+            }
+        ],
+        "Monitor 2": [
+            {
+                "request_id": 36,
+                "timestamp": "14:28:27",
+                "method": "POST",
+                "source": "Client-8",
+                "destination": "Server Phoenix",
+                "threat_level": "LOW"
+            }
+        ],
         "Monitor 3": [
             {
                 "request_id": 9,
                 "timestamp": "14:23:02",
                 "method": "POST",
-                "url": "/sql-injection",
                 "source": "Client-20",
                 "destination": "Server Phoenix",
-                "protocol": "HTTPS",
-                "status": "BLOCKED",
-                "payload": "50 KB",
-                "latency": "600 ms",
+                "threat_level": "HIGH"
+            },
+            {
+                "request_id": 37,
+                "timestamp": "14:28:35",
+                "method": "POST",
+                "source": "Client-17",
+                "destination": "Server Phoenix",
                 "threat_level": "HIGH"
             }
         ]
     },
-
     "Server Titan": {
         "Monitor 1": [
             {
                 "request_id": 10,
                 "timestamp": "14:23:07",
                 "method": "GET",
-                "url": "/user/profile",
                 "source": "Client-5",
                 "destination": "Server Titan",
-                "protocol": "HTTPS",
-                "status": "200 OK",
-                "payload": "410 KB",
-                "latency": "130 ms"
+                "threat_level": "LOW"
+            },
+            {
+                "request_id": 38,
+                "timestamp": "14:28:43",
+                "method": "PUT",
+                "source": "Client-9",
+                "destination": "Server Titan",
+                "threat_level": "LOW"
             }
         ],
-        "Monitor 2": [],
-        "Monitor 3": []
+        "Monitor 2": [
+            {
+                "request_id": 39,
+                "timestamp": "14:28:51",
+                "method": "POST",
+                "source": "Client-13",
+                "destination": "Server Titan",
+                "threat_level": "HIGH"
+            }
+        ],
+        "Monitor 3": [
+            {
+                "request_id": 40,
+                "timestamp": "14:28:59",
+                "method": "GET",
+                "source": "Client-18",
+                "destination": "Server Titan",
+                "threat_level": "LOW"
+            }
+        ]
     }
 }
