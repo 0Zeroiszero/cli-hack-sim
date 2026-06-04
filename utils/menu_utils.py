@@ -13,6 +13,8 @@ from rich.progress import Progress, BarColumn, TextColumn
 from rich.panel import Panel
 from rich.status import Status
 from rich.text import Text
+from rich.table import Table
+from rich import box
 
 
 def make_menu_selection_question(
@@ -255,3 +257,91 @@ def display_search_ip_result(
         )
     except TypeError:
         return False
+
+
+def make_traversal_folder(
+    pilihan_traversal: str = "preorder",
+    preorder: str = "",
+    inorder: str = "",
+    postorder: str = "",
+) -> tuple[Panel, Table]:
+    """
+    Membuat Panel dan Table Rich berdasarkan traversal yang dipilih.
+
+    Args:
+        pilihan_traversal (str): Traversal utama yang ditampilkan di Panel.
+            Pilihan: "preorder", "inorder", atau "postorder".
+        preorder (str): Hasil traversal preorder.
+        inorder (str): Hasil traversal inorder.
+        postorder (str): Hasil traversal postorder.
+
+    Returns:
+        tuple[Panel, Table]: Panel traversal utama dan tabel traversal lainnya.
+    """
+
+    if pilihan_traversal == "preorder":
+        tree_text = preorder
+        panel_title = "Preorder Tree"
+
+        row_1_name = "Inorder"
+        row_1_value = inorder
+        row_1_style = "dark_red"
+
+        row_2_name = "Postorder"
+        row_2_value = postorder
+        row_2_style = "white"
+
+    elif pilihan_traversal == "inorder":
+        tree_text = inorder
+        panel_title = "Inorder Tree"
+
+        row_1_name = "Preorder"
+        row_1_value = preorder
+        row_1_style = "dark_red"
+
+        row_2_name = "Postorder"
+        row_2_value = postorder
+        row_2_style = "white"
+
+    elif pilihan_traversal == "postorder":
+        tree_text = postorder
+        panel_title = "Postorder Tree"
+
+        row_1_name = "Preorder"
+        row_1_value = preorder
+        row_1_style = "dark_red"
+
+        row_2_name = "Inorder"
+        row_2_value = inorder
+        row_2_style = "white"
+
+    else:
+        tree_text = preorder
+        panel_title = "Preorder Tree"
+
+        row_1_name = "Inorder"
+        row_1_value = inorder
+        row_1_style = "dark_red"
+
+        row_2_name = "Postorder"
+        row_2_value = postorder
+        row_2_style = "white"
+
+    panel = Panel(tree_text, title=panel_title, border_style="green")
+
+    table = Table(
+        show_header=True,
+        header_style="bold cyan",
+        border_style="white",
+        box=box.SIMPLE,
+        expand=True,
+        padding=(1, 2),
+    )
+
+    table.add_column("Traversal Lainnya", style="bold green", no_wrap=True)
+    table.add_column("Hasil", style="white")
+
+    table.add_row(Text(row_1_name, style=row_1_style), Text(row_1_value))
+    table.add_row(Text(row_2_name, style=row_2_style), Text(row_2_value))
+
+    return (panel, table)

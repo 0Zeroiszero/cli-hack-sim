@@ -14,6 +14,7 @@ import json
 class TreeNode():
     def  __init__(self, name, node_type="folder", size: int = None):
         self.name = name
+        self.server_id = None
         self.node_type = node_type
         self.size = size
         self.children = []
@@ -26,8 +27,9 @@ class TreeNode():
 
 class ServerTreeBuilder:
 
+    # ServerTreeBuilder.build_server_tree()
     @staticmethod
-    def build_server_tree():
+    def build_server_tree() -> list[TreeNode]:
         file_path = Path("src/data/dalam-json/daftar_folder_file_server.json")
         
         with open(file_path, "r") as file:
@@ -64,7 +66,7 @@ class ServerTreeBuilder:
 
 # PREORDER
 # root -> children
-def preorder(node, depth=0):
+def preorder(node, depth=0) -> str:
     if node is None:
         return ""
     
@@ -83,7 +85,7 @@ def preorder(node, depth=0):
 
 # INORDER
 # children kiri -> root -> kanan
-def inorder(node):
+def inorder(node) -> str:
     if node is None:
         return ""
     
@@ -115,7 +117,7 @@ def inorder(node):
 
 # POSTORDER
 # children -> root
-def postorder(node):
+def postorder(node) -> str:
     if node is None:
         return ""
     
