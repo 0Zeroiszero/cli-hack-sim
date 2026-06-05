@@ -1,6 +1,4 @@
-"""
-@author: Abdullah Affandi
-"""
+"""@author: Abdullah Affandi."""
 
 # FULL PROMPT TOOLKIT jangan digabungkan dengan RICH
 from prompt_toolkit.key_binding import KeyBindings
@@ -19,8 +17,11 @@ from src import FungsiServer, ServerNode
 
 
 class ServerCarouselNode:
+    """Node untuk doubly linked list carousel server."""
+
     # Ini jangan diimport ya
     def __init__(self, data):
+        """Inisialisasi node dengan data server."""
         self.data = data
         self.prev = None
         self.next = None
@@ -31,7 +32,10 @@ class ServerCarouselNode:
 # get_selected_server_node - mendapatkan node server terpilih
 # make_footer - langsung nampilkan footer
 class ServerCarousel(FungsiServer):
+    """Carousel server dengan navigasi doubly linked list."""
+
     def __init__(self, selected_id: str | None = None) -> None:
+        """Inisialisasi carousel dengan data server dari parent class."""
         # return self.server_list
         # self.id = id
         # self.nama = nama
@@ -58,11 +62,12 @@ class ServerCarousel(FungsiServer):
         self.bindings = KeyBindings()
         self._register_bind_keys()
         self.current_copy = None
+        self.app = None
+        self.layout = None
+        self.table = None
 
     def run(self) -> Application:
-        """
-        Menjalankan aplikasi
-        """
+        """Menjalankan aplikasi."""
         self.app = self._make_app()
 
         self.app.run()
@@ -70,16 +75,11 @@ class ServerCarousel(FungsiServer):
         return self.app
 
     def get_selected_server_node(self) -> ServerNode:
-        """
-        Pemakaian luar atau dalam class
-        """
+        """Mengembalikan node server yang terpilih."""
         return self.selected
 
     def make_footer(self) -> None:
-        """
-        Langsung nampilkan footer dengan memanfaatkan prompt toolkit
-        print_formatted_text
-        """
+        """Menampilkan footer dengan prompt toolkit print_formatted_text."""
         self.console.begin_capture()
         self.console.print(
             Rule(style="white", characters="="), width=self.console.width - 2
@@ -102,9 +102,7 @@ class ServerCarousel(FungsiServer):
         print_formatted_text(ANSI(self.console.end_capture()))
 
     def _initialize_node(self) -> None:
-        """
-        Inisialisasi seluruh Node
-        """
+        """Inisialisasi seluruh node dari server_list."""
         self.head = None  # Simpan referensi ke node pertama
 
         for server in self.server_list:
@@ -122,10 +120,7 @@ class ServerCarousel(FungsiServer):
         self.current = self.head
 
     def _restore_state(self, selected_id: str) -> None:
-        """
-        Jika udah milih server, state-nya akan dimuat ulang (mirip save game)
-        """
-
+        """Memuat ulang state ke server yang dipilih sebelumnya."""
         node = self.head  # mulai dari head
         while node is not None:
             if str(node.data.id) == str(selected_id):
@@ -134,16 +129,11 @@ class ServerCarousel(FungsiServer):
             node = node.next
 
     def _selected_server(self) -> ServerNode:
-        """
-        Hanya untuk pemakaian dalam class
-        Melakukan inisialiasi node current dengan server terpilih
-        """
+        """Inisialisasi node current dengan server terpilih (internal)."""
         self.selected = self.current.data
 
     def _add_server_row(self, position: str, server, selected: bool = False) -> None:
-        """
-        Helper untuk membuat baris tabel yang dipanggil _make_server_list_table
-        """
+        """Membuat baris tabel untuk posisi PREVIOUS/SELECTED/NEXT."""
         if server is None:
             self.table.add_row(position, "-", "-", "-", "-", style="dim")
             return
@@ -177,9 +167,7 @@ class ServerCarousel(FungsiServer):
         )
 
     def _make_table(self) -> Table:
-        """
-        Helper untuk membuat kolom tabel yang dipanggil _make_server_list_table
-        """
+        """Membuat kolom tabel untuk daftar server."""
         table = Table(
             box=None,
             expand=True,
@@ -198,9 +186,7 @@ class ServerCarousel(FungsiServer):
         return table
 
     def _make_server_list_table(self) -> Panel:
-        """
-        Membuat list tabel PREVIOUS, SELECTED, NEXT untuk ditampilkan
-        """
+        """Membuat tabel daftar server (PREVIOUS, SELECTED, NEXT)."""
         self.table = self._make_table()  # refresh table setiap kali
 
         prev_data = self.current.prev.data if self.current.prev else None
@@ -219,16 +205,12 @@ class ServerCarousel(FungsiServer):
         )
 
     def _go_next(self) -> None:
-        """
-        Next Node
-        """
+        """Pindah ke node berikutnya."""
         if self.current.next is not None:
             self.current = self.current.next
 
     def _go_prev(self) -> None:
-        """
-        Previous Node
-        """
+        """Pindah ke node sebelumnya."""
         if self.current.prev is not None:
             self.current = self.current.prev
 
@@ -256,18 +238,15 @@ class ServerCarousel(FungsiServer):
         table.add_column("Sep", justify="center", ratio=0)
         table.add_column("Value", justify="left", ratio=2)
 
-        table.add_row(
-            "[bold]Server ID[/bold]", ":", f"[bold cyan]{server.id}[/bold cyan]"
-        )
-        table.add_row(
-            "[bold]Server Name[/bold]", ":", f"[bold white]{server.nama}[/bold white]"
-        )
-        table.add_row(
-            "[bold]IP Address[/bold]", ":", f"[bold yellow]{server.ip}[/bold yellow]"
-        )
-        table.add_row(
-            "[bold]Status[/bold]", ":", f"[{status_style}]{status}[/{status_style}]"
-        )
+        sid = f"[bold cyan]{server.id}[/bold cyan]"
+        sname = f"[bold white]{server.nama}[/bold white]"
+        sip = f"[bold yellow]{server.ip}[/bold yellow]"
+        sstat = f"[{status_style}]{status}[/{status_style}]"
+
+        table.add_row("[bold]Server ID[/bold]", ":", sid)
+        table.add_row("[bold]Server Name[/bold]", ":", sname)
+        table.add_row("[bold]IP Address[/bold]", ":", sip)
+        table.add_row("[bold]Status[/bold]", ":", sstat)
 
         return Panel(
             table,
@@ -278,9 +257,7 @@ class ServerCarousel(FungsiServer):
         )
 
     def _get_current_table(self) -> ANSI:
-        """
-        Fungsi pembantu untuk menangkap tabel terbaru
-        """
+        """Menangkap tampilan tabel terbaru sebagai ANSI."""
         self.console.begin_capture()
 
         deskripsi = Text.from_markup(
@@ -297,13 +274,11 @@ class ServerCarousel(FungsiServer):
         return ANSI(self.console.end_capture())
 
     def _make_app(self) -> Application:
-        """
-        Membuat aplikasi prompt toolkit
-        """
+        """Membuat aplikasi prompt toolkit."""
         app = Application(
             layout=Layout(
                 Window(
-                    FormattedTextControl(text=lambda: self._get_current_table()),
+                    FormattedTextControl(text=self._get_current_table),
                     always_hide_cursor=True,
                 )
             ),
@@ -313,31 +288,29 @@ class ServerCarousel(FungsiServer):
         return app
 
     def _register_bind_keys(self) -> None:
-        """
-        Melakukan registrasi bindings
-        """
+        """Melakukan registrasi key bindings."""
 
         @self.bindings.add("down")
-        def _(event):
+        def _go_next_handler(_event):
             self._go_next()
 
         @self.bindings.add("up")
-        def _(event):
+        def _go_prev_handler(_event):
             self._go_prev()
 
         @self.bindings.add("q")
         @self.bindings.add("escape")
         @self.bindings.add("c-c")
-        def _(event):
+        def _exit_handler(_event):
             if self.selected is not None:
                 self._restore_state(self.selected.id)
                 self.app.invalidate()
-                self.app.loop.call_later(0.1, self.app.exit)  # exit setelah render
+                self.app.loop.call_later(0.1, self.app.exit)
             else:
                 self.app.exit()
 
         @self.bindings.add("enter")
-        def _(event):
+        def _select_handler(_event):
             self._selected_server()
             self.app.exit()
 

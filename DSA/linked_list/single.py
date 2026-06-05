@@ -1,10 +1,8 @@
-"""
-@author: Abdullah Affandi
-Implementasi Queue Traffic berdasarkan traffic.json
-"""
+"""@author: Abdullah Affandi. Implementasi Queue Traffic berdasarkan traffic.json."""
 
 from pathlib import Path
 import time
+import random
 
 # Rich guy
 from rich.console import Console, Group
@@ -20,12 +18,16 @@ from DSA.queue.queue import Queue
 
 
 class TrafficNode:
+    """Node untuk singly linked list traffic."""
+
     def __init__(self, data):
+        """Inisialisasi node dengan data traffic."""
         self.data = data
         self.next = None
 
     @staticmethod
     def from_queue(queue_data):
+        """Membangun linked list dari data queue dan mengembalikan (head, rear)."""
         head = None
         rear = None
 
@@ -44,21 +46,14 @@ class TrafficNode:
 
 # NOTE: Ini masuk ke menu [3]
 class TrafficQueue(Queue):
-    """
-    Queue traffic untuk membaca dan menampilkan data traffic dari JSON.
+    """Queue traffic untuk membaca dan menampilkan data traffic dari JSON.
 
-    Class ini tetap mewarisi Queue, sehingga fitur queue seperti enqueue(),
-    dequeue(), front(), is_empty(), dan size() masih digunakan.
-
-    Selain itu, class ini juga memakai TrafficNode sebagai representasi
-    Single Linked List untuk menampilkan hubungan antar data traffic
-    dengan pola node -> node -> node.
-
-    Queue dipakai untuk operasi antrian utama.
-    TrafficNode dipakai untuk visualisasi dan traversal linked list.
+    Mewarisi Queue untuk operasi antrian (enqueue, dequeue, front, dll).
+    Menggunakan TrafficNode untuk visualisasi dan traversal linked list.
     """
 
     def __init__(self, file_path: str):
+        """Inisialisasi TrafficQueue dengan path file traffic JSON."""
         super().__init__()
         self.fh = FileHandler()
 
@@ -72,6 +67,7 @@ class TrafficQueue(Queue):
         self.refresh_traffic()
 
     def refresh_traffic(self) -> None:
+        """Memuat ulang data traffic dari file JSON."""
         self.queue.clear()
         self.load_traffic()
 
@@ -79,10 +75,7 @@ class TrafficQueue(Queue):
         self.current_node = self.head_node
 
     def load_traffic(self) -> None:
-        """
-        Membaca traffic.json lalu memasukkan setiap request traffic ke queue.
-        """
-
+        """Membaca traffic.json dan memasukkan setiap request ke queue."""
         traffic_data = self.fh.load_json(self.ph)
 
         for server_name, monitors in traffic_data.items():
@@ -93,9 +86,7 @@ class TrafficQueue(Queue):
                         "monitor_id": monitor_name,
                         "server_id": server_name,
                         "metadata": {
-                            k: v
-                            for k, v in traffic.items()
-                            if k != "request_id"
+                            k: v for k, v in traffic.items() if k != "request_id"
                         },
                     }
 
@@ -103,8 +94,7 @@ class TrafficQueue(Queue):
 
     # NOTE: Ini masuk ke menu [3.1] "Tampilkan Queue Traffic"
     def display(self) -> None:
-        import random
-
+        """Menampilkan seluruh traffic dalam queue dengan format Columns."""
         if self.is_empty():
             self.console.print(Text("   Queue traffic kosong.\n\n", style="bold red"))
             return
@@ -173,6 +163,7 @@ class TrafficQueue(Queue):
 
     # NOTE: Ini masuk ke menu [3.2] "Lihat traffic terdepan"
     def display_front(self) -> None:
+        """Menampilkan traffic terdepan dan node berikutnya."""
         if self.is_empty():
             self.console.print(Text("   Queue traffic kosong.\n\n", style="bold red"))
             return
@@ -255,6 +246,7 @@ class TrafficQueue(Queue):
 
     # NOTE: Ini masuk ke menu [3.2] "Proses Traffic Terdepan"
     def display_dequeue(self) -> None:
+        """Memproses traffic terdepan dengan animasi dan menampilkan hasil dequeue."""
         if self.is_empty() or self.head_node is None:
             self.console.print(Text("   Queue traffic kosong.\n\n", style="bold red"))
             return
@@ -401,7 +393,7 @@ class TrafficQueue(Queue):
 
 
 if __name__ == "__main__":
-    tf = TrafficQueue()
+    tf = TrafficQueue("traffic.json")
 
     tf.load_traffic()
     tf.display()

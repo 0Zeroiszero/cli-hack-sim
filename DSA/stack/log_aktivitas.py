@@ -1,24 +1,24 @@
-"""
-@author: Abdullah Affandi
+"""@author: Abdullah Affandi. Referensi ke DSA stack."""
 
-Referensi ke DSA\stack
-"""
-
-from .stack import Stack
+import datetime
 
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
 
+from .stack import Stack
+
 
 class LogAktivitas(Stack):
+    """Stack untuk menyimpan log aktivitas dengan format timestamp."""
+
     def __init__(self) -> None:
+        """Inisialisasi LogAktivitas dengan console Rich."""
         super().__init__()
         self.console = Console()
 
     def add_log(self, message: str, *, value: int = 0) -> None:
-        import datetime
-
+        """Menambahkan log dengan timestamp dan tipe (INFO/LOGIN/ACTION)."""
         log_text = Text()
         waktu = datetime.datetime.now().strftime("%H:%M:%S")
 
@@ -36,27 +36,34 @@ class LogAktivitas(Stack):
         self.push(log_text)
 
     def pop_log(self) -> None:
+        """Menghapus log teratas dari stack."""
         if self.is_empty():
-            self.console.print(Text("Log aktivitas masih kosong.", style="bold red"))
+            msg = Text("Log aktivitas masih kosong.", style="bold red")
+            self.console.print(msg)
 
         self.pop()
 
     def clear_log(self) -> None:
+        """Menghapus seluruh log aktivitas."""
         self.stack = []
 
     def peek(self) -> Text | None:
+        """Mengembalikan log teratas tanpa menghapusnya."""
         if self.is_empty():
             return None
         return self.stack[-1]
 
     def peek_log(self) -> Text | None:
+        """Menampilkan log teratas ke console."""
         if self.is_empty():
-            self.console.print(Text("Log aktivitas masih kosong.", style="bold red"))
+            msg = Text("Log aktivitas masih kosong.", style="bold red")
+            self.console.print(msg)
             return None
 
         return self.peek()
 
     def show_logs(self) -> None:
+        """Menampilkan seluruh log aktivitas dalam Panel."""
         if self.is_empty():
             self.console.print(
                 Panel(
