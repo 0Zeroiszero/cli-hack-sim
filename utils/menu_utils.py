@@ -3,10 +3,15 @@
 """
 
 import time
+from ipaddress import IPv4Address, AddressValueError
 
-from questionary import Style, Question
+from src import FileHandler
+
+from prompt_toolkit.completion import FuzzyWordCompleter
+from prompt_toolkit import prompt
+
 import questionary
-
+from questionary import Style, Question
 from rich.console import Console, Group
 from rich.live import Live
 from rich.progress import Progress, BarColumn, TextColumn
@@ -345,3 +350,66 @@ def make_traversal_folder(
     table.add_row(Text(row_2_name, style=row_2_style), Text(row_2_value))
 
     return (panel, table)
+
+
+def ask_for_ip() -> str:
+    """Meminta input alamat IPv4 server dengan fitur autocomplete.
+
+    Fungsi ini mengambil daftar server dari file menggunakan `FileHandler`,
+    lalu membuat autocomplete berdasarkan alamat IP server. Nama server akan
+    ditampilkan sebagai metadata di sebelah kanan pilihan autocomplete.
+
+    Input user divalidasi menggunakan `IPv4Address`. Jika input bukan alamat
+    IPv4 yang valid, fungsi akan menampilkan pesan error dan meminta user
+    memasukkan ulang alamat IP.
+
+    Returns:
+        str: Alamat IPv4 valid dalam bentuk string.
+
+    Raises:
+        Tidak ada raise manual. Input tidak valid akan ditangani dengan
+        pengulangan sampai user memasukkan IPv4 yang benar.
+    """
+    server_list = FileHandler().load_server()
+    if not server_list:
+        return
+
+    ip_words = []
+    ip_meta = {}
+
+    for server in server_list:
+        ip_words.append(server.ip)
+        ip_meta[server.ip] = server.nama
+
+    completer = FuzzyWordCompleter(
+        words=ip_words,
+        meta_dict=ip_meta,
+    )
+
+    style = Style.from_dict(
+        {
+            "prompt": "bold #00ff00",
+            "": "#00ff00",
+            "completion-menu.completion": "bg:#001100 #00ff00",
+            "completion-menu.completion.current": "bg:#00ff00 #000000 bold",
+            "completion-menu.meta.completion": "bg:#001100 #00aaaa",
+            "completion-menu.meta.completion.current": "bg:#00ff00 #000000 bold",
+            "scrollbar.background": "bg:#003300",
+            "scrollbar.button": "bg:#00ff00",
+        }
+    )
+
+    while True:
+        ip_input = prompt(
+            [("class:prompt", "Masukkan IP Server: ")],
+            completer=completer,
+            complete_while_typing=True,
+            style=style,
+        ).strip()
+
+        try:
+            ip_address = IPv4Address(ip_input)
+            return str(ip_address)
+
+        except AddressValueError:
+            return
