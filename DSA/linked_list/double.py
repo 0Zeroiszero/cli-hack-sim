@@ -1,17 +1,16 @@
 """@author: Abdullah Affandi."""
 
 # FULL PROMPT TOOLKIT jangan digabungkan dengan RICH
-from prompt_toolkit.key_binding import KeyBindings
-from prompt_toolkit.application import Application
-from prompt_toolkit.layout import FormattedTextControl, Layout, Window
-from prompt_toolkit.formatted_text import ANSI
 from prompt_toolkit import print_formatted_text
-
-from rich.rule import Rule
-from rich.text import Text
+from prompt_toolkit.application import Application
+from prompt_toolkit.formatted_text import ANSI
+from prompt_toolkit.key_binding import KeyBindings
+from prompt_toolkit.layout import FormattedTextControl, Layout, Window
 from rich.console import Console
 from rich.panel import Panel
+from rich.rule import Rule
 from rich.table import Table
+from rich.text import Text
 
 from src import FungsiServer, ServerNode
 
@@ -132,7 +131,9 @@ class ServerCarousel(FungsiServer):
         """Inisialisasi node current dengan server terpilih (internal)."""
         self.selected = self.current.data
 
-    def _add_server_row(self, position: str, server, selected: bool = False) -> None:
+    def _add_server_row(
+        self, position: str, server, selected: bool = False
+    ) -> None:
         """Membuat baris tabel untuk posisi PREVIOUS/SELECTED/NEXT."""
         if server is None:
             self.table.add_row(position, "-", "-", "-", "-", style="dim")
