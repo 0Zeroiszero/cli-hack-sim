@@ -16,7 +16,32 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "asciimatics>=1.15.0",
+    "blessed>=1.44.0",
     "numpy>=2.4.6",
     "pandas>=3.0.3",
     "pyinstaller>=6.20.0",
+    "python-lsp-server[all]>=1.14.0",
+    "websockets>=16.0",
 ]
+
+[tool.ruff]
+indent-width = 4
+line-length = 79
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+    # McCabe
+    "C901",
+]
+target-version = "py314"
