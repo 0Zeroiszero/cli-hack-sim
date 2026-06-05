@@ -353,38 +353,24 @@ def make_traversal_folder(
 
 
 def ask_for_ip() -> str:
-    """Meminta input alamat IPv4 server dengan fitur autocomplete.
+    """Meminta input alamat IPv4 server dengan fitur autocomplete IP.
 
-    Fungsi ini mengambil daftar server dari file menggunakan `FileHandler`,
-    lalu membuat autocomplete berdasarkan alamat IP server. Nama server akan
-    ditampilkan sebagai metadata di sebelah kanan pilihan autocomplete.
+    Mengambil daftar server dari `FileHandler`, lalu menyediakan autocomplete
+    berdasarkan alamat IP server tanpa metadata nama server.
 
-    Input user divalidasi menggunakan `IPv4Address`. Jika input bukan alamat
-    IPv4 yang valid, fungsi akan menampilkan pesan error dan meminta user
-    memasukkan ulang alamat IP.
+    Input divalidasi menggunakan `IPv4Address`. Jika input bukan alamat IPv4
+    yang valid, fungsi mengembalikan string kosong.
 
     Returns:
-        str: Alamat IPv4 valid dalam bentuk string.
-
-    Raises:
-        Tidak ada raise manual. Input tidak valid akan ditangani dengan
-        pengulangan sampai user memasukkan IPv4 yang benar.
+        str: Alamat IPv4 valid, atau string kosong jika tidak valid / tidak ada server.
     """
     server_list = FileHandler().load_server()
     if not server_list:
-        return
+        return ""
 
-    ip_words = []
-    ip_meta = {}
+    ip_words = [server.ip for server in server_list]
 
-    for server in server_list:
-        ip_words.append(server.ip)
-        ip_meta[server.ip] = server.nama
-
-    completer = FuzzyWordCompleter(
-        words=ip_words,
-        meta_dict=ip_meta,
-    )
+    completer = FuzzyWordCompleter(words=ip_words)
 
     style = Style.from_dict(
         {
@@ -392,8 +378,6 @@ def ask_for_ip() -> str:
             "": "#00ff00",
             "completion-menu.completion": "bg:#001100 #00ff00",
             "completion-menu.completion.current": "bg:#00ff00 #000000 bold",
-            "completion-menu.meta.completion": "bg:#001100 #00aaaa",
-            "completion-menu.meta.completion.current": "bg:#00ff00 #000000 bold",
             "scrollbar.background": "bg:#003300",
             "scrollbar.button": "bg:#00ff00",
         }
@@ -412,4 +396,4 @@ def ask_for_ip() -> str:
             return str(ip_address)
 
         except AddressValueError:
-            return
+            return ""
