@@ -4,10 +4,10 @@ class Queue:
     Digunakan karena queue memiliki sifat FIFO (First In First Out),
     sehingga item yang masuk pertama akan selalu berada di depan dan mudah diakses.
     '''
-    def __init__(self):
-        self.queue = []
+    def __init__(self) -> None:
+        self.queue: list = []
 
-    def enqueue(self, item):
+    def enqueue(self, item) -> None:
         self.queue.append(item)
 
     def dequeue(self):
@@ -22,10 +22,10 @@ class Queue:
         else:
             raise IndexError("Queue is empty")
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         return len(self.queue) == 0
 
-    def size(self):
+    def size(self) -> int:
         return len(self.queue)
     
     def show_queue(self):
