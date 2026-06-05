@@ -35,6 +35,7 @@ from utils import (
     make_menu_selection_question,
     make_traversal_folder,
     tampilkan_bandwidth_progress,
+    ask_for_ip,
 )
 
 from .filehandler import FileHandler
@@ -293,7 +294,7 @@ class MainMenu:
         self._log_aktivitas.add_log("Mencari IP Secara Binary", value=2)
         self._clear_screen()
         self._header_menu("SUB MENU", "Cari Server Berdasarkan IP")
-        input_ip = self._console.input("Masukkan IP Server: ")
+        input_ip = ask_for_ip()
         try:
             hasil_binary = cari_server_binary(IPv4Address(input_ip))
         except AddressValueError:
@@ -314,7 +315,7 @@ class MainMenu:
         self._log_aktivitas.add_log("Mencari IP Secara Linear", value=2)
         self._clear_screen()
         self._header_menu("SUB MENU", "Cari Server Berdasarkan IP")
-        input_ip = self._console.input("Masukkan IP Server: ")
+        input_ip = ask_for_ip()
         try:
             hasil_linear = cari_server_linear(IPv4Address(input_ip))
         except AddressValueError:
