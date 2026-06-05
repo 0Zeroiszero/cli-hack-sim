@@ -11,11 +11,11 @@ import json
 
 class ServerNode:
     # Di-return oleh FungsiServer.tambah_server() untuk setiap server yang dibuat
-    def __init__(self, nama, id, ip, status):
-        self.id = id
-        self.nama = nama
-        self.ip = ip
-        self.status = status
+    def __init__(self, nama: str, id: str, ip: str, status: str) -> None:
+        self.id: str = id
+        self.nama: str = nama
+        self.ip: str = ip
+        self.status: str = status
 
 # fungsi menambahkan server
 class FungsiServer:

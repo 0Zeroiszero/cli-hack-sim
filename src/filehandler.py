@@ -2,12 +2,14 @@
 @author: Irfan Kurniawan
 """
 
+from pathlib import Path
+
 from .server import *
 from .login import *
 
 
 class FileHandler:
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     # fungsi untuk menyimpan data server ke dalam file txt
@@ -96,7 +98,7 @@ class FileHandler:
             json.dump(data, f, indent=4, ensure_ascii=False)
 
     # fungsi untuk memuat file json
-    def load_json(self, path: str):
+    def load_json(self, path: str | Path) -> dict | list:
         with open(path, "r") as f:
             return json.load(f)
 
