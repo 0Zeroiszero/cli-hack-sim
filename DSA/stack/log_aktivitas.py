@@ -12,11 +12,11 @@ from rich.text import Text
 
 
 class LogAktivitas(Stack):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.console = Console()
 
-    def add_log(self, message: str, *, value=0):
+    def add_log(self, message: str, *, value: int = 0) -> None:
         import datetime
 
         log_text = Text()
@@ -35,22 +35,28 @@ class LogAktivitas(Stack):
 
         self.push(log_text)
 
-    def pop_log(self):
+    def pop_log(self) -> None:
         if self.is_empty():
             self.console.print(Text("Log aktivitas masih kosong.", style="bold red"))
 
         self.pop()
 
-    def clear_log(self):
+    def clear_log(self) -> None:
         self.stack = []
 
-    def peek_log(self):
+    def peek(self) -> Text | None:
+        if self.is_empty():
+            return None
+        return self.stack[-1]
+
+    def peek_log(self) -> Text | None:
         if self.is_empty():
             self.console.print(Text("Log aktivitas masih kosong.", style="bold red"))
+            return None
 
         return self.peek()
 
-    def show_logs(self):
+    def show_logs(self) -> None:
         if self.is_empty():
             self.console.print(
                 Panel(
