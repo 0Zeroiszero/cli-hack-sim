@@ -7,8 +7,6 @@ from pathlib import Path
 
 from rich.align import Align
 from rich.columns import Columns
-
-# Rich guy
 from rich.console import Console, Group
 from rich.live import Live
 from rich.panel import Panel
