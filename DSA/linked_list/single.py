@@ -155,7 +155,7 @@ class TrafficQueue(Queue):
             if current.next is not None:
                 nodes.append(
                     Align.center(
-                        Text("──>", style="bold white"),
+                        Text("➜", style="bold white"),
                         vertical="middle",
                     )
                 )
@@ -231,7 +231,7 @@ class TrafficQueue(Queue):
         )
 
         arrow = Align.center(
-            Text("──>", style="bold white"),
+            Text("➜", style="bold white"),
             vertical="middle",
         )
 
