@@ -28,6 +28,9 @@ dev = [
 [tool.ruff]
 indent-width = 4
 line-length = 79
+target-version = "py314"
+
+[tool.ruff.lint]
 select = [
     # pycodestyle
     "E",
@@ -44,4 +47,3 @@ select = [
     # McCabe
     "C901",
 ]
-target-version = "py314"
