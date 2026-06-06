@@ -27,15 +27,13 @@ class Graph:
             print(f"{simpul}: {', '.join(tetangga)}")
 
     def dijkstra(self, start):
-        import heapq
-
         # Inisialisasi jarak ke semua simpul sebagai tak hingga
         jarak = {simpul: float('inf') for simpul in self.graph}
         jarak[start] = 0
         queue = [(0, start)]
 
         while queue:
-            current_distance, current_node = heapq.heappop(queue)
+            current_distance, current_node = queue
 
             # Jika jarak yang diambil lebih besar dari jarak yang sudah diketahui, lewati
             if current_distance > jarak[current_node]:
@@ -46,6 +44,6 @@ class Graph:
 
                 if distance < jarak[neighbor]:
                     jarak[neighbor] = distance
-                    heapq.heappush(queue, (distance, neighbor))
+                    queue(distance, neighbor)
 
         return jarak
