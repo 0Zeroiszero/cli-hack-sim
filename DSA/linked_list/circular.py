@@ -1,152 +1,179 @@
-"""
-@author: Abdullah Affandi
-"""
+"""@author: Abdullah Affandi."""
 
-import os
-import subprocess
+import random
 import time
+from pathlib import Path
+from typing import cast
 
-from src.server import Server
-from utils.text_color_changer import red_text, green_text, yellow_text
+from rich import box
+from rich.console import Console
+from rich.live import Live
+from rich.table import Table
 
-
-class CircularServerNode(Server):
-    def __init__(
-        self,
-        *,
-        server_id: str,
-        server_name: str,
-        ip: str,
-        status: str,
-        vulnerable: bool = False,
-        access: str = "LOCKED",
-    ):
-        super().__init__(nama=server_name, id=server_id, ip=ip, status=status)
-
-        # Atribut tambahan khusus circular linked list
-        self.vulnerable = vulnerable
-        self.access = access
-        self.previous_status = status
-        self.next = None
+from src import FileHandler, ServerNode
 
 
-class CircularServerMonitoring:
-    def __init__(self):
-        self.tail = None
-        self.current = None
+class CircularServerNode(ServerNode):
+    """Node server yang terhubung secara circular (singly linked list).
 
-    def is_empty(self):
-        return self.tail is None
+    Setelah inisialisasi, seluruh node terhubung membentuk lingkaran
+    di mana node terakhir (tail) mengarah kembali ke node pertama (head).
+    """
 
-    def add_server(
-        self, *, server_id, server_name, ip, status, vulnerable=False, access="LOCKED"
-    ):
-        new_node = CircularServerNode(
-            server_id=server_id,
-            server_name=server_name,
-            ip=ip,
-            status=status,
-            vulnerable=vulnerable,
-            access=access,
+    def __init__(self, data: dict) -> None:
+        """Bangun circular linked list dari data server JSON.
+
+        Args:
+            data: Dictionary hasil load_json yang berisi key "servers"
+                  dengan daftar server.
+
+        """
+        servers: list[dict] = data["servers"]
+
+        first = servers[0]
+        super().__init__(
+            nama=first["server_name"],
+            id=first["server_id"],
+            ip=first["ip"],
+            status=first["status"],
         )
+        self.vulnerable: bool = first.get("vulnerable", False)
+        self.next: CircularServerNode | None = None
 
-        if self.is_empty():
-            self.tail = new_node
-            self.tail.next = new_node
-            self.current = new_node
-        else:
-            new_node.next = self.tail.next
-            self.tail.next = new_node
-            self.tail = new_node
+        self.current = self
+        for server in servers[1:]:
+            node = object.__new__(CircularServerNode)
+            ServerNode.__init__(
+                node,
+                nama=server["server_name"],
+                id=server["server_id"],
+                ip=server["ip"],
+                status=server["status"],
+            )
+            node.vulnerable = server.get("vulnerable", False)
+            self.current.next = node
+            self.current = node
 
-    def move_next(self):
-        if self.current is not None:
-            self.current = self.current.next
+        self.current.next = self
+        self.current = self
 
-    def clear_screen(self):
-        subprocess.run("cls" if os.name == "nt" else "clear", shell=True)
-
-    def check_current_server(self):
-        if self.current is None:
-            print("Belum ada server untuk dimonitor.")
+    def _make_random_server_vulnerable(
+        self,
+        target: CircularServerNode,
+    ) -> None:
+        """Toggle vulnerable target jika random 1-9 genap."""
+        angka = random.randint(1, 9)
+        if angka % 2 != 0:
             return
+        target.vulnerable = not target.vulnerable
 
-        changed = self.current.previous_status != self.current.status
-
-        if changed:
-            self.current.vulnerable = True
-            self.current.previous_status = self.current.status
-
-        self.clear_screen()
-
-        color = red_text if self.current.vulnerable else green_text
-
-        print("+=======================================================+")
-        print("|             CIRCULAR LINKED LIST MONITOR              |")
-        print("+=======================================================+")
-        print(color(f" Server ID       : {self.current.id}"))
-        print(color(f" Server Name     : {self.current.nama}"))
-        print(color(f" IP Address      : {self.current.ip}"))
-        print(color(f" Current Status  : {self.current.status}"))
-        print(color(f" Previous Status : {self.current.previous_status}"))
-        print(color(f" Access          : {self.current.access}"))
-        print(color(f" Vulnerable      : {self.current.vulnerable}"))
-        print("+=======================================================+")
-
-        if changed:
-            print(red_text(" CHANGE DETECTED : Status berubah dari histori sebelumnya"))
-            print(red_text(" ACTION          : vulnerable otomatis menjadi True"))
-        else:
-            print(yellow_text(" CHANGE DETECTED : Tidak ada perubahan"))
-
-        if self.current.vulnerable:
-            print(red_text(" ALERT           : SERVER VULNERABLE"))
-        else:
-            print(green_text(" ALERT           : SERVER AMAN"))
-
-    def update_status_demo(self, server_id, new_status):
-        if self.is_empty():
-            return False
-
-        start = self.tail.next
-        current = start
-
+    def _collect_all_nodes(self) -> list[CircularServerNode]:
+        """Kumpulkan seluruh node dari circular linked list."""
+        nodes: list[CircularServerNode] = []
+        node = self
         while True:
-            if current.id == server_id:
-                current.status = new_status
-                return True
+            nodes.append(node)
+            node = cast("CircularServerNode", node.next)
+            if node is self:
+                break
+        return nodes
 
-            current = current.next
+    def _advance_current(self) -> None:
+        """Maju satu langkah ke node berikutnya (circular)."""
+        assert self.current.next is not None  # noqa: S101
+        self.current = self.current.next
 
-            if current == start:
+    def _build_monitoring_table(
+        self,
+        highlight_id: str | None = None,
+    ) -> Table:
+        """Bangun tabel monitoring seluruh server dalam circular list."""
+        table = Table(border_style="green", box=box.HORIZONTALS, expand=True)
+        table.add_column("Server ID", style="cyan")
+        table.add_column("Name", style="white")
+        table.add_column("IP", style="yellow")
+        table.add_column("Status")
+        table.add_column("Vulnerable")
+
+        node = self
+        while True:
+            status_upper = node.status.strip().upper()
+            status_color = {
+                "ONLINE": "green",
+                "OFFLINE": "red",
+                "MAINTENANCE": "yellow",
+                "BLOCKED": "red",
+                "OVERLOAD": "magenta",
+            }.get(status_upper, "white")
+
+            if node.id == highlight_id:
+                if node.vulnerable:
+                    row_style = "on red"
+                    vuln_text = "[bold white]YES[/bold white]"
+                else:
+                    row_style = "on white"
+                    vuln_text = "[bold black]NO[/bold black]"
+            elif node.vulnerable:
+                row_style = "on red"
+                vuln_text = "[bold white]YES[/bold white]"
+            else:
+                row_style = ""
+                vuln_text = "[green]NO[/green]"
+
+            table.add_row(
+                node.id,
+                node.nama,
+                node.ip,
+                f"[{status_color}]{node.status}[/{status_color}]",
+                vuln_text,
+                style=row_style,
+            )
+            node = cast("CircularServerNode", node.next)
+            if node is self:
                 break
 
-        return False
+        return table
 
-    def show_route(self):
-        if self.is_empty():
-            print("Circular linked list kosong.")
-            return
+    def _make_circular_live_table(self) -> None:
+        """Live table: satpam putih keliling, pulihkan server merah."""
+        console = Console()
+        nodes = self._collect_all_nodes()
 
-        start = self.tail.next
-        current = start
-        route = []
-
-        while True:
-            route.append(current.id)
-            current = current.next
-
-            if current == start:
-                break
-
-        route.append(start.id)
-        print(" -> ".join(route))
-
-    def run_auto_monitor(self, delay=2):
+        console.print("[dim]Tekan Ctrl+C untuk berhenti...[/dim]")
         try:
-            while True:
-                self.check_current_server()
-                self.move_next()
-                time.sleep(delay)
+            with Live(
+                self._build_monitoring_table(),
+                refresh_per_second=4,
+                console=console,
+            ) as live:
+                while True:
+                    time.sleep(0.25)
+
+                    # Server acak jadi vulnerable (merah) secara independen
+                    if random.randint(1, 4) == 1:
+                        target = random.choice(nodes)
+                        self._make_random_server_vulnerable(target)
+
+                    # Satpam putih berjalan keliling
+                    self._advance_current()
+
+                    # Kalau ketemu server merah, pulihkan ke state awal
+                    if self.current.vulnerable:
+                        self.current.vulnerable = False
+
+                    live.update(
+                        self._build_monitoring_table(self.current.id),
+                    )
         except KeyboardInterrupt:
-            print("\nMonitoring dihentikan.")
+            pass
+
+
+if __name__ == "__main__":
+    raw_data = FileHandler().load_json(
+        Path("src/data/dalam-json/akun_dan_status_server.json"),
+    )
+    assert isinstance(raw_data, dict)  # noqa: S101
+    head = CircularServerNode(raw_data)
+
+    print("\n--- Live Monitoring ---")
+    head._make_circular_live_table()
