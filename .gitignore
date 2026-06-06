@@ -16,8 +16,6 @@ mcp
 # Qwen agent ignore
 .qwen/*
 .qwenignore
-QWEN.md
-.lsp.json
 
 # Distribution / packaging
 .Python
