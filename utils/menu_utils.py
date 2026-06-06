@@ -3,10 +3,15 @@
 """
 
 import time
+from ipaddress import IPv4Address, AddressValueError
 
-from questionary import Style, Question
+from src import FileHandler
+
+from prompt_toolkit.completion import FuzzyWordCompleter
+from prompt_toolkit import prompt
+
 import questionary
-
+from questionary import Style, Question
 from rich.console import Console, Group
 from rich.live import Live
 from rich.progress import Progress, BarColumn, TextColumn
@@ -345,3 +350,50 @@ def make_traversal_folder(
     table.add_row(Text(row_2_name, style=row_2_style), Text(row_2_value))
 
     return (panel, table)
+
+
+def ask_for_ip() -> str:
+    """Meminta input alamat IPv4 server dengan fitur autocomplete IP.
+
+    Mengambil daftar server dari `FileHandler`, lalu menyediakan autocomplete
+    berdasarkan alamat IP server tanpa metadata nama server.
+
+    Input divalidasi menggunakan `IPv4Address`. Jika input bukan alamat IPv4
+    yang valid, fungsi mengembalikan string kosong.
+
+    Returns:
+        str: Alamat IPv4 valid, atau string kosong jika tidak valid / tidak ada server.
+    """
+    server_list = FileHandler().load_server()
+    if not server_list:
+        return ""
+
+    ip_words = [server.ip for server in server_list]
+
+    completer = FuzzyWordCompleter(words=ip_words)
+
+    style = Style.from_dict(
+        {
+            "prompt": "bold #00ff00",
+            "": "#00ff00",
+            "completion-menu.completion": "bg:#001100 #00ff00",
+            "completion-menu.completion.current": "bg:#00ff00 #000000 bold",
+            "scrollbar.background": "bg:#003300",
+            "scrollbar.button": "bg:#00ff00",
+        }
+    )
+
+    while True:
+        ip_input = prompt(
+            [("class:prompt", "Masukkan IP Server: ")],
+            completer=completer,
+            complete_while_typing=True,
+            style=style,
+        ).strip()
+
+        try:
+            ip_address = IPv4Address(ip_input)
+            return str(ip_address)
+
+        except AddressValueError:
+            return ""

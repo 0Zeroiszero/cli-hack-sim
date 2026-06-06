@@ -6,12 +6,12 @@ import json
 from pathlib import Path
 
 class SortingServer:
-    def __init__(self):
-        self.urutan = []
-        self.urutan_data = []
-    
+    def __init__(self) -> None:
+        self.urutan: list = []
+        self.urutan_data: list[tuple[int, str, str, int]] = []
+
     # fungsi untuk mengurutkan server berdasarkan bandwidth tertinggi menggunakan bubble sort
-    def urutkan_server(self):
+    def urutkan_server(self) -> list[tuple[int, str, str, int]]:
         with open(Path("src/data/dalam-json/akun_dan_status_server.json"), 'r') as f:
             data = json.load(f)
         

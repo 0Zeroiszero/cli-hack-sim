@@ -1,5 +1,4 @@
-"""
-Modul main menu untuk aplikasi CLI Hack Sim.
+"""Modul main menu untuk aplikasi CLI Hack Sim.
 
 @author: Abdullah Affandi
 """
@@ -31,6 +30,7 @@ from DSA import (
     preorder,
 )
 from utils import (
+    ask_for_ip,
     display_search_ip_result,
     make_menu_selection_question,
     make_traversal_folder,
@@ -38,18 +38,25 @@ from utils import (
 )
 
 from .filehandler import FileHandler
+from .server import ServerNode  # noqa: TC001
+
+# ── Constants ────────────────────────────────────────────────────────────
+
+TRAVERSAL_PREORDER = 1
+TRAVERSAL_INORDER = 2
+TRAVERSAL_POSTORDER = 3
 
 
 class MainMenu:
     """Pengontrol menu utama untuk aplikasi CLI Hack Sim."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Inisialisasi atribut dan dependensi utama."""
         self._console = Console()
         self._traffic = TrafficQueue("src/data/dalam-json/traffic.json")
         self._log_aktivitas = LogAktivitas()
-        self._node_from_server = None
-        self._server_id = None
+        self._node_from_server: ServerNode | None = None
+        self._server_id: str | None = None
         if self._node_from_server is not None:
             self._server_id = self._node_from_server.id
         self._server_carousel = ServerCarousel(self._server_id)
@@ -61,6 +68,7 @@ class MainMenu:
 
         Returns:
             str: Nama server atau 'No Server Selected' jika belum ada.
+
         """
         if self._node_from_server:
             return self._node_from_server.nama
@@ -68,13 +76,22 @@ class MainMenu:
 
     @property
     def _access_server(self) -> str:
-        """Mengembalikan status akses ke server yang dipilih.
+        """Mengembalikan status akses server yang dipilih.
 
         Returns:
-            str: 'Have Access' jika server dipilih, 'No Access' jika tidak.
+            str: 'UNLOCKED' jika server dapat diakses, 'LOCKED' jika tidak
+                 atau 'No Access' jika server tidak ditemukan.
+
         """
-        if self._node_from_server:
-            return "Have Access"
+        if self._node_from_server is None:
+            return "No Access"
+        data = FileHandler().load_json(
+            Path("src/data/dalam-json/akun_dan_status_server.json"),
+        )
+        assert isinstance(data, dict)  # noqa: S101
+        for server in data["servers"]:
+            if server["server_id"] == self._node_from_server.id:
+                return "UNLOCKED" if server["access"] == "UNLOCKED" else "LOCKED"
         return "No Access"
 
     # ── Utility ──────────────────────────────────────────────────────────────
@@ -82,7 +99,7 @@ class MainMenu:
     def _clear_screen(self) -> None:
         """Membersihkan layar terminal."""
         command = "cls" if os.name == "nt" else "clear"
-        subprocess.run(command, shell=True)
+        subprocess.run(command, shell=True, check=False)  # noqa: S602
 
     def intro(self) -> None:
         """Menampilkan animasi intro dan urutan inisialisasi."""
@@ -113,6 +130,7 @@ class MainMenu:
         Args:
             menu: Nama menu utama.
             sub_menu: Nama sub-menu yang sedang aktif.
+
         """
         self._clear_screen()
         lokasi_rapi = " ".join(word.capitalize() for word in sub_menu.split())
@@ -125,7 +143,9 @@ class MainMenu:
         info_text = Text()
         info_text.append(f"Menu Saat ini : {lokasi_rapi}\n", style="bold green")
         info_text.append("Aktivitas     : ", style="bold green")
-        info_text.append_text(self._log_aktivitas.peek())
+        peeked = self._log_aktivitas.peek()
+        if peeked is not None:
+            info_text.append_text(peeked)
         info = Group(
             info_text,
             "\n",
@@ -135,7 +155,7 @@ class MainMenu:
         )
         self._layout = Group(header, "\n", info, "\n")
         self._console.print(
-            self._layout, Rule(style="white", characters="="), style="bold green"
+            self._layout, Rule(style="white", characters="="), style="bold green",
         )
 
     # ── Main Menu ────────────────────────────────────────────────────────────
@@ -172,6 +192,7 @@ class MainMenu:
                 3 = Traffic Queue
                 4 = Struktur Data
                 0 = Keluar
+
         """
         self._clear_screen()
         match menu_id:
@@ -227,7 +248,7 @@ class MainMenu:
             self._server_carousel.make_footer()
             choice = make_menu_selection_question(
                 question=[
-                    "Bruteforce Server Login (server terpilih)",
+                    "Bruteforce Server Terpilih (server terpilih)",
                     "Kembali",
                 ],
                 value=[1, 0],
@@ -240,9 +261,24 @@ class MainMenu:
             ).ask()
         match choice:
             case 1:
-                pass
+                self._bruteforce_selected_server()
             case 0:
                 self._kelola_server_menu()
+
+    def _bruteforce_selected_server(self) -> None:
+        """Melakukan bruteforce login pada server yang dipilih.
+
+        Hanya berjalan jika akses server belum UNLOCKED.
+        """
+        self._log_aktivitas.add_log("Melakukan Bruteforce Server Terpilih", value=2)
+        self._clear_screen()
+        self._header_menu("SUB MENU", "Bruteforce Server Login")
+        if self._access_server == "UNLOCKED":
+            self._console.print(
+                "[bold yellow]Akses UNLOCKED, bruteforce tidak perlu[/bold yellow]",
+            )
+            time.sleep(1)
+            self._pilih_tampilkan_server()
 
     # ── [1.2] Cari Server Berdasarkan IP ─────────────────────────────────────
 
@@ -274,11 +310,12 @@ class MainMenu:
         self._log_aktivitas.add_log("Mencari IP Secara Binary", value=2)
         self._clear_screen()
         self._header_menu("SUB MENU", "Cari Server Berdasarkan IP")
-        input_ip = self._console.input("Masukkan IP Server: ")
-        try:
-            hasil_binary = cari_server_binary(IPv4Address(input_ip))
-        except AddressValueError:
-            hasil_binary = False
+        input_ip = ask_for_ip()
+        if not input_ip:
+            self._console.input("Tidak valid, masukkan ulang...")
+            self._cari_server_berdasarkan_ip_server()
+            return
+        hasil_binary = cari_server_binary(input_ip)
         if not hasil_binary:
             self._console.input("Tidak valid, masukkan ulang...")
             self._cari_server_berdasarkan_ip_server()
@@ -295,7 +332,7 @@ class MainMenu:
         self._log_aktivitas.add_log("Mencari IP Secara Linear", value=2)
         self._clear_screen()
         self._header_menu("SUB MENU", "Cari Server Berdasarkan IP")
-        input_ip = self._console.input("Masukkan IP Server: ")
+        input_ip = ask_for_ip()
         try:
             hasil_linear = cari_server_linear(IPv4Address(input_ip))
         except AddressValueError:
@@ -316,17 +353,18 @@ class MainMenu:
         self._log_aktivitas.add_log("Mengurutkan Server Berdasarkan Bandwidth", value=2)
         self._clear_screen()
         self._header_menu("SUB MENU", "Urutkan Server Berdasarkan Bandwidth")
-        bandwidth_server = []
+        bandwidth_server: list[tuple[int, str, str, int]] = []
         bandwidth_file_data = FileHandler().load_json(
-            Path("src/data/dalam-json/akun_dan_status_server.json")
+            Path("src/data/dalam-json/akun_dan_status_server.json"),
         )
+        assert isinstance(bandwidth_file_data, dict)  # noqa: S101
         for idx, req in enumerate(bandwidth_file_data["servers"]):
             bandwidth_server.append(
-                [idx, req["server_id"], req["server_name"], req["bandwidth_mbps"]]
+                (idx, req["server_id"], req["server_name"], req["bandwidth_mbps"]),
             )
         self._console.print(tampilkan_bandwidth_progress(data=bandwidth_server))
         choice = Confirm.ask(
-            "Jalankan pengurutan?", console=self._console, default=True
+            "Jalankan pengurutan?", console=self._console, default=True,
         )
         if choice:
             sorted_server = SortingServer().urutkan_server()
@@ -335,7 +373,7 @@ class MainMenu:
                 status.update("[bold green]Server terurut...")
                 time.sleep(1)
             self._console.print(
-                tampilkan_bandwidth_progress(data=sorted_server, rank=True)
+                tampilkan_bandwidth_progress(data=sorted_server, rank=True),
             )
             self._console.input("\nTekan Enter untuk kembali ke menu...")
             self._kelola_server_menu()
@@ -391,7 +429,7 @@ class MainMenu:
         self._clear_screen()
         self._header_menu("MENU", "Traffic Queue")
         self._console.print(
-            f"Queue Size: {self._traffic.size()}", end="\n\n", style="bold yellow"
+            f"Queue Size: {self._traffic.size()}", end="\n\n", style="bold yellow",
         )
         choice = make_menu_selection_question(
             question=[
@@ -516,11 +554,11 @@ class MainMenu:
             value=[1, 2, 3, 0],
         ).ask()
         pilihan_traversal = None
-        if choice == 1:
+        if choice == TRAVERSAL_PREORDER:
             pilihan_traversal = "preorder"
-        elif choice == 2:
+        elif choice == TRAVERSAL_INORDER:
             pilihan_traversal = "inorder"
-        elif choice == 3:
+        elif choice == TRAVERSAL_POSTORDER:
             pilihan_traversal = "postorder"
         else:
             self._struktur_data_menu()
@@ -571,7 +609,7 @@ class MainMenu:
                 self._log_aktivitas.show_logs()
                 self._console.print(
                     "\n[bold yellow]Log teratas berhasil dihapus. "
-                    "Kembali ke menu Struktur Data...[/bold yellow]"
+                    "Kembali ke menu Struktur Data...[/bold yellow]",
                 )
                 time.sleep(2)
                 self._struktur_data_menu()
@@ -581,7 +619,7 @@ class MainMenu:
                 self._log_aktivitas.show_logs()
                 self._console.print(
                     "\n[bold yellow]Seluruh log berhasil dihapus. "
-                    "Kembali ke menu Struktur Data...[/bold yellow]"
+                    "Kembali ke menu Struktur Data...[/bold yellow]",
                 )
                 time.sleep(2)
                 self._struktur_data_menu()

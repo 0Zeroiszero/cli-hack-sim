@@ -93,16 +93,9 @@ class TrafficQueue(Queue):
                         "monitor_id": monitor_name,
                         "server_id": server_name,
                         "metadata": {
-                            "timestamp": traffic.get("timestamp"),
-                            "method": traffic.get("method"),
-                            "url": traffic.get("url"),
-                            "source": traffic.get("source"),
-                            "destination": traffic.get("destination"),
-                            "protocol": traffic.get("protocol"),
-                            "status": traffic.get("status"),
-                            "payload": traffic.get("payload"),
-                            "latency": traffic.get("latency"),
-                            "threat_level": traffic.get("threat_level"),
+                            k: v
+                            for k, v in traffic.items()
+                            if k != "request_id"
                         },
                     }
 
@@ -141,7 +134,6 @@ class TrafficQueue(Queue):
                 f"method      : {metadata.get('method') or '-'}\n",
                 style="cyan",
             )
-            text.append(f"url         : {metadata.get('url') or '-'}\n", style="white")
             text.append(
                 f"source      : {metadata.get('source') or '-'}\n",
                 style="blue",
@@ -149,22 +141,6 @@ class TrafficQueue(Queue):
             text.append(
                 f"destination : {metadata.get('destination') or '-'}\n",
                 style="blue",
-            )
-            text.append(
-                f"protocol    : {metadata.get('protocol') or '-'}\n",
-                style="bright_cyan",
-            )
-            text.append(
-                f"status      : {metadata.get('status') or '-'}\n",
-                style="yellow",
-            )
-            text.append(
-                f"payload     : {metadata.get('payload') or '-'}\n",
-                style="magenta",
-            )
-            text.append(
-                f"latency     : {metadata.get('latency') or '-'}\n",
-                style="bright_magenta",
             )
 
             nodes.append(
@@ -179,7 +155,7 @@ class TrafficQueue(Queue):
             if current.next is not None:
                 nodes.append(
                     Align.center(
-                        Text("──>", style="bold white"),
+                        Text("➜", style="bold white"),
                         vertical="middle",
                     )
                 )
@@ -229,25 +205,12 @@ class TrafficQueue(Queue):
             text.append(
                 f"method      : {metadata.get('method') or '-'}\n", style="white"
             )
-            text.append(f"url         : {metadata.get('url') or '-'}\n", style="white")
             text.append(
                 f"source      : {metadata.get('source') or '-'}\n", style="white"
             )
             text.append(
                 f"destination : {metadata.get('destination') or '-'}\n",
                 style="white",
-            )
-            text.append(
-                f"protocol    : {metadata.get('protocol') or '-'}\n", style="white"
-            )
-            text.append(
-                f"status      : {metadata.get('status') or '-'}\n", style="white"
-            )
-            text.append(
-                f"payload     : {metadata.get('payload') or '-'}\n", style="white"
-            )
-            text.append(
-                f"latency     : {metadata.get('latency') or '-'}\n", style="white"
             )
             text.append(
                 f"threat_level: {metadata.get('threat_level') or '-'}",
@@ -268,7 +231,7 @@ class TrafficQueue(Queue):
         )
 
         arrow = Align.center(
-            Text("──>", style="bold white"),
+            Text("➜", style="bold white"),
             vertical="middle",
         )
 
@@ -309,9 +272,6 @@ class TrafficQueue(Queue):
             info.append(f"server_id    : {item['server_id']}\n")
             info.append(f"destination  : {metadata.get('destination') or '-'}\n")
             info.append(f"method       : {metadata.get('method') or '-'}\n")
-            info.append(f"url          : {metadata.get('url') or '-'}\n")
-            info.append(f"status       : {metadata.get('status') or '-'}\n")
-            info.append(f"latency      : {metadata.get('latency') or '-'}\n")
             info.append(f"threat_level : {metadata.get('threat_level') or '-'}\n\n")
 
             if next_node is not None:
@@ -393,15 +353,10 @@ class TrafficQueue(Queue):
             f"timestamp   : {removed_metadata.get('timestamp') or '-'}\n"
         )
         result_text.append(f"method      : {removed_metadata.get('method') or '-'}\n")
-        result_text.append(f"url         : {removed_metadata.get('url') or '-'}\n")
         result_text.append(f"source      : {removed_metadata.get('source') or '-'}\n")
         result_text.append(
             f"destination : {removed_metadata.get('destination') or '-'}\n"
         )
-        result_text.append(f"protocol    : {removed_metadata.get('protocol') or '-'}\n")
-        result_text.append(f"status      : {removed_metadata.get('status') or '-'}\n")
-        result_text.append(f"payload     : {removed_metadata.get('payload') or '-'}\n")
-        result_text.append(f"latency     : {removed_metadata.get('latency') or '-'}\n")
 
         if is_failed:
             result_text.append(

@@ -10,6 +10,13 @@ __pycache__/
 # C extensions
 *.so
 
+# mcp
+mcp
+
+# Qwen agent ignore
+.qwen/*
+.qwenignore
+
 # Distribution / packaging
 .Python
 build/
@@ -220,3 +227,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+.qwen/
+gha-creds-*.json

@@ -4,28 +4,28 @@ class Stack:
     Digunakan karena stack memiliki sifat LIFO (Last In First Out),
     sehingga log terbaru akan selalu berada di atas dan mudah diakses.
     '''
-    def __init__(self):
-        self.stack = []
+    def __init__(self) -> None:
+        self.stack: list = []
 
-    def push(self, item):
+    def push(self, item) -> None:
         self.stack.append(item)
 
-    def pop(self):
+    def pop(self) -> object:
         if not self.is_empty():
             return self.stack.pop()
         else:
             raise IndexError("Stack is empty")
 
-    def peek(self):
+    def peek(self) -> object:
         if not self.is_empty():
             return self.stack[-1]
         else:
             raise IndexError("Stack is empty")
 
-    def is_empty(self):
+    def is_empty(self) -> bool:
         return len(self.stack) == 0
 
-    def size(self):
+    def size(self) -> int:
         return len(self.stack)
     
     def show_logs(self):

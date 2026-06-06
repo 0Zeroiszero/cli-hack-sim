@@ -31,7 +31,7 @@ class ServerCarouselNode:
 # get_selected_server_node - mendapatkan node server terpilih
 # make_footer - langsung nampilkan footer
 class ServerCarousel(FungsiServer):
-    def __init__(self, selected_id: str = None):
+    def __init__(self, selected_id: str | None = None) -> None:
         # return self.server_list
         # self.id = id
         # self.nama = nama
