@@ -1,3 +1,8 @@
-from .antrean_packet import AntrianPacket
+"""Inisialisasi sub-paket queue.
 
-__all__ = ["AntrianPacket"]
+Menyediakan struktur data Queue (FIFO) untuk antrian traffic.
+"""
+
+from .queue import Queue
+
+__all__ = ["Queue"]

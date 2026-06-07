@@ -10,7 +10,14 @@ from .stack import Stack
 
 
 class LogAktivitas(Stack):
-    """Stack untuk menyimpan log aktivitas dengan format timestamp."""
+    """Stack untuk menyimpan log aktivitas dengan format timestamp.
+
+    Mewarisi Stack untuk operasi push/pop dan menambahkan format
+    timestamp serta tipe log (INFO/LOGIN/ACTION).
+
+    Attributes:
+        console: Console Rich untuk menampilkan output.
+    """
 
     def __init__(self) -> None:
         """Inisialisasi LogAktivitas dengan console Rich."""
@@ -18,9 +25,14 @@ class LogAktivitas(Stack):
         self.console = Console()
 
     def add_log(self, message: str, *, value: int = 0) -> None:
-        """Menambahkan log dengan timestamp dan tipe (INFO/LOGIN/ACTION)."""
+        """Menambahkan log dengan timestamp dan tipe (INFO/LOGIN/ACTION).
+
+        Args:
+            message: Pesan log yang akan ditambahkan.
+            value: Tipe log (0=INFO, 1=LOGIN, 2=ACTION).
+        """
         log_text = Text()
-        waktu = datetime.datetime.now().strftime("%H:%M:%S")
+        waktu: str = datetime.datetime.now().strftime("%H:%M:%S")
 
         log_text.append(f"{waktu} | ", style="white")
 
@@ -40,6 +52,7 @@ class LogAktivitas(Stack):
         if self.is_empty():
             msg = Text("Log aktivitas masih kosong.", style="bold red")
             self.console.print(msg)
+            return
 
         self.pop()
 
@@ -48,13 +61,21 @@ class LogAktivitas(Stack):
         self.stack = []
 
     def peek(self) -> Text | None:
-        """Mengembalikan log teratas tanpa menghapusnya."""
+        """Mengembalikan log teratas tanpa menghapusnya.
+
+        Returns:
+            Text Rich berisi log teratas, atau None jika stack kosong.
+        """
         if self.is_empty():
             return None
         return self.stack[-1]
 
     def peek_log(self) -> Text | None:
-        """Menampilkan log teratas ke console."""
+        """Menampilkan log teratas ke console.
+
+        Returns:
+            Text Rich berisi log teratas, atau None jika stack kosong.
+        """
         if self.is_empty():
             msg = Text("Log aktivitas masih kosong.", style="bold red")
             self.console.print(msg)
@@ -81,7 +102,7 @@ class LogAktivitas(Stack):
             border_style="green",
         )
 
-        items = list(reversed(self.stack))
+        items: list = list(reversed(self.stack))
 
         for index, item in enumerate(items):
             log_text.append_text(item)

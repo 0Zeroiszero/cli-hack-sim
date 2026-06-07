@@ -169,7 +169,7 @@ class TrafficQueue(Queue):
 if __name__ == "__main__":
     traffic_queue = TrafficQueue()
 
-    traffic_queue.load_from_json("src/data/dalam-json/traffic.json")
+    traffic_queue.load_from_json("data/dalam-json/traffic.json")
 
     traffic_queue.display()
 
