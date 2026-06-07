@@ -18,6 +18,7 @@ from rich.text import Text
 from rich_pyfiglet import RichFiglet
 
 from DSA import (
+    CircularServerNode,
     LogAktivitas,
     ServerCarousel,
     ServerTreeBuilder,
@@ -61,6 +62,10 @@ class MainMenu:
             self._server_id = self._node_from_server.id
         self._server_carousel = ServerCarousel(self._server_id)
         self._operator = "Operator"
+        self._server_data: dict = FileHandler().load_json(
+            Path("src/data/dalam-json/akun_dan_status_server.json"),
+        )
+        self._circular_server = CircularServerNode(self._server_data)
 
     @property
     def _choosen_server(self) -> str:
@@ -85,13 +90,11 @@ class MainMenu:
         """
         if self._node_from_server is None:
             return "No Access"
-        data = FileHandler().load_json(
-            Path("src/data/dalam-json/akun_dan_status_server.json"),
-        )
-        assert isinstance(data, dict)  # noqa: S101
-        for server in data["servers"]:
+        for server in self._server_data["servers"]:
             if server["server_id"] == self._node_from_server.id:
-                return "UNLOCKED" if server["access"] == "UNLOCKED" else "LOCKED"
+                return (
+                    "UNLOCKED" if server["access"] == "UNLOCKED" else "LOCKED"
+                )
         return "No Access"
 
     # ── Utility ──────────────────────────────────────────────────────────────
@@ -141,7 +144,9 @@ class MainMenu:
             title_align="center",
         )
         info_text = Text()
-        info_text.append(f"Menu Saat ini : {lokasi_rapi}\n", style="bold green")
+        info_text.append(
+            f"Menu Saat ini : {lokasi_rapi}\n", style="bold green"
+        )
         info_text.append("Aktivitas     : ", style="bold green")
         peeked = self._log_aktivitas.peek()
         if peeked is not None:
@@ -155,7 +160,9 @@ class MainMenu:
         )
         self._layout = Group(header, "\n", info, "\n")
         self._console.print(
-            self._layout, Rule(style="white", characters="="), style="bold green",
+            self._layout,
+            Rule(style="white", characters="="),
+            style="bold green",
         )
 
     # ── Main Menu ────────────────────────────────────────────────────────────
@@ -238,11 +245,15 @@ class MainMenu:
 
     def _pilih_tampilkan_server(self) -> None:
         """Menampilkan dan memilih server dari daftar yang tersedia."""
-        self._log_aktivitas.add_log("Masuk ke Tampilkan dan Pilih Server", value=2)
+        self._log_aktivitas.add_log(
+            "Masuk ke Tampilkan dan Pilih Server", value=2
+        )
         self._clear_screen()
         self._header_menu("SUB MENU", "Pilih / Tampilkan Server")
         self._server_carousel.run()
-        self._node_from_server = self._server_carousel.get_selected_server_node()
+        self._node_from_server = (
+            self._server_carousel.get_selected_server_node()
+        )
         if self._node_from_server is not None:
             self._server_id = self._node_from_server.id
             self._server_carousel.make_footer()
@@ -270,7 +281,9 @@ class MainMenu:
 
         Hanya berjalan jika akses server belum UNLOCKED.
         """
-        self._log_aktivitas.add_log("Melakukan Bruteforce Server Terpilih", value=2)
+        self._log_aktivitas.add_log(
+            "Melakukan Bruteforce Server Terpilih", value=2
+        )
         self._clear_screen()
         self._header_menu("SUB MENU", "Bruteforce Server Login")
         if self._access_server == "UNLOCKED":
@@ -312,17 +325,19 @@ class MainMenu:
         self._header_menu("SUB MENU", "Cari Server Berdasarkan IP")
         input_ip = ask_for_ip()
         if not input_ip:
-            self._console.input("Tidak valid, masukkan ulang...")
+            self._console.input("[dim]Tidak valid, masukkan ulang...[/dim]")
             self._cari_server_berdasarkan_ip_server()
             return
         hasil_binary = cari_server_binary(input_ip)
         if not hasil_binary:
-            self._console.input("Tidak valid, masukkan ulang...")
+            self._console.input("[dim]Tidak valid, masukkan ulang...[/dim]")
             self._cari_server_berdasarkan_ip_server()
         elif hasil_binary:
             panel_binary = display_search_ip_result(result=hasil_binary)
             self._console.print(panel_binary)
-            self._console.input("\nTekan Enter untuk kembali ke menu pencarian...")
+            self._console.input(
+                "[dim]\nTekan Enter untuk kembali ke menu...[/dim]"
+            )
             self._cari_server_berdasarkan_ip_server()
 
     # ── [1.2.2] Linear Search ────────────────────────────────────────────────
@@ -338,51 +353,70 @@ class MainMenu:
         except AddressValueError:
             hasil_linear = False
         if not hasil_linear:
-            self._console.input("Tidak valid, masukkan ulang...")
+            self._console.input("[dim]Tidak valid, masukkan ulang...[/dim]")
             self._cari_server_berdasarkan_ip_server()
         elif hasil_linear:
             panel_linier = display_search_ip_result(result=hasil_linear)
             self._console.print(panel_linier)
-            self._console.input("\nTekan Enter untuk kembali ke menu pencarian...")
+            self._console.input(
+                "[dim]\nTekan Enter untuk kembali ke menu...[/dim]"
+            )
             self._cari_server_berdasarkan_ip_server()
 
     # ── [1.3] Urutkan Server Berdasarkan Bandwidth ───────────────────────────
 
     def _urutkan_server_berdasarkan_bandwidth_server(self) -> None:
         """Mengurutkan server berdasarkan bandwidth."""
-        self._log_aktivitas.add_log("Mengurutkan Server Berdasarkan Bandwidth", value=2)
+        self._log_aktivitas.add_log(
+            "Mengurutkan Server Berdasarkan Bandwidth", value=2
+        )
         self._clear_screen()
         self._header_menu("SUB MENU", "Urutkan Server Berdasarkan Bandwidth")
         bandwidth_server: list[tuple[int, str, str, int]] = []
-        bandwidth_file_data = FileHandler().load_json(
-            Path("src/data/dalam-json/akun_dan_status_server.json"),
-        )
-        assert isinstance(bandwidth_file_data, dict)  # noqa: S101
-        for idx, req in enumerate(bandwidth_file_data["servers"]):
+        for idx, req in enumerate(self._server_data["servers"]):
             bandwidth_server.append(
-                (idx, req["server_id"], req["server_name"], req["bandwidth_mbps"]),
+                (
+                    idx,
+                    req["server_id"],
+                    req["server_name"],
+                    req["bandwidth_mbps"],
+                ),
             )
-        self._console.print(tampilkan_bandwidth_progress(data=bandwidth_server))
+        self._console.print(
+            tampilkan_bandwidth_progress(data=bandwidth_server)
+        )
         choice = Confirm.ask(
-            "Jalankan pengurutan?", console=self._console, default=True,
+            "Jalankan pengurutan?",
+            console=self._console,
+            default=True,
         )
         if choice:
             sorted_server = SortingServer().urutkan_server()
-            with self._console.status("[bold yellow]Mengurutkan server...") as status:
+            with self._console.status(
+                "[bold yellow]Mengurutkan server..."
+            ) as status:
                 time.sleep(1)
                 status.update("[bold green]Server terurut...")
                 time.sleep(1)
             self._console.print(
                 tampilkan_bandwidth_progress(data=sorted_server, rank=True),
             )
-            self._console.input("\nTekan Enter untuk kembali ke menu...")
+            self._console.input(
+                "[dim]\nTekan Enter untuk kembali ke menu...[/dim]"
+            )
             self._kelola_server_menu()
         else:
             self._kelola_server_menu()
 
     def _monitoring_server_circular_server(self) -> None:
         """Menampilkan monitoring server secara circular."""
-        self._log_aktivitas.add_log("Masuk ke Monitoring Server Circular")
+        self._log_aktivitas.add_log(
+            "Masuk ke Monitoring Server Circular", value=2
+        )
+        self._clear_screen()
+        self._header_menu("SUB MENU", "Monitoring Server Circular")
+        self._circular_server._make_circular_live_table()
+        self._kelola_server_menu()
 
     # ── [1.4] Monitoring Server Circular ─────────────────────────────────────
 
@@ -429,7 +463,9 @@ class MainMenu:
         self._clear_screen()
         self._header_menu("MENU", "Traffic Queue")
         self._console.print(
-            f"Queue Size: {self._traffic.size()}", end="\n\n", style="bold yellow",
+            f"Queue Size: {self._traffic.size()}",
+            end="\n\n",
+            style="bold yellow",
         )
         choice = make_menu_selection_question(
             question=[
@@ -545,7 +581,9 @@ class MainMenu:
 
     def _tampilkan_folder_server_data(self) -> None:
         """Menampilkan folder server dengan traversal tree."""
-        self._log_aktivitas.add_log("Masuk ke Tampilkan Folder Server", value=2)
+        self._log_aktivitas.add_log(
+            "Masuk ke Tampilkan Folder Server", value=2
+        )
         self._clear_screen()
         self._header_menu("SUB MENU", "Tampilkan Folder Server")
         server_tree = ServerTreeBuilder.build_server_tree()
@@ -570,7 +608,11 @@ class MainMenu:
             if match:
                 server_id = match.group(1)
                 if server_id == target_id:
-                    pr, inor, post = preorder(item), inorder(item), postorder(item)
+                    pr, inor, post = (
+                        preorder(item),
+                        inorder(item),
+                        postorder(item),
+                    )
                     if pilihan_traversal is not None:
                         p, t = make_traversal_folder(
                             pilihan_traversal=pilihan_traversal,
@@ -582,7 +624,9 @@ class MainMenu:
                     break
         else:
             self._console.print("[bold red]Tidak ditemukan")
-        self._console.input("Tekan enter untuk kembali...")
+        self._console.input(
+            "[dim]\nTekan Enter untuk kembali ke menu...[/dim]"
+        )
         self._struktur_data_menu()
 
     # ── [4.2] Kelola Stack Log Aktivitas ─────────────────────────────────────

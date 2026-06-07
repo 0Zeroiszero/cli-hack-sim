@@ -1,31 +1,34 @@
-"""
-@author: Abdullah Affandi
-Implementasi Queue Traffic berdasarkan traffic.json
-"""
+"""@author: Abdullah Affandi. 
+Implementasi Queue Traffic berdasarkan traffic.json."""
 
-from pathlib import Path
+import random
 import time
+from pathlib import Path
 
-# Rich guy
-from rich.console import Console, Group
-from rich.panel import Panel
-from rich.columns import Columns
-from rich.text import Text
 from rich.align import Align
+from rich.columns import Columns
+from rich.console import Console, Group
 from rich.live import Live
+from rich.panel import Panel
 from rich.spinner import Spinner
+from rich.text import Text
 
-from src.filehandler import FileHandler
 from DSA.queue.queue import Queue
+from src.filehandler import FileHandler
 
 
 class TrafficNode:
+    """Node untuk singly linked list traffic."""
+
     def __init__(self, data):
+        """Inisialisasi node dengan data traffic."""
         self.data = data
         self.next = None
 
     @staticmethod
     def from_queue(queue_data):
+        """Membangun linked list dari data queue 
+        dan mengembalikan (head, rear)."""
         head = None
         rear = None
 
@@ -44,21 +47,14 @@ class TrafficNode:
 
 # NOTE: Ini masuk ke menu [3]
 class TrafficQueue(Queue):
-    """
-    Queue traffic untuk membaca dan menampilkan data traffic dari JSON.
+    """Queue traffic untuk membaca dan menampilkan data traffic dari JSON.
 
-    Class ini tetap mewarisi Queue, sehingga fitur queue seperti enqueue(),
-    dequeue(), front(), is_empty(), dan size() masih digunakan.
-
-    Selain itu, class ini juga memakai TrafficNode sebagai representasi
-    Single Linked List untuk menampilkan hubungan antar data traffic
-    dengan pola node -> node -> node.
-
-    Queue dipakai untuk operasi antrian utama.
-    TrafficNode dipakai untuk visualisasi dan traversal linked list.
+    Mewarisi Queue untuk operasi antrian (enqueue, dequeue, front, dll).
+    Menggunakan TrafficNode untuk visualisasi dan traversal linked list.
     """
 
     def __init__(self, file_path: str):
+        """Inisialisasi TrafficQueue dengan path file traffic JSON."""
         super().__init__()
         self.fh = FileHandler()
 
@@ -72,6 +68,7 @@ class TrafficQueue(Queue):
         self.refresh_traffic()
 
     def refresh_traffic(self) -> None:
+        """Memuat ulang data traffic dari file JSON."""
         self.queue.clear()
         self.load_traffic()
 
@@ -79,10 +76,7 @@ class TrafficQueue(Queue):
         self.current_node = self.head_node
 
     def load_traffic(self) -> None:
-        """
-        Membaca traffic.json lalu memasukkan setiap request traffic ke queue.
-        """
-
+        """Membaca traffic.json dan memasukkan setiap request ke queue."""
         traffic_data = self.fh.load_json(self.ph)
 
         for server_name, monitors in traffic_data.items():
@@ -103,10 +97,11 @@ class TrafficQueue(Queue):
 
     # NOTE: Ini masuk ke menu [3.1] "Tampilkan Queue Traffic"
     def display(self) -> None:
-        import random
-
+        """Menampilkan seluruh traffic dalam queue dengan format Columns."""
         if self.is_empty():
-            self.console.print(Text("   Queue traffic kosong.\n\n", style="bold red"))
+            self.console.print(
+                Text("   Queue traffic kosong.\n\n", style="bold red")
+            )
             return
 
         rich_standard_color_list = self.fh.load_json(
@@ -173,8 +168,11 @@ class TrafficQueue(Queue):
 
     # NOTE: Ini masuk ke menu [3.2] "Lihat traffic terdepan"
     def display_front(self) -> None:
+        """Menampilkan traffic terdepan dan node berikutnya."""
         if self.is_empty():
-            self.console.print(Text("   Queue traffic kosong.\n\n", style="bold red"))
+            self.console.print(
+                Text("   Queue traffic kosong.\n\n", style="bold red")
+            )
             return
 
         front_node = self.head_node
@@ -182,7 +180,9 @@ class TrafficQueue(Queue):
 
         def build_traffic_panel(node, title: str, border_style: str) -> Panel:
             if node is None:
-                empty_text = Text("Tidak ada node berikutnya.", style="bold red")
+                empty_text = Text(
+                    "Tidak ada node berikutnya.", style="bold red"
+                )
 
                 return Panel(
                     empty_text,
@@ -203,10 +203,12 @@ class TrafficQueue(Queue):
                 style="white",
             )
             text.append(
-                f"method      : {metadata.get('method') or '-'}\n", style="white"
+                f"method      : {metadata.get('method') or '-'}\n",
+                style="white",
             )
             text.append(
-                f"source      : {metadata.get('source') or '-'}\n", style="white"
+                f"source      : {metadata.get('source') or '-'}\n",
+                style="white",
             )
             text.append(
                 f"destination : {metadata.get('destination') or '-'}\n",
@@ -255,8 +257,12 @@ class TrafficQueue(Queue):
 
     # NOTE: Ini masuk ke menu [3.2] "Proses Traffic Terdepan"
     def display_dequeue(self) -> None:
+        """Memproses traffic terdepan 
+        dengan animasi dan menampilkan hasil dequeue."""
         if self.is_empty() or self.head_node is None:
-            self.console.print(Text("   Queue traffic kosong.\n\n", style="bold red"))
+            self.console.print(
+                Text("   Queue traffic kosong.\n\n", style="bold red")
+            )
             return
 
         front_node = self.head_node
@@ -270,9 +276,13 @@ class TrafficQueue(Queue):
             info.append(f"traffic_id   : {item['traffic_id']}\n")
             info.append(f"monitor_id   : {item['monitor_id']}\n")
             info.append(f"server_id    : {item['server_id']}\n")
-            info.append(f"destination  : {metadata.get('destination') or '-'}\n")
+            info.append(
+                f"destination  : {metadata.get('destination') or '-'}\n"
+            )
             info.append(f"method       : {metadata.get('method') or '-'}\n")
-            info.append(f"threat_level : {metadata.get('threat_level') or '-'}\n\n")
+            info.append(
+                f"threat_level : {metadata.get('threat_level') or '-'}\n\n"
+            )
 
             if next_node is not None:
                 info.append("next_node    : ", style="bold cyan")
@@ -285,7 +295,9 @@ class TrafficQueue(Queue):
                 info.append("None\n\n", style="bold red")
 
             info.append(f"Step         : {step_text}\n", style="bold yellow")
-            info.append(f"Progress     : {int(progress * 100)}%", style="bold green")
+            info.append(
+                f"Progress     : {int(progress * 100)}%", style="bold green"
+            )
 
             return Panel(
                 Group(
@@ -326,7 +338,9 @@ class TrafficQueue(Queue):
         if self.head_node is None:
             self.rear_node = None
 
-        is_failed = (removed_metadata.get("threat_level") or "").upper() == "HIGH"
+        is_failed = (
+            removed_metadata.get("threat_level") or ""
+        ).upper() == "HIGH"
 
         result_text = Text(style="white")
 
@@ -352,8 +366,12 @@ class TrafficQueue(Queue):
         result_text.append(
             f"timestamp   : {removed_metadata.get('timestamp') or '-'}\n"
         )
-        result_text.append(f"method      : {removed_metadata.get('method') or '-'}\n")
-        result_text.append(f"source      : {removed_metadata.get('source') or '-'}\n")
+        result_text.append(
+            f"method      : {removed_metadata.get('method') or '-'}\n"
+        )
+        result_text.append(
+            f"source      : {removed_metadata.get('source') or '-'}\n"
+        )
         result_text.append(
             f"destination : {removed_metadata.get('destination') or '-'}\n"
         )
@@ -368,7 +386,9 @@ class TrafficQueue(Queue):
             result_text.append(
                 f"threat_level: {removed_metadata.get('threat_level') or '-'}\n"
             )
-            result_text.append("hasil       : BERHASIL\n\n", style="bold green")
+            result_text.append(
+                "hasil       : BERHASIL\n\n", style="bold green"
+            )
 
         if self.head_node is not None:
             result_text.append("head_node   : ", style="bold cyan")
@@ -388,7 +408,9 @@ class TrafficQueue(Queue):
         else:
             result_text.append("rear_node   : None\n", style="bold red")
 
-        result_text.append(f"\nSisa Queue  : {self.size()}", style="bold yellow")
+        result_text.append(
+            f"\nSisa Queue  : {self.size()}", style="bold yellow"
+        )
 
         self.console.print(
             Panel(
@@ -401,7 +423,7 @@ class TrafficQueue(Queue):
 
 
 if __name__ == "__main__":
-    tf = TrafficQueue()
+    tf = TrafficQueue("traffic.json")
 
     tf.load_traffic()
     tf.display()
