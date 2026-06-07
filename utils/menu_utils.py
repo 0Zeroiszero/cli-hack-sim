@@ -352,6 +352,57 @@ def make_traversal_folder(
     return (panel, table)
 
 
+def ask_for_server(prompt_text: str = "Pilih Server: ") -> str | None:
+    """Meminta input server ID dengan autocomplete format 'SRV001 - Alpha'.
+
+    Args:
+        prompt_text: Teks yang ditampilkan saat meminta input.
+
+    Returns:
+        str: Server ID (contoh: "SRV001"), atau None jika gagal.
+    """
+    from pathlib import Path
+
+    from src.filehandler import FileHandler
+
+    server_data = FileHandler().load_json(
+        Path("src/data/dalam-json/akun_dan_status_server.json"),
+    )
+    server_list = server_data.get("servers", [])
+    if not server_list:
+        return None
+
+    server_words = [
+        f"{s['server_id']} - {s['server_name']}" for s in server_list
+    ]
+
+    completer = FuzzyWordCompleter(words=server_words)
+
+    style = Style.from_dict(
+        {
+            "prompt": "bold #00ff00",
+            "": "#00ff00",
+            "completion-menu.completion": "bg:#001100 #00ff00",
+            "completion-menu.completion.current": "bg:#00ff00 #000000 bold",
+            "scrollbar.background": "bg:#003300",
+            "scrollbar.button": "bg:#00ff00",
+        }
+    )
+
+    result = prompt(
+        [("class:prompt", prompt_text)],
+        completer=completer,
+        complete_while_typing=True,
+        style=style,
+    ).strip()
+
+    if not result:
+        return None
+
+    # Ambil server_id dari format "SRV001 - Alpha"
+    return result.split(" - ")[0].strip()
+
+
 def ask_for_ip() -> str:
     """Meminta input alamat IPv4 server dengan fitur autocomplete IP.
 
