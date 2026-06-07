@@ -14,6 +14,7 @@ from rich.console import Console, Group
 from rich.panel import Panel
 from rich.prompt import Confirm
 from rich.rule import Rule
+from rich.table import Table
 from rich.text import Text
 from rich_pyfiglet import RichFiglet
 
@@ -30,8 +31,11 @@ from DSA import (
     postorder,
     preorder,
 )
+from DSA.graph.graph import Graph
 from utils import (
     ask_for_ip,
+    ask_for_server,
+    bruteforce_server,
     display_search_ip_result,
     make_menu_selection_question,
     make_traversal_folder,
@@ -172,16 +176,19 @@ class MainMenu:
         self._log_aktivitas.add_log("Masuk ke Beranda")
         self._clear_screen()
         self._header_menu("Main Menu", "Beranda")
-        choice = make_menu_selection_question(
-            question=[
-                "Kelola Server",
-                "Network & Route",
-                "Traffic Queue",
-                "Struktur Data",
-                "Keluar",
-            ],
-            value=[1, 2, 3, 4, 0],
-        ).ask()
+        try:
+            choice = make_menu_selection_question(
+                question=[
+                    "Kelola Server",
+                    "Network & Route",
+                    "Traffic Queue",
+                    "Struktur Data",
+                    "Keluar",
+                ],
+                value=[1, 2, 3, 4, 0],
+            ).ask()
+        except KeyboardInterrupt:
+            return
         if choice == 0:
             with self._console.status("[bold red]Exiting..."):
                 time.sleep(0.5)
@@ -219,16 +226,20 @@ class MainMenu:
         self._log_aktivitas.add_log("Masuk ke Kelola Server")
         self._clear_screen()
         self._header_menu("MENU", "Kelola Server")
-        choice = make_menu_selection_question(
-            question=[
-                "Pilih / Tampilkan Server",
-                "Cari Server Berdasarkan IP",
-                "Urutkan Server Berdasarkan Bandwidth",
-                "Monitoring Server Circular",
-                "Kembali ke Beranda",
-            ],
-            value=[1, 2, 3, 4, 0],
-        ).ask()
+        try:
+            choice = make_menu_selection_question(
+                question=[
+                    "Pilih / Tampilkan Server",
+                    "Cari Server Berdasarkan IP",
+                    "Urutkan Server Berdasarkan Bandwidth",
+                    "Monitoring Server Circular",
+                    "Kembali ke Beranda",
+                ],
+                value=[1, 2, 3, 4, 0],
+            ).ask()
+        except KeyboardInterrupt:
+            self.main_menu()
+            return
         match choice:
             case 1:
                 self._pilih_tampilkan_server()
@@ -254,22 +265,26 @@ class MainMenu:
         self._node_from_server = (
             self._server_carousel.get_selected_server_node()
         )
-        if self._node_from_server is not None:
-            self._server_id = self._node_from_server.id
-            self._server_carousel.make_footer()
-            choice = make_menu_selection_question(
-                question=[
-                    "Bruteforce Server Terpilih (server terpilih)",
-                    "Kembali",
-                ],
-                value=[1, 0],
-            ).ask()
-        else:
-            self._server_carousel.make_footer()
-            choice = make_menu_selection_question(
-                question=["Kembali"],
-                value=[0],
-            ).ask()
+        try:
+            if self._node_from_server is not None:
+                self._server_id = self._node_from_server.id
+                self._server_carousel.make_footer()
+                choice = make_menu_selection_question(
+                    question=[
+                        "Bruteforce Server Terpilih (server terpilih)",
+                        "Kembali",
+                    ],
+                    value=[1, 0],
+                ).ask()
+            else:
+                self._server_carousel.make_footer()
+                choice = make_menu_selection_question(
+                    question=["Kembali"],
+                    value=[0],
+                ).ask()
+        except KeyboardInterrupt:
+            self._kelola_server_menu()
+            return
         match choice:
             case 1:
                 self._bruteforce_selected_server()
@@ -291,7 +306,74 @@ class MainMenu:
                 "[bold yellow]Akses UNLOCKED, bruteforce tidak perlu[/bold yellow]",
             )
             time.sleep(1)
-            self._pilih_tampilkan_server()
+            self._kelola_server_menu()
+            return
+
+        # Loading gimmick — simulasi bruteforce
+        loading_stages = [
+            "[bold yellow]Menyusun daftar kredensial...[/bold yellow]",
+            "[bold yellow]Mencoba kombinasi username:password...[/bold yellow]",
+            "[bold yellow]Menerobos firewall...[/bold yellow]",
+            "[bold green]Akses berhasil![/bold green]",
+        ]
+        with self._console.status("") as status:
+            for stage in loading_stages:
+                status.update(stage)
+                time.sleep(0.6)
+
+        # Jalankan bruteforce
+        result = bruteforce_server(self._server_id)
+
+        if result is None:
+            self._console.print(
+                "\n[bold red]Bruteforce gagal — tidak ada kecocokan "
+                "kredensial.[/bold red]",
+            )
+            try:
+                self._console.input(
+                    "[dim]\nTekan Enter untuk kembali...[/dim]",
+                )
+            except KeyboardInterrupt:
+                pass
+            self._kelola_server_menu()
+            return
+
+        # Update status akses server di data temporer
+        for server in self._server_data["servers"]:
+            if server["server_id"] == self._server_id:
+                server["access"] = "UNLOCKED"
+                break
+
+        # Tampilkan hasil login dengan Rich Table
+        table = Table(
+            border_style="green",
+            show_header=False,
+            title_justify="center",
+            expand=True,
+        )
+        table.add_column("Field", style="bold green", no_wrap=True)
+        table.add_column("Value", style="white")
+        table.add_row("Server ID", result["server_id"])
+        table.add_row("Server Name", result["server_name"])
+        table.add_row("Final Access", result["access"])
+        table.add_row("Username", result["username"])
+        table.add_row("Password", result["password"])
+
+        self._console.print()
+        self._console.print(table)
+        self._console.print()
+        self._log_aktivitas.add_log(
+            f"Bruteforce berhasil — {result['server_id']} "
+            f"({result['server_name']})",
+            value=2,
+        )
+        try:
+            self._console.input(
+                "[dim]\nTekan Enter untuk kembali ke menu server...[/dim]",
+            )
+        except KeyboardInterrupt:
+            pass
+        self._kelola_server_menu()
 
     # ── [1.2] Cari Server Berdasarkan IP ─────────────────────────────────────
 
@@ -300,14 +382,18 @@ class MainMenu:
         self._log_aktivitas.add_log("Masuk ke Cari Server Berdasarkan IP")
         self._clear_screen()
         self._header_menu("SUB MENU", "Cari Server Berdasarkan IP")
-        choice = make_menu_selection_question(
-            question=[
-                "Cari Menggunakan Binary Search",
-                "Cari Menggunakan Linear Search",
-                "Batalkan",
-            ],
-            value=[1, 2, 0],
-        ).ask()
+        try:
+            choice = make_menu_selection_question(
+                question=[
+                    "Cari Menggunakan Binary Search",
+                    "Cari Menggunakan Linear Search",
+                    "Batalkan",
+                ],
+                value=[1, 2, 0],
+            ).ask()
+        except KeyboardInterrupt:
+            self._kelola_server_menu()
+            return
         match choice:
             case 1:
                 self._cari_server_binary()
@@ -323,21 +409,38 @@ class MainMenu:
         self._log_aktivitas.add_log("Mencari IP Secara Binary", value=2)
         self._clear_screen()
         self._header_menu("SUB MENU", "Cari Server Berdasarkan IP")
-        input_ip = ask_for_ip()
+        try:
+            input_ip = ask_for_ip()
+        except KeyboardInterrupt:
+            self._cari_server_berdasarkan_ip_server()
+            return
         if not input_ip:
-            self._console.input("[dim]Tidak valid, masukkan ulang...[/dim]")
+            try:
+                self._console.input(
+                    "[dim]Tidak valid, masukkan ulang...[/dim]"
+                )
+            except KeyboardInterrupt:
+                pass
             self._cari_server_berdasarkan_ip_server()
             return
         hasil_binary = cari_server_binary(input_ip)
         if not hasil_binary:
-            self._console.input("[dim]Tidak valid, masukkan ulang...[/dim]")
+            try:
+                self._console.input(
+                    "[dim]Tidak valid, masukkan ulang...[/dim]"
+                )
+            except KeyboardInterrupt:
+                pass
             self._cari_server_berdasarkan_ip_server()
         elif hasil_binary:
             panel_binary = display_search_ip_result(result=hasil_binary)
             self._console.print(panel_binary)
-            self._console.input(
-                "[dim]\nTekan Enter untuk kembali ke menu...[/dim]"
-            )
+            try:
+                self._console.input(
+                    "[dim]\nTekan Enter untuk kembali ke menu...[/dim]"
+                )
+            except KeyboardInterrupt:
+                pass
             self._cari_server_berdasarkan_ip_server()
 
     # ── [1.2.2] Linear Search ────────────────────────────────────────────────
@@ -347,20 +450,32 @@ class MainMenu:
         self._log_aktivitas.add_log("Mencari IP Secara Linear", value=2)
         self._clear_screen()
         self._header_menu("SUB MENU", "Cari Server Berdasarkan IP")
-        input_ip = ask_for_ip()
+        try:
+            input_ip = ask_for_ip()
+        except KeyboardInterrupt:
+            self._cari_server_berdasarkan_ip_server()
+            return
         try:
             hasil_linear = cari_server_linear(IPv4Address(input_ip))
         except AddressValueError:
             hasil_linear = False
         if not hasil_linear:
-            self._console.input("[dim]Tidak valid, masukkan ulang...[/dim]")
+            try:
+                self._console.input(
+                    "[dim]Tidak valid, masukkan ulang...[/dim]"
+                )
+            except KeyboardInterrupt:
+                pass
             self._cari_server_berdasarkan_ip_server()
         elif hasil_linear:
             panel_linier = display_search_ip_result(result=hasil_linear)
             self._console.print(panel_linier)
-            self._console.input(
-                "[dim]\nTekan Enter untuk kembali ke menu...[/dim]"
-            )
+            try:
+                self._console.input(
+                    "[dim]\nTekan Enter untuk kembali ke menu...[/dim]"
+                )
+            except KeyboardInterrupt:
+                pass
             self._cari_server_berdasarkan_ip_server()
 
     # ── [1.3] Urutkan Server Berdasarkan Bandwidth ───────────────────────────
@@ -385,11 +500,15 @@ class MainMenu:
         self._console.print(
             tampilkan_bandwidth_progress(data=bandwidth_server)
         )
-        choice = Confirm.ask(
-            "Jalankan pengurutan?",
-            console=self._console,
-            default=True,
-        )
+        try:
+            choice = Confirm.ask(
+                "Jalankan pengurutan?",
+                console=self._console,
+                default=True,
+            )
+        except KeyboardInterrupt:
+            self._kelola_server_menu()
+            return
         if choice:
             sorted_server = SortingServer().urutkan_server()
             with self._console.status(
@@ -401,9 +520,12 @@ class MainMenu:
             self._console.print(
                 tampilkan_bandwidth_progress(data=sorted_server, rank=True),
             )
-            self._console.input(
-                "[dim]\nTekan Enter untuk kembali ke menu...[/dim]"
-            )
+            try:
+                self._console.input(
+                    "[dim]\nTekan Enter untuk kembali ke menu...[/dim]"
+                )
+            except KeyboardInterrupt:
+                pass
             self._kelola_server_menu()
         else:
             self._kelola_server_menu()
@@ -427,14 +549,18 @@ class MainMenu:
         self._log_aktivitas.add_log("Masuk ke Network & Route")
         self._clear_screen()
         self._header_menu("MENU", "Network & Route")
-        choice = make_menu_selection_question(
-            question=[
-                "Tampilkan Topologi Jaringan",
-                "Cari Rute Tercepat",
-                "Kembali ke Beranda",
-            ],
-            value=[1, 2, 0],
-        ).ask()
+        try:
+            choice = make_menu_selection_question(
+                question=[
+                    "Tampilkan Topologi Jaringan",
+                    "Cari Rute Tercepat",
+                    "Kembali ke Beranda",
+                ],
+                value=[1, 2, 0],
+            ).ask()
+        except KeyboardInterrupt:
+            self.main_menu()
+            return
         match choice:
             case 1:
                 self._tampilkan_topologi_jaringan()
@@ -447,13 +573,149 @@ class MainMenu:
 
     def _tampilkan_topologi_jaringan(self) -> None:
         """Menampilkan topologi jaringan."""
-        self._log_aktivitas.add_log("Masuk ke Tampilkan Topologi Jaringan")
+        self._log_aktivitas.add_log(
+            "Masuk ke Tampilkan Topologi Jaringan", value=2
+        )
+        self._clear_screen()
+        self._header_menu("SUB MENU", "Tampilkan Topologi Jaringan")
+
+        # Bangun graph dari data topologi
+        graph = Graph()
+        graph.build_from_json(
+            Path("src/data/dalam-json/topologi.json"),
+        )
+        adj_list = graph.get_adjacency_list()
+
+        # Tampilkan dalam format tree
+        output = ""
+        for server_id, edges in adj_list.items():
+            output += f"├── {server_id}\n"
+            for edge in edges:
+                arah = "⇄" if edge["two_way"] else "→"
+                output += (
+                    f"|   ├── {arah} {edge['to']} ({edge['to_name']}) "
+                    f"[{edge['latency_ms']}ms, {edge['bandwidth_mbps']}Mbps]\n"
+                )
+            if not edges:
+                output += "|   ├── (tidak ada koneksi)\n"
+
+        self._console.print(Panel(output.strip(), border_style="green"))
+        try:
+            self._console.input(
+                "[dim]\nTekan Enter untuk kembali ke menu...[/dim]",
+            )
+        except KeyboardInterrupt:
+            pass
+        self._network_route_menu()
 
     # ── [2.2] Cari Rute Tercepat ─────────────────────────────────────────────
 
     def _cari_rute_tercepat_jaringan(self) -> None:
         """Mencari rute tercepat dalam jaringan."""
-        self._log_aktivitas.add_log("Masuk ke Cari Rute Tercepat")
+        self._log_aktivitas.add_log("Masuk ke Cari Rute Tercepat", value=2)
+        self._clear_screen()
+        self._header_menu("SUB MENU", "Cari Rute Tercepat")
+
+        # Bangun graph
+        graph = Graph()
+        graph.build_from_json(
+            Path("src/data/dalam-json/topologi.json"),
+        )
+
+        # Input server asal & tujuan pake FuzzyWordCompleter
+        try:
+            start = ask_for_server("Server asal: ")
+        except KeyboardInterrupt:
+            self._network_route_menu()
+            return
+        if start is None:
+            self._network_route_menu()
+            return
+
+        try:
+            end = ask_for_server("Server tujuan: ")
+        except KeyboardInterrupt:
+            self._network_route_menu()
+            return
+        if end is None:
+            self._network_route_menu()
+            return
+
+        # Cari rute
+        with self._console.status("[bold yellow]Mencari rute tercepat..."):
+            time.sleep(0.8)
+            result = graph.dijkstra(start, end)
+
+        if result is None:
+            self._console.print(
+                "\n[bold red]Tidak ada jalur yang tersedia antara "
+                f"{start} dan {end}.[/bold red]",
+            )
+            try:
+                self._console.input(
+                    "[dim]\nTekan Enter untuk kembali...[/dim]",
+                )
+            except KeyboardInterrupt:
+                pass
+            self._network_route_menu()
+            return
+
+        # Tampilkan hasil
+        table = Table(
+            border_style="green", title_justify="center", expand=True
+        )
+        table.add_column("Info", style="bold green", no_wrap=True)
+        table.add_column("Detail", style="white")
+        table.add_row("Dari", f"{result['from']} ({result['from_name']})")
+        table.add_row("Tujuan", f"{result['to']} ({result['to_name']})")
+        table.add_row(
+            "Total Latency",
+            f"{result['total_latency_ms']} ms",
+        )
+        table.add_row(
+            "Min Bandwidth",
+            f"{result['min_bandwidth_mbps']} Mbps",
+        )
+
+        # Tabel hop
+        hop_table = Table(
+            border_style="green",
+            show_header=True,
+            title_justify="center",
+            expand=True,
+        )
+        hop_table.add_column("Hop", style="bold green")
+        hop_table.add_column("Dari", style="white")
+        hop_table.add_column("Ke", style="white")
+        hop_table.add_column("Latency", style="white")
+        hop_table.add_column("Bandwidth", style="white")
+
+        for i, hop in enumerate(result["path"], start=1):
+            arah = "⇄" if hop["two_way"] else "→"
+            hop_table.add_row(
+                str(i),
+                f"{hop['from']} ({hop['from_name']})",
+                f"{arah} {hop['to']} ({hop['to_name']})",
+                f"{hop['latency_ms']} ms",
+                f"{hop['bandwidth_mbps']} Mbps",
+            )
+
+        self._console.print()
+        self._console.print(table)
+        self._console.print()
+        self._console.print(hop_table)
+        self._console.print()
+        self._log_aktivitas.add_log(
+            f"Rute tercepat {start} → {end}: {result['total_latency_ms']}ms",
+            value=2,
+        )
+        try:
+            self._console.input(
+                "[dim]\nTekan Enter untuk kembali ke menu...[/dim]",
+            )
+        except KeyboardInterrupt:
+            pass
+        self._network_route_menu()
 
     # ── [3] Traffic Queue ────────────────────────────────────────────────────
 
@@ -467,14 +729,18 @@ class MainMenu:
             end="\n\n",
             style="bold yellow",
         )
-        choice = make_menu_selection_question(
-            question=[
-                "Tampilkan Queue Traffic",
-                "Kelola Traffic",
-                "Kembali ke Beranda",
-            ],
-            value=[1, 2, 0],
-        ).ask()
+        try:
+            choice = make_menu_selection_question(
+                question=[
+                    "Tampilkan Queue Traffic",
+                    "Kelola Traffic",
+                    "Kembali ke Beranda",
+                ],
+                value=[1, 2, 0],
+            ).ask()
+        except KeyboardInterrupt:
+            self.main_menu()
+            return
         match choice:
             case 1:
                 self._tampilkan_queue_traffic()
@@ -491,10 +757,14 @@ class MainMenu:
         self._log_aktivitas.add_log("Menampilkan Queue Traffic", value=2)
         self._header_menu("SUB MENU", "Tampilkan Queue Traffic")
         self._traffic.display()
-        choice = make_menu_selection_question(
-            question=["Kembali ke Traffic Queue"],
-            value=[0],
-        ).ask()
+        try:
+            choice = make_menu_selection_question(
+                question=["Kembali ke Traffic Queue"],
+                value=[0],
+            ).ask()
+        except KeyboardInterrupt:
+            self._traffic_queue_menu()
+            return
         match choice:
             case 0:
                 self._traffic_queue_menu()
@@ -506,14 +776,18 @@ class MainMenu:
         self._log_aktivitas.add_log("Masuk ke Kelola Traffic")
         self._clear_screen()
         self._header_menu("SUB MENU", "Kelola Traffic")
-        choice = make_menu_selection_question(
-            question=[
-                "Lihat Traffic Terdepan",
-                "Proses Traffic Terdepan",
-                "Kembali ke Traffic Queue",
-            ],
-            value=[1, 2, 0],
-        ).ask()
+        try:
+            choice = make_menu_selection_question(
+                question=[
+                    "Lihat Traffic Terdepan",
+                    "Proses Traffic Terdepan",
+                    "Kembali ke Traffic Queue",
+                ],
+                value=[1, 2, 0],
+            ).ask()
+        except KeyboardInterrupt:
+            self._traffic_queue_menu()
+            return
         match choice:
             case 1:
                 self._lihat_traffic_terdepan_traffic()
@@ -530,10 +804,14 @@ class MainMenu:
         self._log_aktivitas.add_log("Melihat Traffic Terdepan", value=2)
         self._header_menu("SUB MENU", "Lihat Traffic Terdepan")
         self._traffic.display_front()
-        choice = make_menu_selection_question(
-            question=["Kembali ke Kelola Traffic"],
-            value=[0],
-        ).ask()
+        try:
+            choice = make_menu_selection_question(
+                question=["Kembali ke Kelola Traffic"],
+                value=[0],
+            ).ask()
+        except KeyboardInterrupt:
+            self._kelola_traffic()
+            return
         match choice:
             case 0:
                 self._kelola_traffic()
@@ -546,10 +824,14 @@ class MainMenu:
         self._log_aktivitas.add_log("Memproses Traffic Terdepan", value=2)
         self._header_menu("SUB MENU", "Proses Traffic Terdepan")
         self._traffic.display_dequeue()
-        choice = make_menu_selection_question(
-            question=["Kembali ke Kelola Traffic"],
-            value=[0],
-        ).ask()
+        try:
+            choice = make_menu_selection_question(
+                question=["Kembali ke Kelola Traffic"],
+                value=[0],
+            ).ask()
+        except KeyboardInterrupt:
+            self._kelola_traffic()
+            return
         match choice:
             case 0:
                 self._kelola_traffic()
@@ -561,14 +843,18 @@ class MainMenu:
         self._log_aktivitas.add_log("Masuk ke Struktur Data")
         self._clear_screen()
         self._header_menu("MENU", "Struktur Data")
-        choice = make_menu_selection_question(
-            question=[
-                "Tampilkan Folder Server",
-                "Kelola Stack Log Aktivitas",
-                "Kembali ke Beranda",
-            ],
-            value=[1, 2, 0],
-        ).ask()
+        try:
+            choice = make_menu_selection_question(
+                question=[
+                    "Tampilkan Folder Server",
+                    "Kelola Stack Log Aktivitas",
+                    "Kembali ke Beranda",
+                ],
+                value=[1, 2, 0],
+            ).ask()
+        except KeyboardInterrupt:
+            self.main_menu()
+            return
         match choice:
             case 1:
                 self._tampilkan_folder_server_data()
@@ -587,10 +873,14 @@ class MainMenu:
         self._clear_screen()
         self._header_menu("SUB MENU", "Tampilkan Folder Server")
         server_tree = ServerTreeBuilder.build_server_tree()
-        choice = make_menu_selection_question(
-            question=["Preorder", "Inorder", "Postorder", "Batalkan"],
-            value=[1, 2, 3, 0],
-        ).ask()
+        try:
+            choice = make_menu_selection_question(
+                question=["Preorder", "Inorder", "Postorder", "Batalkan"],
+                value=[1, 2, 3, 0],
+            ).ask()
+        except KeyboardInterrupt:
+            self._struktur_data_menu()
+            return
         pilihan_traversal = None
         if choice == TRAVERSAL_PREORDER:
             pilihan_traversal = "preorder"
@@ -624,9 +914,12 @@ class MainMenu:
                     break
         else:
             self._console.print("[bold red]Tidak ditemukan")
-        self._console.input(
-            "[dim]\nTekan Enter untuk kembali ke menu...[/dim]"
-        )
+        try:
+            self._console.input(
+                "[dim]\nTekan Enter untuk kembali ke menu...[/dim]"
+            )
+        except KeyboardInterrupt:
+            pass
         self._struktur_data_menu()
 
     # ── [4.2] Kelola Stack Log Aktivitas ─────────────────────────────────────
@@ -637,14 +930,18 @@ class MainMenu:
         self._clear_screen()
         self._header_menu("SUB MENU", "Kelola Stack Log Aktivitas")
         self._log_aktivitas.show_logs()
-        choice = make_menu_selection_question(
-            question=[
-                "Hapus log teratas",
-                "Hapus seluruh log",
-                "Kembali ke Struktur Data",
-            ],
-            value=[1, 2, 0],
-        ).ask()
+        try:
+            choice = make_menu_selection_question(
+                question=[
+                    "Hapus log teratas",
+                    "Hapus seluruh log",
+                    "Kembali ke Struktur Data",
+                ],
+                value=[1, 2, 0],
+            ).ask()
+        except KeyboardInterrupt:
+            self._struktur_data_menu()
+            return
         self._clear_screen()
         match choice:
             case 1:
