@@ -1,3 +1,3 @@
-from .antrean_packet import AntrianPacket
+from .queue import Queue
 
-__all__ = ["AntrianPacket"]
+__all__ = ["Queue"]
