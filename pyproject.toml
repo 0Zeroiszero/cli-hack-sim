@@ -1,0 +1,49 @@
+[project]
+name = "cli-hack-sim"
+version = "0.1.0"
+description = "Program ini merupakan simulasi sistem jaringan komputer dan aktivitas hacker berbasis console. User berperan sebagai operator jaringan atau hacker."
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "colorama>=0.4.6",
+    "prompt-toolkit>=3.0.52",
+    "pytest>=9.0.3",
+    "questionary>=2.1.1",
+    "rich>=15.0.0",
+    "rich-pyfiglet>=2.0.1",
+    "tabulate>=0.10.0",
+]
+
+[dependency-groups]
+dev = [
+    "asciimatics>=1.15.0",
+    "blessed>=1.44.0",
+    "numpy>=2.4.6",
+    "pandas>=3.0.3",
+    "pyinstaller>=6.20.0",
+    "python-lsp-server[all]>=1.14.0",
+    "websockets>=16.0",
+]
+
+[tool.ruff]
+indent-width = 4
+line-length = 79
+target-version = "py314"
+
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+    # McCabe
+    "C901",
+]

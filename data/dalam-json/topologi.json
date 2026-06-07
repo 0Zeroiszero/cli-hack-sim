@@ -1,0 +1,55 @@
+{
+  "SRV001": [
+    {"to": "SRV002", "latency_ms": 5,  "bandwidth_mbps": 200, "two_way": true},
+    {"to": "SRV003", "latency_ms": 12, "bandwidth_mbps": 500, "two_way": true},
+    {"to": "SRV004", "latency_ms": 7,  "bandwidth_mbps": 600, "two_way": true},
+    {"to": "SRV005", "latency_ms": 8,  "bandwidth_mbps": 800, "two_way": false},
+    {"to": "SRV010", "latency_ms": 18, "bandwidth_mbps": 400, "two_way": true}
+  ],
+  "SRV002": [
+    {"to": "SRV003", "latency_ms": 10, "bandwidth_mbps": 200, "two_way": true},
+    {"to": "SRV004", "latency_ms": 3,  "bandwidth_mbps": 200, "two_way": true},
+    {"to": "SRV005", "latency_ms": 14, "bandwidth_mbps": 200, "two_way": false},
+    {"to": "SRV007", "latency_ms": 10, "bandwidth_mbps": 200, "two_way": true}
+  ],
+  "SRV003": [
+    {"to": "SRV004", "latency_ms": 7,  "bandwidth_mbps": 500, "two_way": true},
+    {"to": "SRV005", "latency_ms": 9,  "bandwidth_mbps": 500, "two_way": true},
+    {"to": "SRV006", "latency_ms": 16, "bandwidth_mbps": 100, "two_way": false}
+  ],
+  "SRV004": [
+    {"to": "SRV005", "latency_ms": 4,  "bandwidth_mbps": 1000, "two_way": true},
+    {"to": "SRV006", "latency_ms": 10, "bandwidth_mbps": 100,  "two_way": false},
+    {"to": "SRV007", "latency_ms": 13, "bandwidth_mbps": 200,  "two_way": true},
+    {"to": "SRV008", "latency_ms": 17, "bandwidth_mbps": 500,  "two_way": true}
+  ],
+  "SRV005": [
+    {"to": "SRV006", "latency_ms": 6,  "bandwidth_mbps": 100, "two_way": true},
+    {"to": "SRV007", "latency_ms": 15, "bandwidth_mbps": 150, "two_way": false},
+    {"to": "SRV008", "latency_ms": 11, "bandwidth_mbps": 500, "two_way": true},
+    {"to": "SRV009", "latency_ms": 22, "bandwidth_mbps": 80,  "two_way": false}
+  ],
+  "SRV006": [
+    {"to": "SRV007", "latency_ms": 9,  "bandwidth_mbps": 100, "two_way": true},
+    {"to": "SRV008", "latency_ms": 11, "bandwidth_mbps": 100, "two_way": true},
+    {"to": "SRV009", "latency_ms": 18, "bandwidth_mbps": 80,  "two_way": true}
+  ],
+  "SRV007": [
+    {"to": "SRV002", "latency_ms": 10, "bandwidth_mbps": 200, "two_way": true},
+    {"to": "SRV003", "latency_ms": 12, "bandwidth_mbps": 200, "two_way": false},
+    {"to": "SRV008", "latency_ms": 8,  "bandwidth_mbps": 200, "two_way": true},
+    {"to": "SRV009", "latency_ms": 14, "bandwidth_mbps": 80,  "two_way": false},
+    {"to": "SRV010", "latency_ms": 21, "bandwidth_mbps": 200, "two_way": true}
+  ],
+  "SRV008": [
+    {"to": "SRV009", "latency_ms": 6,  "bandwidth_mbps": 80,  "two_way": true},
+    {"to": "SRV010", "latency_ms": 20, "bandwidth_mbps": 300, "two_way": false}
+  ],
+  "SRV009": [
+    {"to": "SRV010", "latency_ms": 8,  "bandwidth_mbps": 80,  "two_way": true}
+  ],
+  "SRV010": [
+    {"to": "SRV005", "latency_ms": 25, "bandwidth_mbps": 700, "two_way": false},
+    {"to": "SRV006", "latency_ms": 9,  "bandwidth_mbps": 81,  "two_way": false}
+  ]
+}
