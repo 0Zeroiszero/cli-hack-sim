@@ -2,8 +2,7 @@
 
 Graph adalah struktur data untuk merepresentasikan hubungan antar-objek.
 Graph terdiri dari simpul (nodes) dan sisi (edges) yang menghubungkan
-simpul-simpul tersebut. Graph dapat digunakan untuk berbagai aplikasi
-seperti jaringan sosial, peta jalan, dan banyak lagi.
+simpul-simpul tersebut.
 """
 
 from pathlib import Path
@@ -12,63 +11,51 @@ from src.filehandler import FileHandler
 
 
 class Graph:
-    """Representasi graph menggunakan adjacency list.
-
-    Setiap edge menyimpan informasi latency (weight untuk Dijkstra),
-    bandwidth, dan arah koneksi (two_way).
-    """
+    """Representasi graph menggunakan adjacency list."""
 
     def __init__(self):
-        """Menyimpan graf dalam bentuk adjacency list."""
         self.graph = {}
 
-    def _add_reverse_edge(self, edge, server_id):
-        """Menambahkan reverse edge jika koneksi two_way."""
-        if not edge["two_way"]:
-            return
-        reverse_edge = {
-            "to": server_id,
-            "latency_ms": edge["latency_ms"],
-            "bandwidth_mbps": edge["bandwidth_mbps"],
-            "two_way": True,
-        }
-        if edge["to"] not in self.graph:
-            self.graph[edge["to"]] = []
-        # Cegah duplikasi jika reverse edge sudah ada
-        for e in self.graph[edge["to"]]:
-            if e["to"] == server_id:
-                return
-        self.graph[edge["to"]].append(reverse_edge)
-
-    def build_from_json(self, filepath):
-        """Membangun adjacency list dari file topologi JSON.
-
-        Args:
-            filepath: Path ke file topologi.json.
-        """
+    def build_from_json(self, filepath):  # noqa: C901
+        """Membangun adjacency list dari file topologi JSON."""
         topologi = FileHandler().load_json(filepath)
         self.graph = {}
 
         for server_id, edges in topologi.items():
             if server_id not in self.graph:
                 self.graph[server_id] = []
-            for edge in edges:
-                self.graph[server_id].append(dict(edge))
-                self._add_reverse_edge(edge, server_id)
 
-        # Pastikan semua server tujuan memiliki entri (meski kosong)
+            for edge in edges:
+                # Simpan edge asli
+                self.graph[server_id].append(dict(edge))
+
+                # Kalo two_way True, tambahin reverse edge
+                if edge["two_way"]:
+                    reverse = {
+                        "to": server_id,
+                        "latency_ms": edge["latency_ms"],
+                        "bandwidth_mbps": edge["bandwidth_mbps"],
+                        "two_way": True,
+                    }
+                    if edge["to"] not in self.graph:
+                        self.graph[edge["to"]] = []
+                    # Cegah duplikasi
+                    sudah_ada = False
+                    for e in self.graph[edge["to"]]:
+                        if e["to"] == server_id:
+                            sudah_ada = True
+                            break
+                    if not sudah_ada:
+                        self.graph[edge["to"]].append(reverse)
+
+        # Pastikan server tujuan punya entri walau kosong
         for edges in topologi.values():
             for edge in edges:
                 if edge["to"] not in self.graph:
                     self.graph[edge["to"]] = []
 
     def get_adjacency_list(self):
-        """Mengembalikan adjacency list yang diperkaya dengan nama server.
-
-        Returns:
-            dict — setiap edge dict memiliki field tambahan
-            "to_name" yang berisi nama server tujuan.
-        """
+        """Ngembaliin adjacency list yang udah ditambahin nama server."""
         server_data = FileHandler().load_json(
             Path("src/data/dalam-json/akun_dan_status_server.json"),
         )
@@ -92,22 +79,79 @@ class Graph:
             result[server_id] = enriched
         return result
 
-    def _find_closest_unvisited(self, jarak, visited):
-        """Mencari simpul belum dikunjungi dengan jarak terkecil."""
-        current = None
-        min_jarak = float("inf")
-        for simpul in self.graph:
-            if simpul not in visited and jarak[simpul] < min_jarak:
-                min_jarak = jarak[simpul]
-                current = simpul
-        return current
+    def dijkstra(self, start, end):  # noqa: C901
+        """Cari rute terpendek pake algoritma Dijkstra (weight = latency).
 
-    def _reconstruct_path(self, previous, end):
-        """Rekonstruksi path dari end ke start berdasarkan previous."""
+        Args:
+            start: server_id asal (contoh: "SRV001")
+            end: server_id tujuan (contoh: "SRV007")
+
+        Returns:
+            dict kalo ketemu, None kalo gak ada jalur.
+        """
+        # ── 1. Kalo start/end gak ada di graph, langsung None ──
+        if start not in self.graph or end not in self.graph:
+            return None
+
+        # ── 2. Set jarak awal ──
+        # jarak ke semua server = tak terhingga
+        jarak = {}
+        for s in self.graph:
+            jarak[s] = float("inf")
+        jarak[start] = 0  # jarak dari start ke dirinya sendiri = 0
+
+        # nyimpen server sebelumnya buat rekonstruksi path nanti
+        previous = {}
+        for s in self.graph:
+            previous[s] = None
+
+        # server yang udah diproses
+        visited = set()
+
+        # ── 3. Loop utama Dijkstra ──
+        while len(visited) < len(self.graph):
+            # Cari server dengan jarak terkecil yang belum dikunjungi
+            current = None
+            min_jarak = float("inf")
+            for s in self.graph:
+                if s not in visited and jarak[s] < min_jarak:
+                    min_jarak = jarak[s]
+                    current = s
+
+            # Kalo gak ada yang bisa dikunjungi lagi, berhenti
+            if current is None or jarak[current] == float("inf"):
+                break
+
+            # Kalo udah sampe tujuan, berhenti
+            if current == end:
+                break
+
+            visited.add(current)
+
+            # Cek semua tetangga dari server yang sekarang
+            for edge in self.graph[current]:
+                tetangga = edge["to"]
+                if tetangga in visited:
+                    continue
+
+                # Hitung jarak baru = jarak current + latency ke tetangga
+                jarak_baru = jarak[current] + edge["latency_ms"]
+
+                # Kalo lebih pendek dari jarak yang udah tercatat, update
+                if jarak_baru < jarak[tetangga]:
+                    jarak[tetangga] = jarak_baru
+                    previous[tetangga] = {"from": current, "edge": edge}
+
+        # ── 4. Kalo tujuan gak terjangkau, return None ──
+        if jarak[end] == float("inf"):
+            return None
+
+        # ── 5. Rekonstruksi path dari tujuan balik ke start ──
         path_hops = []
         current = end
         while previous[current] is not None:
             info = previous[current]
+            # masukin ke depan (biar urut dari start ke end)
             path_hops.insert(
                 0,
                 {
@@ -119,14 +163,8 @@ class Graph:
                 },
             )
             current = info["from"]
-        return path_hops
 
-    def _enrich_path_with_names(self, path_hops):
-        """Menambahkan from_name dan to_name ke setiap hop.
-
-        Returns:
-            dict mapping server_id -> server_name.
-        """
+        # ── 6. Ambil nama server dari file JSON ──
         server_data = FileHandler().load_json(
             Path("src/data/dalam-json/akun_dan_status_server.json"),
         )
@@ -134,52 +172,18 @@ class Graph:
         for s in server_data.get("servers", []):
             server_names[s["server_id"]] = s["server_name"]
 
+        # Tambahin nama ke setiap hop
         for hop in path_hops:
             hop["from_name"] = server_names.get(hop["from"], "Unknown")
             hop["to_name"] = server_names.get(hop["to"], "Unknown")
-        return server_names
 
-    def dijkstra(self, start, end):
-        """Mencari rute terpendek berdasarkan total latency terkecil.
+        # Cari bandwidth terkecil di sepanjang path (bottleneck)
+        min_bandwidth = float("inf")
+        for hop in path_hops:
+            if hop["bandwidth_mbps"] < min_bandwidth:
+                min_bandwidth = hop["bandwidth_mbps"]
 
-        Args:
-            start: Server ID asal (contoh: "SRV001").
-            end: Server ID tujuan (contoh: "SRV007").
-
-        Returns:
-            dict jika ditemukan, None jika tidak ada jalur.
-        """
-        if start not in self.graph or end not in self.graph:
-            return None
-
-        jarak = {s: float("inf") for s in self.graph}
-        jarak[start] = 0
-        previous = {s: None for s in self.graph}
-        visited = set()
-
-        while len(visited) < len(self.graph):
-            current = self._find_closest_unvisited(jarak, visited)
-            if current is None or jarak[current] == float("inf"):
-                break
-            if current == end:
-                break
-            visited.add(current)
-            for edge in self.graph[current]:
-                neighbor = edge["to"]
-                if neighbor in visited:
-                    continue
-                distance = jarak[current] + edge["latency_ms"]
-                if distance < jarak[neighbor]:
-                    jarak[neighbor] = distance
-                    previous[neighbor] = {"from": current, "edge": edge}
-
-        if jarak[end] == float("inf"):
-            return None
-
-        path_hops = self._reconstruct_path(previous, end)
-        server_names = self._enrich_path_with_names(path_hops)
-        min_bandwidth = min(h["bandwidth_mbps"] for h in path_hops)
-
+        # ── 7. Return hasil ──
         return {
             "from": start,
             "from_name": server_names.get(start, "Unknown"),
@@ -189,3 +193,13 @@ class Graph:
             "min_bandwidth_mbps": min_bandwidth,
             "path": path_hops,
         }
+
+
+if __name__ == "__main__":
+    from pprint import pprint
+
+    g = Graph()
+    g.build_from_json(Path("src/data/dalam-json/topologi.json"))
+
+    print("Dijkstra")
+    pprint(g.dijkstra("SRV001", "SRV006"))
