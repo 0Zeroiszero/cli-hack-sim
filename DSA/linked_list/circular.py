@@ -170,7 +170,7 @@ class CircularServerNode(ServerNode):
 
 if __name__ == "__main__":
     raw_data = FileHandler().load_json(
-        Path("src/data/dalam-json/akun_dan_status_server.json"),
+        Path("data/dalam-json/akun_dan_status_server.json"),
     )
     assert isinstance(raw_data, dict)  # noqa: S101
     head = CircularServerNode(raw_data)

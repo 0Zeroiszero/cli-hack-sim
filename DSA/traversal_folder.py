@@ -30,7 +30,7 @@ class ServerTreeBuilder:
     # ServerTreeBuilder.build_server_tree()
     @staticmethod
     def build_server_tree() -> list[TreeNode]:
-        file_path = Path("src/data/dalam-json/daftar_folder_file_server.json")
+        file_path = Path("data/dalam-json/daftar_folder_file_server.json")
         
         with open(file_path, "r") as file:
             data = json.load(file)

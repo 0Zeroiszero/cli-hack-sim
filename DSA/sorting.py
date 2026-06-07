@@ -12,7 +12,7 @@ class SortingServer:
 
     # fungsi untuk mengurutkan server berdasarkan bandwidth tertinggi menggunakan bubble sort
     def urutkan_server(self) -> list[tuple[int, str, str, int]]:
-        with open(Path("src/data/dalam-json/akun_dan_status_server.json"), 'r') as f:
+        with open(Path("data/dalam-json/akun_dan_status_server.json"), 'r') as f:
             data = json.load(f)
         
         idx = 0

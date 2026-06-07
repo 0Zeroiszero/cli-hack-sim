@@ -57,7 +57,7 @@ class Graph:
     def get_adjacency_list(self):
         """Ngembaliin adjacency list yang udah ditambahin nama server."""
         server_data = FileHandler().load_json(
-            Path("src/data/dalam-json/akun_dan_status_server.json"),
+            Path("data/dalam-json/akun_dan_status_server.json"),
         )
         server_names = {}
         for s in server_data.get("servers", []):
@@ -166,7 +166,7 @@ class Graph:
 
         # ── 6. Ambil nama server dari file JSON ──
         server_data = FileHandler().load_json(
-            Path("src/data/dalam-json/akun_dan_status_server.json"),
+            Path("data/dalam-json/akun_dan_status_server.json"),
         )
         server_names = {}
         for s in server_data.get("servers", []):
@@ -199,7 +199,7 @@ if __name__ == "__main__":
     from pprint import pprint
 
     g = Graph()
-    g.build_from_json(Path("src/data/dalam-json/topologi.json"))
+    g.build_from_json(Path("data/dalam-json/topologi.json"))
 
     print("Dijkstra")
     pprint(g.dijkstra("SRV001", "SRV006"))

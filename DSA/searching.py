@@ -20,7 +20,7 @@ def cari_server_binary(target: str):
         data = []
         data_cari = []
 
-        with open(Path("src/data/server.txt"), "r") as f:
+        with open(Path("data/server.txt"), "r") as f:
             for line in f:
                 data.append(line.strip().split("|"))
 
@@ -83,7 +83,7 @@ def cari_server_linear(target: IPv4Address):
     data_cari = []
     ketemu = False
 
-    with open(Path("src/data/server.txt"), "r") as f:
+    with open(Path("data/server.txt"), "r") as f:
         for line in f:
             data.append(line.strip().split("|"))
 
