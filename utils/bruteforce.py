@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 import json
 
-def brute_force_attack():
+def brute_force_attack(server_id:str) -> dict | None:
         akun_dan_status_server_path = Path("src/data/dalam-json/akun_dan_status_server.json")
         brute_force = Path("src/data/dalam-json/bruteforce.json")
         return_dict = []
