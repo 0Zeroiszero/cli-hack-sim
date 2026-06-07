@@ -66,3 +66,9 @@ def bruteforce_server(server_id):
         }
 
     return None
+
+if __name__ == "__main__":
+    from pprint import pprint
+    
+    bf = bruteforce_server("SRV001")
+    pprint(bf)
