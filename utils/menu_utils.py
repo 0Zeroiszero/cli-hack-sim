@@ -366,7 +366,7 @@ def ask_for_server(prompt_text: str = "Pilih Server: ") -> str | None:
     from src.filehandler import FileHandler
 
     server_data = FileHandler().load_json(
-        Path("src/data/dalam-json/akun_dan_status_server.json"),
+        Path("data/dalam-json/akun_dan_status_server.json"),
     )
     server_list = server_data.get("servers", [])
     if not server_list:

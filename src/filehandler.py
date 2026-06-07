@@ -25,7 +25,7 @@ class FileHandler:
     def load_server(self):
         server_list = []
         try:
-            with open(Path("src/data/server.txt"), "r") as f:
+            with open(Path("data/server.txt"), "r") as f:
                 for baris in f:
                     data = baris.strip().split(
                         "|"

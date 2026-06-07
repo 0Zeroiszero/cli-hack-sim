@@ -22,7 +22,7 @@ from rich.text import Text
 
 console = Console()
 
-DATA_PATH = Path("src/data/dalam-json/akun_dan_status_server.json")
+DATA_PATH = Path("data/dalam-json/akun_dan_status_server.json")
 
 
 # ── Circular Linked List ────────────────────────────────────────────

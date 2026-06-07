@@ -58,7 +58,7 @@ class MainMenu:
     def __init__(self) -> None:
         """Inisialisasi atribut dan dependensi utama."""
         self._console = Console()
-        self._traffic = TrafficQueue("src/data/dalam-json/traffic.json")
+        self._traffic = TrafficQueue("data/dalam-json/traffic.json")
         self._log_aktivitas = LogAktivitas()
         self._node_from_server: ServerNode | None = None
         self._server_id: str | None = None
@@ -67,7 +67,7 @@ class MainMenu:
         self._server_carousel = ServerCarousel(self._server_id)
         self._operator = "Operator"
         self._server_data: dict = FileHandler().load_json(
-            Path("src/data/dalam-json/akun_dan_status_server.json"),
+            Path("data/dalam-json/akun_dan_status_server.json"),
         )
         self._circular_server = CircularServerNode(self._server_data)
 
@@ -582,7 +582,7 @@ class MainMenu:
         # Bangun graph dari data topologi
         graph = Graph()
         graph.build_from_json(
-            Path("src/data/dalam-json/topologi.json"),
+            Path("data/dalam-json/topologi.json"),
         )
         adj_list = graph.get_adjacency_list()
 
@@ -619,7 +619,7 @@ class MainMenu:
         # Bangun graph
         graph = Graph()
         graph.build_from_json(
-            Path("src/data/dalam-json/topologi.json"),
+            Path("data/dalam-json/topologi.json"),
         )
 
         # Input server asal & tujuan pake FuzzyWordCompleter

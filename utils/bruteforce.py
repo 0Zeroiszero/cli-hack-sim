@@ -28,10 +28,10 @@ def bruteforce_server(server_id):
         None jika tidak ada kecocokan.
     """
     akun_data = FileHandler().load_json(
-        Path("src/data/dalam-json/akun_dan_status_server.json"),
+        Path("data/dalam-json/akun_dan_status_server.json"),
     )
     brute_data = FileHandler().load_json(
-        Path("src/data/dalam-json/bruteforce.json"),
+        Path("data/dalam-json/bruteforce.json"),
     )
 
     # Cari server target berdasarkan server_id
