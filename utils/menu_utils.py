@@ -1,25 +1,30 @@
-"""
+"""Modul menu_utils untuk aplikasi CLI Hack Sim.
+
+Menyediakan berbagai utilitas untuk menu interaktif CLI,
+termasuk pembuatan pertanyaan menu, tampilan bandwidth,
+pencarian IP, traversal folder, dan input server.
+
 @author: Abdullah Affandi
 """
 
 import time
-from ipaddress import IPv4Address, AddressValueError
-
-from src import FileHandler
-
-from prompt_toolkit.completion import FuzzyWordCompleter
-from prompt_toolkit import prompt
+from ipaddress import AddressValueError, IPv4Address
+from pathlib import Path
 
 import questionary
-from questionary import Style, Question
+from prompt_toolkit import prompt
+from prompt_toolkit.completion import FuzzyWordCompleter
+from questionary import Question, Style
+from rich import box
 from rich.console import Console, Group
 from rich.live import Live
-from rich.progress import Progress, BarColumn, TextColumn
 from rich.panel import Panel
+from rich.progress import BarColumn, Progress, TextColumn
 from rich.status import Status
-from rich.text import Text
 from rich.table import Table
-from rich import box
+from rich.text import Text
+
+from src.filehandler import FileHandler
 
 
 def make_menu_selection_question(
@@ -30,23 +35,22 @@ def make_menu_selection_question(
     use_shortcuts: bool = True,
     style: Style | None = None,
 ) -> Question:
-    """
-    Membuat pertanyaan berdasarkan question dan value sebagai nilai yang digunakan.
-    Style merujuk kepada @questionary.Style yang digunakan untuk mengubah tampilan pertanyaan.
-    Jika tidak ada parameter Style, maka default akan digunakan.
-    Return merupakan questionary.Question
+    """Membuat pertanyaan pilihan menu menggunakan questionary.
 
     Args:
-        question: list[str | int] -> Pertanyaan yang akan ditampilkan, bisa berupa string atau integer.
-        value: list[str | int] -> Nilai yang akan digunakan untuk pertanyaan.
-        shortcut_key: str | None -> Key awalan yang akan digunakan untuk shortcut.
-            Jika None, shortcut otomatis dibuat berdasarkan nomor urut.
-            Contoh: "a" menghasilkan a1, a2, a3, dst.
-        use_shortcuts: bool -> Mengaktifkan atau mematikan shortcut pada menu.
-        style: Style | None -> Style yang akan digunakan untuk mengubah tampilan pertanyaan.
+        question: Daftar pertanyaan yang akan ditampilkan.
+        value: Daftar nilai yang sesuai dengan setiap pertanyaan.
+        shortcut_key: Key awalan untuk shortcut. Jika None,
+            shortcut otomatis berdasarkan nomor urut.
+        use_shortcuts: Mengaktifkan atau mematikan shortcut.
+        style: Style questionary kustom. Jika None, gunakan default.
 
     Returns:
-        Question -> Pertanyaan yang sudah dibuat berdasarkan parameter yang diberikan.
+        Question: Objek questionary siap pakai.
+
+    Raises:
+        ValueError: Jika question atau value None, panjang tidak sama,
+            atau tipe data tidak sesuai.
     """
     default_style = Style(
         [
@@ -80,7 +84,9 @@ def make_menu_selection_question(
 
     choices = []
 
-    for index, (question_item, value_item) in enumerate(zip(question, value), start=1):
+    for index, (question_item, value_item) in enumerate(
+        zip(question, value), start=1
+    ):
         if not isinstance(question_item, (str, int)):
             raise ValueError("Question harus berupa string atau integer")
 
@@ -88,7 +94,9 @@ def make_menu_selection_question(
             raise ValueError("Value harus berupa string atau integer")
 
         if use_shortcuts:
-            current_shortcut = f"{shortcut_key}{index}" if shortcut_key else str(index)
+            current_shortcut = (
+                f"{shortcut_key}{index}" if shortcut_key else str(index)
+            )
         else:
             current_shortcut = None
 
@@ -118,17 +126,12 @@ def tampilkan_bandwidth_progress(
     rank: bool = False,
     data: list[tuple[int, str, str, int]],
 ) -> Panel:
-    """
-    Membuat panel daftar bandwidth server dalam bentuk progress bar Rich.
+    """Membuat panel daftar bandwidth server dalam bentuk progress bar Rich.
 
     Args:
-        rank (bool): Jika True, tampilkan urutan ranking server.
-        data (list[tuple[int, str, str, int]]): Daftar data bandwidth server.
-            Format tuple:
-            - index (int): Nomor urut/ranking server.
-            - server_id (str): ID server.
-            - server_name (str): Nama server.
-            - bandwidth_mbps (int): Kecepatan bandwidth dalam satuan Mbps.
+        rank: Jika True, tampilkan urutan ranking server.
+        data: Daftar data bandwidth server.
+            Format tuple: (index, server_id, server_name, bandwidth_mbps).
 
     Returns:
         Panel: Renderable Rich yang bisa digunakan untuk console.print() atau Live.
@@ -187,31 +190,22 @@ def tampilkan_bandwidth_progress(
 
 def display_search_ip_result(
     *, result: list[tuple[int, str, str, str, str, bool]]
-) -> Panel:
-    """
-    Membuat tampilan hasil pencarian alamat IP server dalam bentuk Rich Panel.
+) -> Panel | bool:
+    """Membuat tampilan hasil pencarian alamat IP server dalam bentuk Rich Panel.
 
-    Parameter result berisi daftar tuple hasil pencarian server dengan format:
-    (index, ip, server_id, server_name, status, found)
+    Baris yang memiliki found bernilai True akan ditampilkan lebih terang
+    dan diberi label "--- FOUND". Status server diberi warna sesuai kondisinya.
 
-    Keterangan tuple:
-    - index: urutan data server.
-    - ip: alamat IP server.
-    - server_id: ID server.
-    - server_name: nama server.
-    - status: status server, misalnya ONLINE, OFFLINE, MAINTENANCE, BLOCKED, atau OVERLOAD.
-    - found: penanda apakah server tersebut cocok dengan IP yang dicari.
-
-    Baris yang memiliki found bernilai True akan ditampilkan lebih terang dan
-    diberi label "--- FOUND". Status server juga diberi warna sesuai kondisinya.
+    Args:
+        result: Daftar tuple hasil pencarian server.
+            Format: (index, ip, server_id, server_name, status, found).
 
     Returns:
-        Panel: Rich Panel berisi daftar hasil pencarian IP yang siap ditampilkan
-        menggunakan console.print().
+        Panel | bool: Rich Panel hasil pencarian, atau False jika terjadi TypeError.
     """
     try:
         body = Text()
-        found = False
+        found_any = False
 
         for index, ip, server_id, server_name, status, found in result:
             status_style = {
@@ -225,14 +219,15 @@ def display_search_ip_result(
                 body.append(f"[{index + 1}] ", style="bold bright_white")
                 body.append(f"{ip:<14} ", style="bold bright_cyan")
                 body.append("| ", style="bold bright_white")
-                body.append(f"Server {server_name:<8} ", style="bold bright_white")
+                body.append(
+                    f"Server {server_name:<8} ", style="bold bright_white"
+                )
                 body.append("| ", style="bold bright_white")
                 body.append(f"{status:<11}", style=status_style)
                 body.append(" --- FOUND", style="bold bright_yellow")
                 body.append("\n")
 
-                # Kalau ketemu
-                found = True
+                found_any = True
             else:
                 body.append(f"[{index + 1}] ", style="white")
                 body.append(f"{ip:<14} ", style="cyan")
@@ -247,7 +242,7 @@ def display_search_ip_result(
 
         with Live(status, refresh_per_second=10):
             time.sleep(1.5)
-            if found:
+            if found_any:
                 status.update("[bold green]Alamat IP ditemukan...")
                 time.sleep(1.5)
             else:
@@ -258,7 +253,7 @@ def display_search_ip_result(
             body,
             title="MENCARI ALAMAT IP",
             title_align="center",
-            border_style="green" if found else "red",
+            border_style="green" if found_any else "red",
         )
     except TypeError:
         return False
@@ -270,20 +265,18 @@ def make_traversal_folder(
     inorder: str = "",
     postorder: str = "",
 ) -> tuple[Panel, Table]:
-    """
-    Membuat Panel dan Table Rich berdasarkan traversal yang dipilih.
+    """Membuat Panel dan Table Rich berdasarkan traversal yang dipilih.
 
     Args:
-        pilihan_traversal (str): Traversal utama yang ditampilkan di Panel.
+        pilihan_traversal: Traversal utama yang ditampilkan di Panel.
             Pilihan: "preorder", "inorder", atau "postorder".
-        preorder (str): Hasil traversal preorder.
-        inorder (str): Hasil traversal inorder.
-        postorder (str): Hasil traversal postorder.
+        preorder: Hasil traversal preorder.
+        inorder: Hasil traversal inorder.
+        postorder: Hasil traversal postorder.
 
     Returns:
         tuple[Panel, Table]: Panel traversal utama dan tabel traversal lainnya.
     """
-
     if pilihan_traversal == "preorder":
         tree_text = preorder
         panel_title = "Preorder Tree"
@@ -361,10 +354,6 @@ def ask_for_server(prompt_text: str = "Pilih Server: ") -> str | None:
     Returns:
         str: Server ID (contoh: "SRV001"), atau None jika gagal.
     """
-    from pathlib import Path
-
-    from src.filehandler import FileHandler
-
     server_data = FileHandler().load_json(
         Path("data/dalam-json/akun_dan_status_server.json"),
     )
@@ -406,10 +395,10 @@ def ask_for_server(prompt_text: str = "Pilih Server: ") -> str | None:
 def ask_for_ip() -> str:
     """Meminta input alamat IPv4 server dengan fitur autocomplete IP.
 
-    Mengambil daftar server dari `FileHandler`, lalu menyediakan autocomplete
+    Mengambil daftar server dari FileHandler, lalu menyediakan autocomplete
     berdasarkan alamat IP server tanpa metadata nama server.
 
-    Input divalidasi menggunakan `IPv4Address`. Jika input bukan alamat IPv4
+    Input divalidasi menggunakan IPv4Address. Jika input bukan alamat IPv4
     yang valid, fungsi mengembalikan string kosong.
 
     Returns:

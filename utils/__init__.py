@@ -1,3 +1,9 @@
+"""Modul utils untuk aplikasi CLI Hack Sim.
+
+Berisi utilitas pendukung seperti bruteforce, menu interaktif,
+dan pewarnaan teks.
+"""
+
 from .bruteforce import bruteforce_server
 from .menu_utils import (
     ask_for_ip,

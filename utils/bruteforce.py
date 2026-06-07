@@ -1,13 +1,18 @@
-"""@author: Alif Akbar; @modified: Abdullah Affandi
+"""Modul bruteforce untuk aplikasi CLI Hack Sim.
 
-Fungsi bruteforce login untuk membuka akses server."""
+Menyediakan fungsi bruteforce login untuk membuka akses server
+dengan mencocokkan kredensial menggunakan hash table.
+
+@author: Alif Akbar
+@modified: Abdullah Affandi
+"""
 
 from pathlib import Path
 
 from src.filehandler import FileHandler
 
 
-def bruteforce_server(server_id):
+def bruteforce_server(server_id: str) -> dict | None:
     """Melakukan bruteforce login terhadap server berdasarkan server_id.
 
     Membaca data kredensial dari file JSON, menggunakan hash table untuk
@@ -67,8 +72,9 @@ def bruteforce_server(server_id):
 
     return None
 
+
 if __name__ == "__main__":
     from pprint import pprint
-    
+
     bf = bruteforce_server("SRV001")
     pprint(bf)

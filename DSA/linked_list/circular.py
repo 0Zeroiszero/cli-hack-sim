@@ -1,4 +1,11 @@
-"""@author: Abdullah Affandi."""
+"""Modul circular linked list untuk monitoring server.
+
+Menyediakan kelas CircularServerNode yang membangun circular
+singly linked list dari data server untuk keperluan monitoring
+dan visualisasi live.
+
+@author: Abdullah Affandi
+"""
 
 import random
 import time
@@ -18,6 +25,12 @@ class CircularServerNode(ServerNode):
 
     Setelah inisialisasi, seluruh node terhubung membentuk lingkaran
     di mana node terakhir (tail) mengarah kembali ke node pertama (head).
+
+    Attributes:
+        vulnerable: Status kerentanan server (True jika rentan).
+        next: Pointer ke node berikutnya dalam circular list.
+        current: Pointer ke node yang sedang aktif/diproses.
+
     """
 
     def __init__(self, data: dict) -> None:
@@ -61,14 +74,27 @@ class CircularServerNode(ServerNode):
         self,
         target: CircularServerNode,
     ) -> None:
-        """Toggle vulnerable target jika random 1-9 genap."""
+        """Mengubah status vulnerable target secara acak.
+
+        Jika angka random 1-9 bernilai genap, status vulnerable
+        target akan di-toggle (dibalik).
+
+        Args:
+            target: Node server yang akan diubah statusnya.
+
+        """
         angka = random.randint(1, 9)
         if angka % 2 != 0:
             return
         target.vulnerable = not target.vulnerable
 
-    def _collect_all_nodes(self) -> list[CircularServerNode]:
-        """Kumpulkan seluruh node dari circular linked list."""
+    def _collect_all_nodes(self) -> list["CircularServerNode"]:
+        """Mengumpulkan seluruh node dari circular linked list.
+
+        Returns:
+            list[CircularServerNode]: Daftar semua node dalam circular list.
+
+        """
         nodes: list[CircularServerNode] = []
         node = self
         while True:
@@ -87,7 +113,15 @@ class CircularServerNode(ServerNode):
         self,
         highlight_id: str | None = None,
     ) -> Table:
-        """Bangun tabel monitoring seluruh server dalam circular list."""
+        """Membangun tabel monitoring seluruh server dalam circular list.
+
+        Args:
+            highlight_id: Server ID yang akan diberi highlight khusus.
+
+        Returns:
+            Table: Rich Table yang menampilkan status seluruh server.
+
+        """
         table = Table(border_style="green", box=box.HORIZONTALS, expand=True)
         table.add_column("Server ID", style="cyan")
         table.add_column("Name", style="white")
@@ -135,7 +169,12 @@ class CircularServerNode(ServerNode):
         return table
 
     def _make_circular_live_table(self) -> None:
-        """Live table: satpam putih keliling, pulihkan server merah."""
+        """Menampilkan live monitoring server circular.
+
+        Menampilkan tabel yang diperbarui secara real-time dengan
+        efek "satpam putih" yang berkeliling memulihkan server merah
+        (vulnerable) menjadi normal.
+        """
         console = Console()
         nodes = self._collect_all_nodes()
 
@@ -149,15 +188,12 @@ class CircularServerNode(ServerNode):
                 while True:
                     time.sleep(0.25)
 
-                    # Server acak jadi vulnerable (merah) secara independen
                     if random.randint(1, 4) == 1:
                         target = random.choice(nodes)
                         self._make_random_server_vulnerable(target)
 
-                    # Satpam putih berjalan keliling
                     self._advance_current()
 
-                    # Kalau ketemu server merah, pulihkan ke state awal
                     if self.current.vulnerable:
                         self.current.vulnerable = False
 
