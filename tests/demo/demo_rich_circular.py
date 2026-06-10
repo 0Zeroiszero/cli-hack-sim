@@ -4,6 +4,7 @@ Demo Rich Live untuk Circular Linked List Monitoring
 """
 
 import time
+
 from rich.console import Console, Group
 from rich.live import Live
 from rich.panel import Panel
@@ -15,15 +16,21 @@ from src.server import Server
 console = Console()
 
 
-"""class Server:
-    def __init__(self, nama, id, ip, status):
-        self.nama = nama
-        self.id = id
-        self.ip = ip
-        self.status = status"""
-
-
 class CircularServerNode(Server):
+    """A node in a circular linked list representing a server.
+
+    Args:
+        server_id: Unique server identifier.
+        server_name: Human-readable server name.
+        ip: IP address of the server.
+        status: Current operational status.
+        vulnerable: Whether the server is flagged as vulnerable.
+        access: Access level (e.g. LOCKED).
+
+    Returns:
+        None.
+    """
+
     def __init__(
         self,
         *,
@@ -48,11 +55,28 @@ class CircularServerNode(Server):
 
 
 class CircularServerMonitoring:
+    """Manages a circular linked list of servers and provides live monitoring.
+
+    Args:
+        None.
+
+    Returns:
+        None.
+    """
+
     def __init__(self):
         self.tail = None
         self.current = None
 
     def is_empty(self):
+        """Check whether the circular list is empty.
+
+        Args:
+            None.
+
+        Returns:
+            bool: True if the list has no nodes, False otherwise.
+        """
         return self.tail is None
 
     def add_server(
@@ -65,6 +89,19 @@ class CircularServerMonitoring:
         vulnerable: bool = False,
         access: str = "LOCKED",
     ):
+        """Add a new server node to the circular list.
+
+        Args:
+            server_id: Unique server identifier.
+            server_name: Human-readable server name.
+            ip: IP address of the server.
+            status: Current operational status.
+            vulnerable: Whether the server is flagged as vulnerable.
+            access: Access level (e.g. LOCKED).
+
+        Returns:
+            None.
+        """
         new_node = CircularServerNode(
             server_id=server_id,
             server_name=server_name,
@@ -84,10 +121,26 @@ class CircularServerMonitoring:
             self.tail = new_node
 
     def move_next(self):
+        """Advance the current pointer to the next node in the circular list.
+
+        Args:
+            None.
+
+        Returns:
+            None.
+        """
         if self.current is not None:
             self.current = self.current.next
 
     def build_monitor_view(self):
+        """Build a Rich Panel displaying the current server's monitoring data.
+
+        Args:
+            None.
+
+        Returns:
+            Panel: A Rich Panel with server details, change, and alert.
+        """
         if self.current is None:
             return Panel(
                 "[red]Belum ada server untuk dimonitor.[/red]",
@@ -151,6 +204,15 @@ class CircularServerMonitoring:
         )
 
     def update_status_demo(self, server_id: str, new_status: str):
+        """Update the status of a server by its ID for demo purposes.
+
+        Args:
+            server_id: The server identifier to update.
+            new_status: The new status value to assign.
+
+        Returns:
+            bool: True if the server was found and updated, False otherwise.
+        """
         if self.is_empty():
             return False
 
@@ -170,6 +232,14 @@ class CircularServerMonitoring:
         return False
 
     def run_auto_monitor(self, delay: float = 2):
+        """Run an automatic live monitoring loop that cycles through servers.
+
+        Args:
+            delay: Seconds to wait between each server rotation.
+
+        Returns:
+            None.
+        """
         try:
             with Live(
                 self.build_monitor_view(),
@@ -184,8 +254,6 @@ class CircularServerMonitoring:
 
                     counter += 1
 
-                    # Demo perubahan status otomatis
-                    # Setelah beberapa putaran, SRV003 berubah status.
                     if counter == 5:
                         self.update_status_demo("SRV003", "OFFLINE")
 

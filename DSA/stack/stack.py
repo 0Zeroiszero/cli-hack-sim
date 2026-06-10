@@ -67,9 +67,3 @@ class Stack:
             Jumlah item dalam stack.
         """
         return len(self.stack)
-
-    # def show_logs(self) -> None:
-    #     """Menampilkan seluruh isi stack ke console."""
-    #     print("\n=== HISTORI LOG (TERBARU -> LAMA) ===")
-    #     for item in reversed(self.stack):
-    #         print(item)

@@ -35,9 +35,7 @@ class SortingServer:
             yang sudah diurutkan dari bandwidth tertinggi ke terendah.
 
         """
-        with open(
-            Path("data/dalam-json/akun_dan_status_server.json")
-        ) as f:
+        with open(Path("data/dalam-json/akun_dan_status_server.json")) as f:
             data = json.load(f)
 
         idx = 0

@@ -49,7 +49,9 @@ class TableCarousel:
         self.current: Optional[TableNode] = None
         self._size: int = 0
 
-    def append(self, title: str, columns: List[str], rows: List[List[Any]]) -> None:
+    def append(
+        self, title: str, columns: List[str], rows: List[List[Any]]
+    ) -> None:
         node = TableNode(title=title, columns=columns, rows=rows)
         if self.tail is None:
             self.head = self.tail = node
@@ -116,13 +118,17 @@ def render_table(
         nav_hint.append("← Prev  ", style="bold cyan")
     else:
         nav_hint.append("         ")
-    nav_hint.append(f"  Halaman {position}/{total}  ", style="bold white on #1a1a2e")
+    nav_hint.append(
+        f"  Halaman {position}/{total}  ", style="bold white on #1a1a2e"
+    )
     if position < total:
         nav_hint.append("  Next →", style="bold cyan")
 
     c.print(Align.center(nav_hint), style="")
 
-    title_text = Text(f"  ✦  {node.title}  ✦  ", style="bold #f0e68c on #1a1a2e")
+    title_text = Text(
+        f"  ✦  {node.title}  ✦  ", style="bold #f0e68c on #1a1a2e"
+    )
     c.print(
         Panel(
             Align.center(title_text),
@@ -280,7 +286,9 @@ def main():
         )
         return ANSI(ansi_str)
 
-    layout = Layout(Window(content=FormattedTextControl(get_content), wrap_lines=False))
+    layout = Layout(
+        Window(content=FormattedTextControl(get_content), wrap_lines=False)
+    )
 
     # ── Application ──────────────────────────────────────────────────
     app = Application(
