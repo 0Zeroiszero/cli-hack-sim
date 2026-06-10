@@ -154,7 +154,9 @@ class CircularServerMonitor:
 
         return result
 
-    def toggle_random_vulnerable(self) -> tuple[CircularServerNode | None, bool | None]:
+    def toggle_random_vulnerable(
+        self,
+    ) -> tuple[CircularServerNode | None, bool | None]:
         """Pilih server acak dan toggle field vulnerable-nya.
 
         Returns:
@@ -228,7 +230,9 @@ def build_table(
         sstyle = _status_style(status_str)
 
         # Highlight baris yang baru berubah
-        row_style = "on dark_red bold white" if vid == changed_server_id else None
+        row_style = (
+            "on dark_red bold white" if vid == changed_server_id else None
+        )
 
         table.add_row(
             vid,

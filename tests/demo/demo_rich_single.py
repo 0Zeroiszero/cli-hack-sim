@@ -5,11 +5,11 @@ Demo TrafficQueue dengan Rich
 
 import json
 
+from rich import box
 from rich.console import Console, Group
 from rich.panel import Panel
-from rich.table import Table
 from rich.pretty import Pretty
-from rich import box
+from rich.table import Table
 
 from DSA.queue.queue import Queue
 
@@ -17,8 +17,25 @@ console = Console()
 
 
 class TrafficQueue(Queue):
+    """A queue for network traffic data with Rich display capabilities.
+
+    Args:
+        None.
+
+    Returns:
+        None.
+    """
+
     def load_from_json(self, file_path: str) -> None:
-        with open(file_path, "r", encoding="utf-8") as file:
+        """Load traffic data from a JSON file and enqueue each entry.
+
+        Args:
+            file_path: Path to the JSON file containing traffic data.
+
+        Returns:
+            None.
+        """
+        with open(file_path, encoding="utf-8") as file:
             traffic_data = json.load(file)
 
         for server_name, monitors in traffic_data.items():
@@ -45,6 +62,14 @@ class TrafficQueue(Queue):
                     self.enqueue(item)
 
     def display(self) -> None:
+        """Display all traffic entries in a Rich Table panel.
+
+        Args:
+            None.
+
+        Returns:
+            None.
+        """
         if self.is_empty():
             console.print("[bold red]Queue traffic kosong.[/bold red]")
             return
@@ -101,6 +126,14 @@ class TrafficQueue(Queue):
         )
 
     def display_front(self) -> None:
+        """Display the front traffic entry without removing it.
+
+        Args:
+            None.
+
+        Returns:
+            None.
+        """
         if self.is_empty():
             console.print("[bold red]Queue traffic kosong.[/bold red]")
             return
@@ -115,6 +148,14 @@ class TrafficQueue(Queue):
         )
 
     def display_dequeue(self) -> None:
+        """Dequeue and display the front traffic entry.
+
+        Args:
+            None.
+
+        Returns:
+            None.
+        """
         if self.is_empty():
             console.print("[bold red]Queue traffic kosong.[/bold red]")
             return
@@ -136,6 +177,17 @@ class TrafficQueue(Queue):
         subtitle: str,
         border_style: str,
     ) -> None:
+        """Display a detailed view of a single traffic entry.
+
+        Args:
+            item: Traffic data dictionary.
+            title: Panel title text.
+            subtitle: Panel subtitle text.
+            border_style: Rich border style string.
+
+        Returns:
+            None.
+        """
         detail_table = Table(show_header=False, box=None)
         detail_table.add_column("Field", style="bold white")
         detail_table.add_column("Value", style="bold green")

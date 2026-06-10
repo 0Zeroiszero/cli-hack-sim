@@ -68,9 +68,3 @@ class Queue:
             Jumlah item dalam queue.
         """
         return len(self.queue)
-
-    # def show_queue(self) -> None:
-    #     """Menampilkan seluruh isi queue ke console."""
-    #     print("\n=== ANTRIAN PACKET ===")
-    #     for item in self.queue:
-    #         print(item)
