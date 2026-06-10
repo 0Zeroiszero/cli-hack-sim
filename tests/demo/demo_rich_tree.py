@@ -14,6 +14,7 @@ from rich.tree import Tree
 
 
 def walk_directory(directory: pathlib.Path, tree: Tree) -> None:
+<<<<<<< HEAD
     """Recursively build a Tree with directory contents.
 
     Args:
@@ -23,6 +24,9 @@ def walk_directory(directory: pathlib.Path, tree: Tree) -> None:
     Returns:
         None.
     """
+=======
+    """Recursively build a Tree with directory contents."""
+>>>>>>> main
     # Sort dirs first then by filename
     paths = sorted(
         pathlib.Path(directory).iterdir(),

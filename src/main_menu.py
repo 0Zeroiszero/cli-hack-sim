@@ -6,7 +6,10 @@
 import os
 import re
 import subprocess
+<<<<<<< HEAD
 import sys
+=======
+>>>>>>> main
 import time
 from ipaddress import AddressValueError, IPv4Address
 from pathlib import Path
@@ -70,11 +73,14 @@ class MainMenu:
         self._server_data: dict = FileHandler().load_json(
             Path("data/dalam-json/akun_dan_status_server.json"),
         )
+<<<<<<< HEAD
         if FileHandler().check_duplicate_ip(self._server_data):
             self._console.print(
                 "[bold red]Duplikat IP terdeteksi. Keluar...[/bold red]"
             )
             sys.exit(1)
+=======
+>>>>>>> main
         self._circular_server = CircularServerNode(self._server_data)
 
     @property

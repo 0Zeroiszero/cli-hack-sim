@@ -4,7 +4,10 @@ Demo Rich Live untuk Circular Linked List Monitoring
 """
 
 import time
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 from rich.console import Console, Group
 from rich.live import Live
 from rich.panel import Panel
@@ -16,6 +19,7 @@ from src.server import Server
 console = Console()
 
 
+<<<<<<< HEAD
 class CircularServerNode(Server):
     """A node in a circular linked list representing a server.
 
@@ -31,6 +35,17 @@ class CircularServerNode(Server):
         None.
     """
 
+=======
+"""class Server:
+    def __init__(self, nama, id, ip, status):
+        self.nama = nama
+        self.id = id
+        self.ip = ip
+        self.status = status"""
+
+
+class CircularServerNode(Server):
+>>>>>>> main
     def __init__(
         self,
         *,
@@ -55,6 +70,7 @@ class CircularServerNode(Server):
 
 
 class CircularServerMonitoring:
+<<<<<<< HEAD
     """Manages a circular linked list of servers and provides live monitoring.
 
     Args:
@@ -64,11 +80,14 @@ class CircularServerMonitoring:
         None.
     """
 
+=======
+>>>>>>> main
     def __init__(self):
         self.tail = None
         self.current = None
 
     def is_empty(self):
+<<<<<<< HEAD
         """Check whether the circular list is empty.
 
         Args:
@@ -77,6 +96,8 @@ class CircularServerMonitoring:
         Returns:
             bool: True if the list has no nodes, False otherwise.
         """
+=======
+>>>>>>> main
         return self.tail is None
 
     def add_server(
@@ -89,6 +110,7 @@ class CircularServerMonitoring:
         vulnerable: bool = False,
         access: str = "LOCKED",
     ):
+<<<<<<< HEAD
         """Add a new server node to the circular list.
 
         Args:
@@ -102,6 +124,8 @@ class CircularServerMonitoring:
         Returns:
             None.
         """
+=======
+>>>>>>> main
         new_node = CircularServerNode(
             server_id=server_id,
             server_name=server_name,
@@ -121,6 +145,7 @@ class CircularServerMonitoring:
             self.tail = new_node
 
     def move_next(self):
+<<<<<<< HEAD
         """Advance the current pointer to the next node in the circular list.
 
         Args:
@@ -129,10 +154,13 @@ class CircularServerMonitoring:
         Returns:
             None.
         """
+=======
+>>>>>>> main
         if self.current is not None:
             self.current = self.current.next
 
     def build_monitor_view(self):
+<<<<<<< HEAD
         """Build a Rich Panel displaying the current server's monitoring data.
 
         Args:
@@ -141,6 +169,8 @@ class CircularServerMonitoring:
         Returns:
             Panel: A Rich Panel with server details, change, and alert.
         """
+=======
+>>>>>>> main
         if self.current is None:
             return Panel(
                 "[red]Belum ada server untuk dimonitor.[/red]",
@@ -204,6 +234,7 @@ class CircularServerMonitoring:
         )
 
     def update_status_demo(self, server_id: str, new_status: str):
+<<<<<<< HEAD
         """Update the status of a server by its ID for demo purposes.
 
         Args:
@@ -213,6 +244,8 @@ class CircularServerMonitoring:
         Returns:
             bool: True if the server was found and updated, False otherwise.
         """
+=======
+>>>>>>> main
         if self.is_empty():
             return False
 
@@ -232,6 +265,7 @@ class CircularServerMonitoring:
         return False
 
     def run_auto_monitor(self, delay: float = 2):
+<<<<<<< HEAD
         """Run an automatic live monitoring loop that cycles through servers.
 
         Args:
@@ -240,6 +274,8 @@ class CircularServerMonitoring:
         Returns:
             None.
         """
+=======
+>>>>>>> main
         try:
             with Live(
                 self.build_monitor_view(),
@@ -254,6 +290,11 @@ class CircularServerMonitoring:
 
                     counter += 1
 
+<<<<<<< HEAD
+=======
+                    # Demo perubahan status otomatis
+                    # Setelah beberapa putaran, SRV003 berubah status.
+>>>>>>> main
                     if counter == 5:
                         self.update_status_demo("SRV003", "OFFLINE")
 

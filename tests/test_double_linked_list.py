@@ -1,9 +1,13 @@
+<<<<<<< HEAD
 """Tests for DoubleLinkedList data structure."""
 
+=======
+>>>>>>> main
 from DSA import DoubleLinkedList
 
 
 def test_new_double_linked_list_should_be_empty():
+<<<<<<< HEAD
     """Verify a newly created DoubleLinkedList is empty.
 
     Args:
@@ -12,6 +16,8 @@ def test_new_double_linked_list_should_be_empty():
     Returns:
         None.
     """
+=======
+>>>>>>> main
     linked_list = DoubleLinkedList()
 
     assert linked_list.is_empty() is True
@@ -23,6 +29,7 @@ def test_new_double_linked_list_should_be_empty():
 
 
 def test_add_front_to_empty_list():
+<<<<<<< HEAD
     """Verify add_front works correctly on an empty list.
 
     Args:
@@ -31,6 +38,8 @@ def test_add_front_to_empty_list():
     Returns:
         None.
     """
+=======
+>>>>>>> main
     linked_list = DoubleLinkedList()
 
     linked_list.add_front("Server A")
@@ -47,6 +56,7 @@ def test_add_front_to_empty_list():
 
 
 def test_add_front_to_non_empty_list():
+<<<<<<< HEAD
     """Verify add_front prepends a node to a non-empty list.
 
     Args:
@@ -55,6 +65,8 @@ def test_add_front_to_non_empty_list():
     Returns:
         None.
     """
+=======
+>>>>>>> main
     linked_list = DoubleLinkedList()
 
     linked_list.add_front("Server B")
@@ -70,6 +82,7 @@ def test_add_front_to_non_empty_list():
 
     assert linked_list.get_size() == 2
     assert linked_list.traverse_forward_recursive() == ["Server A", "Server B"]
+<<<<<<< HEAD
     assert linked_list.traverse_backward_recursive() == [
         "Server B",
         "Server A",
@@ -85,6 +98,12 @@ def test_add_back_to_empty_list():
     Returns:
         None.
     """
+=======
+    assert linked_list.traverse_backward_recursive() == ["Server B", "Server A"]
+
+
+def test_add_back_to_empty_list():
+>>>>>>> main
     linked_list = DoubleLinkedList()
 
     linked_list.add_back("Server A")
@@ -101,6 +120,7 @@ def test_add_back_to_empty_list():
 
 
 def test_add_back_to_non_empty_list():
+<<<<<<< HEAD
     """Verify add_back appends a node to a non-empty list.
 
     Args:
@@ -109,6 +129,8 @@ def test_add_back_to_non_empty_list():
     Returns:
         None.
     """
+=======
+>>>>>>> main
     linked_list = DoubleLinkedList()
 
     linked_list.add_back("Server A")
@@ -137,6 +159,7 @@ def test_add_back_to_non_empty_list():
 
 
 def test_add_front_and_add_back_combination():
+<<<<<<< HEAD
     """Verify mixed add_front and add_back operations maintain correct order.
 
     Args:
@@ -145,6 +168,8 @@ def test_add_front_and_add_back_combination():
     Returns:
         None.
     """
+=======
+>>>>>>> main
     linked_list = DoubleLinkedList()
 
     linked_list.add_back("Server B")
@@ -173,6 +198,7 @@ def test_add_front_and_add_back_combination():
 
 
 def test_remove_front_from_empty_list_should_return_none():
+<<<<<<< HEAD
     """Verify remove_front returns None on an empty list.
 
     Args:
@@ -181,6 +207,8 @@ def test_remove_front_from_empty_list_should_return_none():
     Returns:
         None.
     """
+=======
+>>>>>>> main
     linked_list = DoubleLinkedList()
 
     removed_data = linked_list.remove_front()
@@ -193,6 +221,7 @@ def test_remove_front_from_empty_list_should_return_none():
 
 
 def test_remove_front_from_single_node_list():
+<<<<<<< HEAD
     """Verify remove_front removes the only node and leaves the list empty.
 
     Args:
@@ -201,6 +230,8 @@ def test_remove_front_from_single_node_list():
     Returns:
         None.
     """
+=======
+>>>>>>> main
     linked_list = DoubleLinkedList()
     linked_list.add_back("Server A")
 
@@ -216,6 +247,7 @@ def test_remove_front_from_single_node_list():
 
 
 def test_remove_front_from_multiple_nodes_list():
+<<<<<<< HEAD
     """Verify remove_front removes the head node from a multi-node list.
 
     Args:
@@ -224,6 +256,8 @@ def test_remove_front_from_multiple_nodes_list():
     Returns:
         None.
     """
+=======
+>>>>>>> main
     linked_list = DoubleLinkedList()
     linked_list.add_back("Server A")
     linked_list.add_back("Server B")
@@ -240,6 +274,7 @@ def test_remove_front_from_multiple_nodes_list():
     assert linked_list.tail.next is None
     assert linked_list.get_size() == 2
     assert linked_list.traverse_forward_recursive() == ["Server B", "Server C"]
+<<<<<<< HEAD
     assert linked_list.traverse_backward_recursive() == [
         "Server C",
         "Server B",
@@ -255,6 +290,12 @@ def test_remove_back_from_empty_list_should_return_none():
     Returns:
         None.
     """
+=======
+    assert linked_list.traverse_backward_recursive() == ["Server C", "Server B"]
+
+
+def test_remove_back_from_empty_list_should_return_none():
+>>>>>>> main
     linked_list = DoubleLinkedList()
 
     removed_data = linked_list.remove_back()
@@ -267,6 +308,7 @@ def test_remove_back_from_empty_list_should_return_none():
 
 
 def test_remove_back_from_single_node_list():
+<<<<<<< HEAD
     """Verify remove_back removes the only node and leaves the list empty.
 
     Args:
@@ -275,6 +317,8 @@ def test_remove_back_from_single_node_list():
     Returns:
         None.
     """
+=======
+>>>>>>> main
     linked_list = DoubleLinkedList()
     linked_list.add_back("Server A")
 
@@ -290,6 +334,7 @@ def test_remove_back_from_single_node_list():
 
 
 def test_remove_back_from_multiple_nodes_list():
+<<<<<<< HEAD
     """Verify remove_back removes the tail node from a multi-node list.
 
     Args:
@@ -298,6 +343,8 @@ def test_remove_back_from_multiple_nodes_list():
     Returns:
         None.
     """
+=======
+>>>>>>> main
     linked_list = DoubleLinkedList()
     linked_list.add_back("Server A")
     linked_list.add_back("Server B")
@@ -314,6 +361,7 @@ def test_remove_back_from_multiple_nodes_list():
     assert linked_list.tail.prev == linked_list.head
     assert linked_list.get_size() == 2
     assert linked_list.traverse_forward_recursive() == ["Server A", "Server B"]
+<<<<<<< HEAD
     assert linked_list.traverse_backward_recursive() == [
         "Server B",
         "Server A",
@@ -329,6 +377,12 @@ def test_remove_until_empty():
     Returns:
         None.
     """
+=======
+    assert linked_list.traverse_backward_recursive() == ["Server B", "Server A"]
+
+
+def test_remove_until_empty():
+>>>>>>> main
     linked_list = DoubleLinkedList()
     linked_list.add_back("Server A")
     linked_list.add_back("Server B")
@@ -345,6 +399,7 @@ def test_remove_until_empty():
 
 
 def test_display_forward_recursive_for_empty_list(capsys):
+<<<<<<< HEAD
     """Verify display_forward_recursive prints 'NULL' for an empty list.
 
     Args:
@@ -353,6 +408,8 @@ def test_display_forward_recursive_for_empty_list(capsys):
     Returns:
         None.
     """
+=======
+>>>>>>> main
     linked_list = DoubleLinkedList()
 
     linked_list.display_forward_recursive()
@@ -362,6 +419,7 @@ def test_display_forward_recursive_for_empty_list(capsys):
 
 
 def test_display_forward_recursive_for_non_empty_list(capsys):
+<<<<<<< HEAD
     """Verify display_forward_recursive prints the correct forward traversal.
 
     Args:
@@ -370,6 +428,8 @@ def test_display_forward_recursive_for_non_empty_list(capsys):
     Returns:
         None.
     """
+=======
+>>>>>>> main
     linked_list = DoubleLinkedList()
     linked_list.add_back("Server A")
     linked_list.add_back("Server B")
@@ -382,6 +442,7 @@ def test_display_forward_recursive_for_non_empty_list(capsys):
 
 
 def test_display_backward_recursive_for_empty_list(capsys):
+<<<<<<< HEAD
     """Verify display_backward_recursive prints 'NULL' for an empty list.
 
     Args:
@@ -390,6 +451,8 @@ def test_display_backward_recursive_for_empty_list(capsys):
     Returns:
         None.
     """
+=======
+>>>>>>> main
     linked_list = DoubleLinkedList()
 
     linked_list.display_backward_recursive()
@@ -399,6 +462,7 @@ def test_display_backward_recursive_for_empty_list(capsys):
 
 
 def test_display_backward_recursive_for_non_empty_list(capsys):
+<<<<<<< HEAD
     """Verify display_backward_recursive prints the correct backward traversal.
 
     Args:
@@ -407,6 +471,8 @@ def test_display_backward_recursive_for_non_empty_list(capsys):
     Returns:
         None.
     """
+=======
+>>>>>>> main
     linked_list = DoubleLinkedList()
     linked_list.add_back("Server A")
     linked_list.add_back("Server B")

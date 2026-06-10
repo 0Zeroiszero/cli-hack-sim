@@ -11,6 +11,7 @@ console = Console()
 
 
 def build_header(menu: str, sub_menu: str) -> Group:
+<<<<<<< HEAD
     """Membangun header panel untuk tampilan menu.
 
     Args:
@@ -20,6 +21,8 @@ def build_header(menu: str, sub_menu: str) -> Group:
     Returns:
         Group Rich berisi header panel, informasi waktu, dan rule.
     """
+=======
+>>>>>>> main
     waktu = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     header = Panel(
         Text("HACKER NETWORK SIMULATION", justify="center", style="white"),
@@ -34,15 +37,19 @@ def build_header(menu: str, sub_menu: str) -> Group:
 
 
 async def main() -> None:
+<<<<<<< HEAD
     """Menjalankan demo header menu dengan live refresh jam.
 
     Menampilkan header yang diperbarui setiap detik menggunakan Rich Live,
     sambil menunggu input pengguna melalui Rich Prompt di executor terpisah.
     """
+=======
+>>>>>>> main
     console.clear()
 
     # Membuat render live untuk tampilan atas
     with Live(
+<<<<<<< HEAD
         build_header("Main Menu", "Beranda"),
         console=console,
         auto_refresh=False,
@@ -50,6 +57,12 @@ async def main() -> None:
         # Jalankan background task untuk terus mengupdate jam di header
         async def urus_header() -> None:
             """Memperbarui tampilan header setiap detik di background."""
+=======
+        build_header("Main Menu", "Beranda"), console=console, auto_refresh=False
+    ) as live:
+        # Jalankan background task untuk terus mengupdate jam di header
+        async def urus_header():
+>>>>>>> main
             while True:
                 live.update(build_header("Main Menu", "Beranda"), refresh=True)
                 await asyncio.sleep(1)
