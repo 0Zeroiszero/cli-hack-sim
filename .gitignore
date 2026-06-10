@@ -18,6 +18,8 @@ mcp
 .qwenignore
 .lsp.json
 QWEN.md
+mcp-docx-documenter/*
+docs/*
 
 # Distribution / packaging
 .Python
