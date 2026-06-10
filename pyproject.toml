@@ -18,9 +18,11 @@ dependencies = [
 dev = [
     "asciimatics>=1.15.0",
     "blessed>=1.44.0",
+    "mcp[cli]>=1.27.2",
     "numpy>=2.4.6",
     "pandas>=3.0.3",
     "pyinstaller>=6.20.0",
+    "python-docx>=1.2.0",
     "python-lsp-server[all]>=1.14.0",
     "websockets>=16.0",
 ]
