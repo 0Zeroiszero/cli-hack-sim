@@ -1,7 +1,14 @@
+<<<<<<< HEAD
+from rich import box
+from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
+=======
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 from rich import box
+>>>>>>> main
 
 console = Console()
 
@@ -25,8 +32,19 @@ table.add_column("Hasil", style="white")
 
 table.add_row("Inorder", "CONFIG → SYSTEM → SECURITY → ROOT → LOGS → DATABASE")
 
+<<<<<<< HEAD
+table.add_row(
+    "Postorder", "CONFIG → SECURITY → SYSTEM → LOGS → DATABASE → ROOT"
+)
+
+if __name__ == "__main__":
+    console.print(
+        Panel(tree_text, title="Preorder Tree", border_style="green")
+    )
+=======
 table.add_row("Postorder", "CONFIG → SECURITY → SYSTEM → LOGS → DATABASE → ROOT")
 
 if __name__ == "__main__":
     console.print(Panel(tree_text, title="Preorder Tree", border_style="green"))
+>>>>>>> main
     console.print(table)

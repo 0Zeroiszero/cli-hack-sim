@@ -5,7 +5,10 @@ pendekatan dictionary untuk validasi kredensial.
 """
 
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> main
 class Login:
     """Kelas untuk menangani proses login pengguna.
 
@@ -17,6 +20,8 @@ class Login:
         """Inisialisasi objek Login."""
         pass
 
+<<<<<<< HEAD
+=======
     # def login_user(self, servers: dict) -> None:
     #     """Melakukan login pengguna berdasarkan data server.
     #
@@ -37,6 +42,7 @@ class Login:
     #     else:
     #         print('\nUsername Tidak Ditemukan!')
 
+>>>>>>> main
 
 if __name__ == "__main__":
     l = Login()

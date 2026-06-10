@@ -3,10 +3,17 @@ Demo Double Linked List Carousel dengan Rich
 @author: Abdullah Affandi
 """
 
+<<<<<<< HEAD
+from rich import box
+from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
+=======
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 from rich import box
+>>>>>>> main
 
 from src.server import Server
 
@@ -14,7 +21,25 @@ console = Console()
 
 
 class ServerNode(Server):
+<<<<<<< HEAD
+    """A node in a double linked list representing a server.
+
+    Args:
+        server_id: Unique server identifier.
+        server_name: Human-readable server name.
+        ip: IP address of the server.
+        status: Current operational status.
+
+    Returns:
+        None.
+    """
+
+    def __init__(
+        self, *, server_id: str, server_name: str, ip: str, status: str
+    ):
+=======
     def __init__(self, *, server_id: str, server_name: str, ip: str, status: str):
+>>>>>>> main
         super().__init__(
             nama=server_name,
             id=server_id,
@@ -27,12 +52,41 @@ class ServerNode(Server):
 
 
 class ServerCarousel:
+<<<<<<< HEAD
+    """Manages a double linked list carousel with navigation controls.
+
+    Args:
+        None.
+
+    Returns:
+        None.
+    """
+
+=======
+>>>>>>> main
     def __init__(self):
         self.head = None
         self.tail = None
         self.current = None
 
+<<<<<<< HEAD
+    def add_server(
+        self, *, server_id: str, server_name: str, ip: str, status: str
+    ):
+        """Add a new server node to the end of the double linked list.
+
+        Args:
+            server_id: Unique server identifier.
+            server_name: Human-readable server name.
+            ip: IP address of the server.
+            status: Current operational status.
+
+        Returns:
+            None.
+        """
+=======
     def add_server(self, *, server_id: str, server_name: str, ip: str, status: str):
+>>>>>>> main
         new_node = ServerNode(
             server_id=server_id,
             server_name=server_name,
@@ -50,6 +104,17 @@ class ServerCarousel:
             self.tail = new_node
 
     def move_up(self):
+<<<<<<< HEAD
+        """Move the current pointer to the previous node (up).
+
+        Args:
+            None.
+
+        Returns:
+            None.
+        """
+=======
+>>>>>>> main
         if self.current and self.current.prev:
             self.current = self.current.prev
         else:
@@ -59,6 +124,17 @@ class ServerCarousel:
             console.input("Tekan Enter untuk lanjut...")
 
     def move_down(self):
+<<<<<<< HEAD
+        """Move the current pointer to the next node (down).
+
+        Args:
+            None.
+
+        Returns:
+            None.
+        """
+=======
+>>>>>>> main
         if self.current and self.current.next:
             self.current = self.current.next
         else:
@@ -68,6 +144,17 @@ class ServerCarousel:
             console.input("Tekan Enter untuk lanjut...")
 
     def display_carousel(self) -> None:
+<<<<<<< HEAD
+        """Display the current, previous, and next server in a Rich Table.
+
+        Args:
+            None.
+
+        Returns:
+            None.
+        """
+=======
+>>>>>>> main
         if self.current is None:
             console.print("[bold red]Data server kosong.[/bold red]")
             return
@@ -116,8 +203,23 @@ class ServerCarousel:
         console.print(table)
 
     def show_current_detail(self) -> None:
+<<<<<<< HEAD
+        """Display a detail panel for the currently selected server.
+
+        Args:
+            None.
+
+        Returns:
+            None.
+        """
+        if self.current is None:
+            console.print(
+                "[bold red]Tidak ada server yang dipilih.[/bold red]"
+            )
+=======
         if self.current is None:
             console.print("[bold red]Tidak ada server yang dipilih.[/bold red]")
+>>>>>>> main
             return
 
         detail = Table(show_header=False, box=None)
@@ -138,6 +240,17 @@ class ServerCarousel:
         )
 
     def display_controls(self) -> None:
+<<<<<<< HEAD
+        """Display the navigation control panel.
+
+        Args:
+            None.
+
+        Returns:
+            None.
+        """
+=======
+>>>>>>> main
         controls = (
             "[bold cyan][W][/bold cyan] Naik ke server sebelumnya\n"
             "[bold cyan][S][/bold cyan] Turun ke server berikutnya\n"
@@ -153,6 +266,17 @@ class ServerCarousel:
         )
 
     def run(self):
+<<<<<<< HEAD
+        """Run the main carousel interaction loop.
+
+        Args:
+            None.
+
+        Returns:
+            None.
+        """
+=======
+>>>>>>> main
         while True:
             console.clear()
 
@@ -160,7 +284,15 @@ class ServerCarousel:
             self.show_current_detail()
             self.display_controls()
 
+<<<<<<< HEAD
+            choice = (
+                console.input("\n[bold white]Pilih:[/bold white] ")
+                .lower()
+                .strip()
+            )
+=======
             choice = console.input("\n[bold white]Pilih:[/bold white] ").lower().strip()
+>>>>>>> main
 
             if choice == "w":
                 self.move_up()

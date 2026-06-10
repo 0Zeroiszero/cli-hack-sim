@@ -1,9 +1,22 @@
+<<<<<<< HEAD
+"""
+Demo Rich Progress Bar untuk menampilkan bandwidth server.
+@author: Abdullah Affandi
+"""
+
+import random
+
+from rich.console import Group
+from rich.panel import Panel
+from rich.progress import BarColumn, Progress, TextColumn
+=======
 from rich.console import Console, Group
 from rich.progress import Progress, BarColumn, TextColumn
 from rich.panel import Panel
 
 import random
 
+>>>>>>> main
 
 data_bandwidth = [
     (0, "SRV005", "Echo", 9123),
@@ -24,6 +37,18 @@ random.shuffle(data_bandwidth)
 def tampilkan_bandwidth_progress(
     console, *, data: list[tuple[int, str, str, int]]
 ) -> None:
+<<<<<<< HEAD
+    """Display bandwidth data as a Rich progress bar panel.
+
+    Args:
+        console: Rich Console instance for output.
+        data: List of tuples (index, server_id, server_name, bandwidth_mbps).
+
+    Returns:
+        None.
+    """
+=======
+>>>>>>> main
     if not data:
         console.print("[bold red]Data bandwidth kosong.[/]")
         return
@@ -56,7 +81,15 @@ def tampilkan_bandwidth_progress(
         )
 
     console.print(
+<<<<<<< HEAD
+        Panel(
+            Group(progress),
+            title="DAFTAR BANDWIDTH SERVER",
+            border_style="red",
+        )
+=======
         Panel(Group(progress), title="DAFTAR BANDWIDTH SERVER", border_style="red")
+>>>>>>> main
     )
 
 

@@ -89,6 +89,11 @@ class FungsiServer:
             server = ServerNode(nama, id, ip, status)
             self.server_list.append(server)
 
+<<<<<<< HEAD
+
+if __name__ == "__main__":
+    fs = FungsiServer()
+=======
     # def tampilkan_server(self, data: list[ServerNode]) -> None:
     #     """Menampilkan daftar server dalam format tabel.
     #
@@ -243,4 +248,5 @@ if __name__ == "__main__":
     # fs.tampilkan_server(data=fs.server_list)
     # from pprint import pprint
     # pprint(get_server_detail("SRV002"))
+>>>>>>> main
     pass

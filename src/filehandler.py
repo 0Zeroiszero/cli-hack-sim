@@ -23,6 +23,8 @@ class FileHandler:
         """Inisialisasi objek FileHandler."""
         pass
 
+<<<<<<< HEAD
+=======
     # def save_server(self) -> None:
     #     """Menyimpan data server ke dalam file teks.
     #
@@ -36,6 +38,7 @@ class FileHandler:
     #             data = f"{i.nama}|{i.id}|{i.ip}|{i.status}\n"
     #             f.write(data)
 
+>>>>>>> main
     def load_server(self) -> list[ServerNode] | None:
         """Memuat data server dari file teks.
 
@@ -67,6 +70,19 @@ class FileHandler:
             print("File Tidak Ditemukan")
             return None
 
+<<<<<<< HEAD
+    def check_duplicate_ip(self, data: dict) -> bool:
+        """Memeriksa apakah ada duplikat IP dalam data server.
+
+        Args:
+            data: Data server yang dimuat dari file JSON.
+
+        Returns:
+            bool: True jika ditemukan IP duplikat, False jika tidak.
+        """
+        ips = [server["ip"] for server in data["servers"]]
+        return len(ips) != len(set(ips))
+=======
     # def save_akun(self) -> None:
     #     """Menyimpan data akun ke dalam file JSON.
     #
@@ -155,6 +171,7 @@ class FileHandler:
     #     """
     #     with open(path, "w", encoding="utf-8") as f:
     #         json.dump(data, f, indent=4, ensure_ascii=False)
+>>>>>>> main
 
     def load_json(self, path: str | Path) -> dict | list:
         """Memuat data dari file JSON.
@@ -168,6 +185,11 @@ class FileHandler:
         with open(path) as f:
             return json.load(f)
 
+<<<<<<< HEAD
+
+if __name__ == "__main__":
+    fh = FileHandler()
+=======
     # def save_all(self) -> None:
     #     """Menyimpan seluruh data (server dan akun) ke file.
     #
@@ -185,4 +207,5 @@ class FileHandler:
 if __name__ == "__main__":
     fh = FileHandler()
     # fh.save_all()
+>>>>>>> main
     pass

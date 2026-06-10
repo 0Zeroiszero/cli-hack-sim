@@ -11,6 +11,8 @@ untuk referensi atau penggunaan di masa mendatang.
 from colorama import init
 
 init(autoreset=True)
+<<<<<<< HEAD
+=======
 
 
 # def red_text(text) -> str:
@@ -62,3 +64,4 @@ init(autoreset=True)
 #         color = Back.RED + Fore.WHITE + Style.BRIGHT
 #
 #     return color + str(text) + Style.RESET_ALL
+>>>>>>> main
