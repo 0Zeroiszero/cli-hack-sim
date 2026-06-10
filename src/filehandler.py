@@ -156,6 +156,18 @@ class FileHandler:
     #     with open(path, "w", encoding="utf-8") as f:
     #         json.dump(data, f, indent=4, ensure_ascii=False)
 
+    def check_duplicate_ip(self, data: dict) -> bool:
+        """Memeriksa apakah ada duplikat IP dalam data server.
+
+        Args:
+            data: Data server yang dimuat dari file JSON.
+
+        Returns:
+            bool: True jika ditemukan IP duplikat, False jika tidak.
+        """
+        ips = [server["ip"] for server in data["servers"]]
+        return len(ips) != len(set(ips))
+
     def load_json(self, path: str | Path) -> dict | list:
         """Memuat data dari file JSON.
 
