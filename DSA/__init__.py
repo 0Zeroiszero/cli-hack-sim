@@ -16,7 +16,7 @@ from .linked_list.single import TrafficQueue
 from .searching import cari_server_binary, cari_server_linear
 from .sorting import SortingServer
 from .stack.log_aktivitas import LogAktivitas
-from .traversal_folder import (
+from .tree import (
     ServerTreeBuilder,
     TreeNode,
     inorder,
